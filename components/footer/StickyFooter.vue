@@ -1,8 +1,8 @@
 <template>
   <div
-    class="my-2 shadow-lg w-full bg-gray-100 border-t overflow-x-auto sticky top-0 z-10"
+    class="shadow-lg fixed bottom-0 w-full bg-gray-100 border-t overflow-x-auto"
   >
-    <ul class="flex px-6 py-1 justify-around items-center">
+    <ul class="flex px-6 py-3 justify-around items-center">
       <li
         class="cursor-pointer flex flex-col flex-1 justify-center items-center"
       >

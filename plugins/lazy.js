@@ -2,24 +2,33 @@ import Vue from "vue";
 import vueLazy from "vue-lazyload";
 
 Vue.use(vueLazy, {
+  observer: true,
   preLoad: 1.3,
   error: "/food-tray.svg",
   loading: "/loading.svg",
-  attempt: 1
-  // filter: {
-  //   progressive(listener, options) {
-  //     const isCDN = /qiniudn.com/;
-  //     if (isCDN.test(listener.src)) {
-  //       listener.el.setAttribute("lazy-progressive", "true");
-  //       listener.loading = listener.src + "?imageView2/1/w/10/h/10";
-  //     }
-  //   },
-  //   webp(listener, options) {
-  //     if (!options.supportWebp) return;
-  //     const isCDN = /qiniudn.com/;
-  //     if (isCDN.test(listener.src)) {
-  //       listener.src += "?imageView2/2/format/webp";
-  //     }
-  //   }
-  // }
+  attempt: 1,
+  adapter: {
+    loaded({
+      bindType,
+      el,
+      naturalHeight,
+      naturalWidth,
+      $parent,
+      src,
+      loading,
+      error,
+      Init
+    }) {
+      const CDN = `https://ik.imagekit.io/misiki/images`;
+      src = CDN + src;
+    }
+  },
+  filter: {
+    progressive(listener, options) {
+      const CDN = `https://ik.imagekit.io/misiki/images`;
+      listener.el.setAttribute("lazy-progressive", "true");
+      listener.loading = listener.src + "?tr=w-3,h-2";
+    },
+    error(listender, Init) {}
+  }
 });

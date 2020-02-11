@@ -1,7 +1,7 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 Vue.use(Vuex);
-const cookieparser = process.server ? require('cookieparser') : undefined
+const cookieparser = process.server ? require("cookieparser") : undefined;
 
 export const state = () => ({
   categories: [],
@@ -9,21 +9,21 @@ export const state = () => ({
   loading: false,
   error: {},
   isError: null // Only required to inform App.vue that an error is there hence initiate the snackbar
-})
+});
 export const getters = {
   loading(state) {
-    return state.loading
+    return state.loading;
   }
-}
+};
 export const mutations = {
   categories(state, payload) {
-    state.categories = payload
+    state.categories = payload;
   },
   settings(state, payload) {
-    state.settings = payload
+    state.settings = payload;
   },
   busy(state, payload) {
-    state.loading = payload
+    state.loading = payload;
   },
   success(state, msg) {
     this.$toast.success(msg).goAway(2000);
@@ -35,10 +35,10 @@ export const mutations = {
     this.$toast.info(msg).goAway(5000);
   },
   clearError(state) {
-    state.error = {}
+    state.error = {};
   },
   setGuest(state, guestId) {
-    state.guestId = guestId
+    state.guestId = guestId;
   },
   setErr(state, err) {
     if (err && err.response && err.response.data) {
@@ -46,88 +46,94 @@ export const mutations = {
     } else if (err && err.response) {
       err = err.response;
     }
-    if (this.$toast) // On server it will be undefined. Hence required
+    if (this.$toast)
+      // On server it will be undefined. Hence required
       this.$toast.error(err).goAway(5000);
   }
-}
+};
 export const actions = {
   async nuxtServerInit({ state, commit, dispatch }, { req }) {
-    // console.log('nuxtServerInit...............');
-    commit('setGuest', this.$cookies.get('guest')) // Required only at server
+    console.log("nuxtServerInit...............");
+    commit("setGuest", this.$cookies.get("guest")); // Required only at server
     // Categories
     try {
-      let categories = await this.$axios.$get('api/categories/megamenu')
-      commit('categories', categories.data)
+      let categories = await this.$axios.$get("api/categories/megamenu");
+      commit("categories", categories.data);
     } catch (err) {
-      commit('setErr', err)
+      commit("setErr", err);
     }
     // Settings
     try {
-      let settings = await this.$axios.$get('api/settings')
-      commit('settings', settings.data)
+      let settings = await this.$axios.$get("api/settings");
+      console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz", settings.data);
+      commit("settings", settings.data);
     } catch (err) {
-      commit('setErr', err)
+      commit("setErr", err);
     }
     // Authorization
-    let token = null
+    let token = null;
     if (req.headers.cookie) {
-      const parsed = cookieparser.parse(req.headers.cookie)
+      const parsed = cookieparser.parse(req.headers.cookie);
       try {
-        token = parsed.Authorization
+        token = parsed.Authorization;
       } catch (err) {
         // No valid cookie found
       }
     }
-    commit('auth/setToken', token)
+    commit("auth/setToken", token);
     // let auth = this.$cookies.get('Authorization')
     if (token) {
-      this.$axios.setToken(token, 'Bearer')
+      this.$axios.setToken(token, "Bearer");
       try {
-        await dispatch('auth/fetch')
-      }
-      catch (error) {
-        this.$axios.setToken(null)
+        await dispatch("auth/fetch");
+      } catch (error) {
+        this.$axios.setToken(null);
       }
     } else {
-      this.$axios.setToken(null)
+      this.$axios.setToken(null);
     }
     try {
-      await dispatch('cart/fetch')
-    } catch (e) { }
+      await dispatch("cart/fetch");
+    } catch (e) {}
   },
   async nuxtClientInit({ state, commit, dispatch }, context) {
-    // // Categories
-    // try {
-    //   let categories = await this.$axios.$get('categories/megamenu')
-    //   commit('categories', categories.data)
-    // } catch (err) {
-    //   commit('setErr', err)
-    // }
-    // // Settings
-    // try {
-    //   let settings = await this.$axios.$get('settings')
-    //   commit('settings', settings)
-    // } catch (e) {
-    //   commit('settings', {})
-    //   commit('setErr', e)
-    // }
-
-    // Authorization
-    // let auth = this.$cookies.get('Authorization')
-    let token = state.auth.token
-    if (token) {
-      this.$axios.setToken(token, 'Bearer')
-      // try {
-      //   await dispatch('auth/fetch')
-      // }
-      // catch (error) {
-      //   this.$axios.setToken(null)
-      // }
-    } else {
-      this.$axios.setToken(null)
+    commit("setGuest", this.$cookies.get("guest")); // Required only at server
+    // Categories
+    try {
+      let categories = await this.$axios.$get("api/categories/megamenu");
+      commit("categories", categories.data);
+    } catch (err) {
+      commit("setErr", err);
     }
-    // try {
-    //   await dispatch('cart/fetch')
-    // } catch (e) { }
+    // Settings
+    try {
+      let settings = await this.$axios.$get("api/settings");
+      commit("settings", settings);
+    } catch (err) {
+      commit("setErr", err);
+    }
+
+    commit("auth/setToken", token);
+    // let auth = this.$cookies.get('Authorization')
+    if (token) {
+      this.$axios.setToken(token, "Bearer");
+      try {
+        await dispatch("auth/fetch");
+      } catch (error) {
+        this.$axios.setToken(null);
+      }
+    } else {
+      this.$axios.setToken(null);
+    }
+    try {
+      await dispatch("cart/fetch");
+    } catch (e) {}
+
+    let token = state.auth.token;
+    if (token) {
+      this.$axios.setToken(token, "Bearer");
+    } else {
+      this.$axios.setToken(null);
+    }
   }
-}
+};

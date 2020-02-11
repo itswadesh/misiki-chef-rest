@@ -1,65 +1,45 @@
+require("dotenv").config();
+const axios = require("axios");
+const { API_URL, head, HOST } = require("./config");
+const PROXY = process.env.API_URL || API_URL;
 
 export default {
-  mode: 'spa',
-  /*
-  ** Headers of the page
-  */
-  head: {
-    title: process.env.npm_package_name || '',
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
-    ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
-  },
-  /*
-  ** Customize the progress-bar color
-  */
-  loading: { color: '#fff' },
-  /*
-  ** Global CSS
-  */
-  css: [
-  ],
-  /*
-  ** Plugins to load before mounting the App
-  */
+  mode: "spa",
+  head,
+  loading: "~/components/ui/Loading.vue",
+  loading: { color: "#fff" },
+  css: [],
   plugins: [
+    "~/plugins/filters.js",
+    "~/plugins/axios",
+    { src: "~/plugins/init.js", mode: "client" },
+    { src: "~/plugins/lazy.js", mode: "client" },
+    { src: "~/plugins/carousel.js", mode: "client" },
+    { src: "~/plugins/vue-slider-component", mode: "client" } // Price slider
   ],
-  /*
-  ** Nuxt.js dev-modules
-  */
-  buildModules: [
-    // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
-    '@nuxtjs/tailwindcss',
-  ],
-  /*
-  ** Nuxt.js modules
-  */
+  buildModules: ["@nuxtjs/tailwindcss"],
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
-    '@nuxtjs/pwa',
-    // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv',
+    "@nuxtjs/dotenv",
+    // "~/modules/routes",
+    "@nuxtjs/robots",
+    "@nuxtjs/axios",
+    "@nuxtjs/font-awesome",
+    "@nuxtjs/pwa",
+    "@nuxtjs/toast",
+    "cookie-universal-nuxt"
   ],
-  /*
-  ** Axios module configuration
-  ** See https://axios.nuxtjs.org/options
-  */
-  axios: {
+  toast: {
+    theme: "bubble",
+    position: "top-center",
+    singleton: true
   },
-  /*
-  ** Build configuration
-  */
-  build: {
-    /*
-    ** You can extend webpack config here
-    */
-    extend (config, ctx) {
-    }
+  axios: {
+    proxy: true,
+    credentials: true
+  },
+  proxy: {
+    "/api/": PROXY,
+    "/auth": PROXY,
+    "/images": PROXY
   }
-}
+};

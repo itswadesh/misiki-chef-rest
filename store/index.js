@@ -52,35 +52,53 @@ export const mutations = {
   }
 };
 export const actions = {
-  async nuxtServerInit({ state, commit, dispatch }, { req }) {
-    // console.log("nuxtServerInit...............");
-    commit("setGuest", this.$cookies.get("guest")); // Required only at server
-    // Categories
-    // try {
-    //   let categories = await this.$axios.$get("api/categories/megamenu");
-    //   commit("categories", categories.data);
-    // } catch (err) {
-    //   commit("setErr", err);
-    // }
-    // Settings
-    try {
-      let settings = await this.$axios.$get("api/settings");
-      commit("settings", settings.data);
-    } catch (err) {
-      commit("setErr", err);
-    }
+  // async nuxtServerInit({ state, commit, dispatch }, { req }) {
+  //   commit("setGuest", this.$cookies.get("guest")); // Required only at server
+  //   // Categories
+  //   // try {
+  //   //   let categories = await this.$axios.$get("api/categories/megamenu");
+  //   //   commit("categories", categories.data);
+  //   // } catch (err) {
+  //   //   commit("setErr", err);
+  //   // }
+  //   // Settings
+  //   try {
+  //     let settings = await this.$axios.$get("settings");
+  //     commit("settings", settings);
+  //   } catch (err) {
+  //     commit("setErr", err);
+  //   }
+  //   // Authorization
+  //   let token = null;
+  //   if (req.headers.cookie) {
+  //     const parsed = cookieparser.parse(req.headers.cookie);
+  //     try {
+  //       token = parsed.Authorization;
+  //     } catch (err) {
+  //       // No valid cookie found
+  //     }
+  //   }
+  //   commit("auth/setToken", token);
+  //   // let auth = this.$cookies.get('Authorization')
+  //   if (token) {
+  //     this.$axios.setToken(token, "Bearer");
+  //     try {
+  //       await dispatch("auth/fetch");
+  //     } catch (error) {
+  //       this.$axios.setToken(null);
+  //     }
+  //   } else {
+  //     this.$axios.setToken(null);
+  //   }
+  //   try {
+  //     await dispatch("cart/fetch");
+  //   } catch (e) { }
+  // },
+  async nuxtClientInit({ state, commit, dispatch }, context) {
+
     // Authorization
-    let token = null;
-    if (req.headers.cookie) {
-      const parsed = cookieparser.parse(req.headers.cookie);
-      try {
-        token = parsed.Authorization;
-      } catch (err) {
-        // No valid cookie found
-      }
-    }
+    let token = this.$cookies.get("Authorization")
     commit("auth/setToken", token);
-    // let auth = this.$cookies.get('Authorization')
     if (token) {
       this.$axios.setToken(token, "Bearer");
       try {
@@ -91,12 +109,9 @@ export const actions = {
     } else {
       this.$axios.setToken(null);
     }
-    try {
-      await dispatch("cart/fetch");
-    } catch (e) {}
-  },
-  async nuxtClientInit({ state, commit, dispatch }, context) {
+
     commit("setGuest", this.$cookies.get("guest")); // Required only at server
+
     // Categories
     try {
       let categories = await this.$axios.$get("api/categories/megamenu");
@@ -104,6 +119,7 @@ export const actions = {
     } catch (err) {
       commit("setErr", err);
     }
+
     // Settings
     try {
       let settings = await this.$axios.$get("api/settings");
@@ -112,27 +128,9 @@ export const actions = {
       commit("setErr", err);
     }
 
-    commit("auth/setToken", token);
-    // let auth = this.$cookies.get('Authorization')
-    if (token) {
-      this.$axios.setToken(token, "Bearer");
-      try {
-        await dispatch("auth/fetch");
-      } catch (error) {
-        this.$axios.setToken(null);
-      }
-    } else {
-      this.$axios.setToken(null);
-    }
     try {
       await dispatch("cart/fetch");
-    } catch (e) {}
+    } catch (e) { }
 
-    let token = state.auth.token;
-    if (token) {
-      this.$axios.setToken(token, "Bearer");
-    } else {
-      this.$axios.setToken(null);
-    }
   }
 };

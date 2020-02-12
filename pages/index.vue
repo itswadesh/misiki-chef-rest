@@ -4,11 +4,11 @@
     <Hero />
     <div class="container">
       <Categories />
-      <BestSellers />
-      <RecentVisit />
+      <!-- <BestSellers />
+      <RecentVisit />-->
       <div class="flex flex-wrap">
         <div class="w-1/2" v-for="p in products" :key="p._id">
-          <Product :p="p" class="" />
+          <Product :p="p" class />
         </div>
       </div>
     </div>
@@ -35,17 +35,6 @@ export default {
     };
   },
   async created() {
-    const city = this.$cookies.get("city");
-    if (!city || city == "") this.$router.push("/change-location");
-    let q = this.$route.params.q || "";
-    try {
-      this.foods = await this.$axios.$get(
-        `api/foods/group?daily=false&city=${city}&search=${q}`
-      );
-    } catch (e) {
-      if (e.status == 444) this.$router.push("/change-location");
-      this.foods = [];
-    }
     try {
       const p = await this.$axios.$get("api/foods");
       this.products = p.data;

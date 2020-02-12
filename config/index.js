@@ -12,6 +12,7 @@ export const KEYWORDS =
 export const HOST = "https://www.litekart.in";
 export const sharingLogo = "https://randomuser.me/api/portraits/women/17.jpg";
 export const cities = ["Sunabeda", "Berhampur"];
+export const PAY_KEY = 'rzp_test_OBdyyGIBdthnuy'
 export const head = {
   titleTemplate: "%s - Litekart",
   htmlAttrs: { lang: "en" },

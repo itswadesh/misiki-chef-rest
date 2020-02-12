@@ -16,15 +16,15 @@ const getters = {
   },
   checkCart: state => ({ pid, vid }) => {
     // Returns true when there is item in cart
-    var found = state.items.some(function(el) {
-      return el.product._id === pid;
+    var found = state.items.some(function (el) {
+      return el._id === pid;
     });
     return found;
   },
   getQty: state => ({ pid, vid }) => {
     // Gets cart qty of that item
     for (let i of state.items) {
-      if (i.product._id === pid) {
+      if (i._id === pid) {
         return i.qty;
       }
     }
@@ -37,7 +37,7 @@ const actions = {
       const data = await this.$axios.$get("api/cart");
       commit("setCart", data);
       return data;
-    } catch (e) {}
+    } catch (e) { }
   },
   async addToCart({ commit }, payload) {
     try {

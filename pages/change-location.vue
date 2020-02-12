@@ -34,7 +34,6 @@
 <script>
 const Header = () => import("~/components/Header");
 import { cities } from "~/config";
-console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz", cities);
 export default {
   components: { Header },
   layout: "footer",

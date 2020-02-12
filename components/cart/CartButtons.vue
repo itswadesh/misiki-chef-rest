@@ -1,28 +1,24 @@
 <template>
   <div class="flex" v-if="product">
     <span class="mt-1">Quantity: &nbsp;</span>
-    <div v-if="!checkCart({ pid: product._id })" @click="addToBag(1)">
+    <div v-if="!checkCart({ pid: product._id })" @click="addToBag({pid:product._id,qty:1})">
       <button class="text-gray-600 bg-gray-200 rounded px-2 rounded">
         <img src="/plus.svg" alt="+" />
       </button>
     </div>
     <div v-else>
       <div class="flex flex-wrap">
-        <button class="muted rounded-full w-8 h-8" @click="addToBag(-1)">
+        <button class="muted rounded-full w-8 h-8" @click="addToBag({pid:product._id,qty:-1})">
           <i class="fa fa-minus m-auto" aria-hidden="true"></i>
         </button>
         <div class="px-2 flex items-center text-center">
-          <div v-if="!loading">
-            {{ getQty({ pid: product._id }) }}
-          </div>
+          <div v-if="!loading">{{ getQty({ pid: product._id }) }}</div>
           <img alt="..." class="w-3 h-4" src="/loading.svg" v-else />
         </div>
         <button
           class="primary rounded-full w-8 h-8"
-          :disabled="
-            !variant || variant.price < 1 || variant.stock < 1 || loading
-          "
-          @click="addToBag(1)"
+          :disabled="product.stock < 1 || loading"
+          @click="addToBag({pid:product._id,qty:1})"
         >
           <i class="fa fa-plus m-auto" aria-hidden="true"></i>
         </button>
@@ -42,33 +38,19 @@ export default {
   methods: {
     ...mapActions({ addToCart: "cart/addToCart" }),
     addToBag(obj) {
-      if (!this.variant) {
-        this.setErr("Please select a size");
-        if (process.client) {
-          const el = this.$el.getElementsByClassName("sizeSelector")[0];
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth" });
-          }
-        }
-        this.shake = true;
-        setTimeout(() => {
-          this.shake = false;
-        }, 3000);
-        return;
-      } else {
-        this.addToCart(obj);
-        this.toast();
-      }
+      this.addToCart(obj);
+      this.toast();
     },
     toast() {
       this.$toast
         .show(
           `
       <div class="flex w-full">
-        <img class="w-12 h-12 object-cover" src="${this.product.img &&
-          this.$store.state.settings.CDN_URL + this.product.img[0]}" alt="" />
+        <img class="w-12 h-12 object-cover" src="${this.product &&
+          this.$store.state.settings.CDN_URL + this.product.img}" alt="" />
         <div class="toasted-text items-center">
-          <div>${this.product.name.substr(0, 40) + "..."}</div>
+          <div>${this.product.name &&
+            this.product.name.substr(0, 40) + "..."}</div>
           <div class="text-gray-600 text-xs">Added to your cart</div>
         </div>
       </div>

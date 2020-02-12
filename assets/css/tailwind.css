@@ -1,3 +1,151 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+body{
+  font-family: 'Nunito', sans-serif;
+  color:#282c3f;
+}
+html,body,div,span,p,input,textarea,button,img{
+  outline: none;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+.footer{
+  font-size: 1rem;
+  color:#696b79;
+  line-height: 25px;
+}
+.headings{
+  color:#282c3f;
+}
+.text-1{
+  color:#282c3f;
+  line-height: 25px;
+}
+.underline {
+  background-image: linear-gradient(
+    to right,
+    rgb(250, 112, 154) 0%,
+    rgb(254, 225, 64) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 0.2em;
+  background-position: 0 88%;
+  transition: background-size 0.25s ease-in;
+  text-decoration: none;
+}
+@media only screen and (min-width: 1000px) {
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background: white;
+  }
+
+  ::-webkit-scrollbar {
+    height: 6px;
+    width: 8px;
+    background: white;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(87deg, #fb6340, #da1c5f) !important;
+  }
+}
+button,button:focus{
+  outline: none;
+}
+.rnd-mnt {
+  width: max-content;
+  background-color: #fff;
+  text-transform: capitalize;
+  color: #3e4152;
+  cursor: default;
+  font-size: 10px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 20px;
+  border: solid 1px #d4d5d9;
+  margin: 1px;
+}
+.address{
+    border: 1px dashed #eaeaec;
+    box-shadow: 0 0 4px rgba(40,44,63,.08);
+    height: 200px;
+    width: 325px;
+    padding:4rem;
+    margin-bottom: 25px;
+    vertical-align: top;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.input-bg{
+  background-color: #F5F5F6;
+}
+@media only screen and (max-width: 812px) {
+  .toasted.outline.default {
+    max-width: 23rem !important;
+    width:23rem !important;
+  }
+  .toasted.outline.default  .flex.w-full{
+     max-width: 23rem !important;
+     width: 23rem !important;
+  }
+  .toasted img.object-cover{
+    height:5rem;
+    width: 5rem;
+  }
+  .toasted-text{
+    font-size: 14px;
+    margin-left: 10px;
+    padding: 1rem;
+  }
+}
+.sw-toast-container .toasted.outline {
+  border: none;
+  border-radius: .125rem;
+  padding:0.5rem;
+  font-weight: normal;
+  max-width:14rem;
+}
+.primary {
+    background: linear-gradient(87deg, #fb6340, #da1c5f) !important;
+    border-color: #fb6340;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+    color:white;
+}
+.secondary{
+  box-shadow: 10px 10px 30px -15px #1c45da;
+  background: linear-gradient(87deg,#40c8fb,#1c45da);
+  border-color: #69beda;
+}
+.muted{
+  background: #e1e8f0;
+}
+.text-primary{
+   background: linear-gradient(87deg, #fb6340, #da1c5f);
+   -webkit-background-clip: text;	
+	-webkit-text-fill-color: transparent;
+}
+
+.text-secondary{
+   background: linear-gradient(87deg,#40c8fb,#1c45da);
+   -webkit-background-clip: text;	
+	-webkit-text-fill-color: transparent;
+}
+
+.mask{
+  background: #f5f5f5;
+  opacity: 0.5;
+  pointer-events: none;
+}

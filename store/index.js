@@ -53,19 +53,18 @@ export const mutations = {
 };
 export const actions = {
   async nuxtServerInit({ state, commit, dispatch }, { req }) {
-    console.log("nuxtServerInit...............");
+    // console.log("nuxtServerInit...............");
     commit("setGuest", this.$cookies.get("guest")); // Required only at server
     // Categories
-    try {
-      let categories = await this.$axios.$get("api/categories/megamenu");
-      commit("categories", categories.data);
-    } catch (err) {
-      commit("setErr", err);
-    }
+    // try {
+    //   let categories = await this.$axios.$get("api/categories/megamenu");
+    //   commit("categories", categories.data);
+    // } catch (err) {
+    //   commit("setErr", err);
+    // }
     // Settings
     try {
       let settings = await this.$axios.$get("api/settings");
-      console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz", settings.data);
       commit("settings", settings.data);
     } catch (err) {
       commit("setErr", err);

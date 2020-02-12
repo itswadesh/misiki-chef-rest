@@ -7,7 +7,6 @@ export default {
   mode: "spa",
   head,
   loading: "~/components/ui/Loading.vue",
-  loading: { color: "#fff" },
   css: [],
   plugins: [
     "~/plugins/filters.js",

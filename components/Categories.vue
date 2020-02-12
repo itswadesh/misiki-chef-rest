@@ -2,33 +2,38 @@
   <div
     class="my-2 shadow-lg w-full bg-gray-100 border-t overflow-x-auto sticky top-0 z-10"
   >
-    <ul class="flex px-6 py-1 justify-around items-center">
-      <li
+    <div class="flex px-6 py-1 justify-around items-center">
+      <a
+        href="/search"
         class="cursor-pointer flex flex-col flex-1 justify-center items-center"
       >
         <i class="fa fa-search" /><span>Discovery</span>
-      </li>
-      <li
+      </a>
+      <a
+        href="/search"
         class="cursor-pointer flex flex-col flex-1 justify-center items-center"
       >
         <i class="fa fa-truck" /><span>Delivery</span>
-      </li>
-      <li
+      </a>
+      <a
+        href="/search"
         class="cursor-pointer flex flex-col flex-1 justify-center items-center"
       >
         <i class="fa fa-user" /><span>Account</span>
-      </li>
-      <li
+      </a>
+      <a
+        href="/search"
         class="cursor-pointer flex flex-col flex-1 justify-center items-center"
       >
         <i class="fa fa-tag" /><span>Offers</span>
-      </li>
-      <li
+      </a>
+      <a
+        href="/search"
         class="cursor-pointer flex flex-col flex-1 justify-center items-center"
       >
         <i class="fa fa-shopping-cart" /><span>Cart</span>
-      </li>
-    </ul>
+      </a>
+    </div>
   </div>
 </template>
 

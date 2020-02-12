@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="wave"
-    v-if="thisLoading"
-  >
+  <div id="wave" v-if="thisLoading">
     <span class="dot olive"></span>
     <span class="dot blue"></span>
     <span class="dot green"></span>
@@ -12,7 +9,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { loadingTimeout } from "@/config";
+import { loadingTimeout } from "~/config";
 export default {
   data: () => ({
     thisLoading: false,

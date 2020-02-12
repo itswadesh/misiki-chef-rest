@@ -13,10 +13,12 @@
       </div>
     </div>
     <Footer />
+    <GeoLocation />
   </div>
 </template>
 
 <script>
+import GeoLocation from "~/components/GeoLocation.vue";
 import Header from "~/components/Header.vue";
 import Footer from "~/components/footer/Footer.vue";
 import Hero from "~/components/Hero.vue";
@@ -52,6 +54,7 @@ export default {
     }
   },
   components: {
+    GeoLocation,
     Header,
     Footer,
     Hero,

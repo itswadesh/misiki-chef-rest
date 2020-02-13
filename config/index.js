@@ -30,6 +30,18 @@ export const head = {
       rel: "stylesheet",
       href: "https://fonts.googleapis.com/css?family=Nunito&display=swap"
     }
+  ],
+  script: [
+    {
+      src: "//js.api.here.com/v3/3.1/mapsjs-core.js",
+      type: "text/javascript",
+      charset: "utf-8"
+    },
+    {
+      src: "//js.api.here.com/v3/3.1/mapsjs-service.js",
+      type: "text/javascript",
+      charset: "utf-8"
+    }
   ]
 };
 export const sorts = [

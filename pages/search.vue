@@ -3,15 +3,15 @@
     <Header />
     <Banner />
     <div class="container">
-      <div class="flex flex-wrap">
+      <!-- <div class="flex flex-wrap">
         <div class="w-1/2" v-for="p in products" :key="p._id">
           <Product :p="p" class />
         </div>
-      </div>
+      </div> -->
       <Categories />
       <div class="flex flex-wrap">
-        <div class="w-1/2" v-for="p in products" :key="p._id">
-          <Product :p="p" class />
+        <div class="w-full" v-for="p in products" :key="p._id">
+          <ListCard :p="p" class />
         </div>
       </div>
     </div>
@@ -24,6 +24,7 @@ import Header from "~/components/Header.vue";
 import Footer from "~/components/footer/Footer.vue";
 import Banner from "~/components/Banner.vue";
 import Product from "~/components/Product.vue";
+import ListCard from "~/components/ListCard.vue";
 import Categories from "~/components/Categories.vue";
 import StickyFooter from "~/components/footer/StickyFooter";
 
@@ -47,6 +48,7 @@ export default {
     Banner,
     Product,
     Categories,
+    ListCard,
     StickyFooter
   }
 };

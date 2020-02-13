@@ -1,11 +1,19 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-body{
-  font-family: 'Nunito', sans-serif;
-  color:#282c3f;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+body {
+  font-family: "Nunito", sans-serif;
+  color: #282c3f;
 }
-html,body,div,span,p,input,textarea,button,img{
+html,
+body,
+div,
+span,
+p,
+input,
+textarea,
+button,
+img {
   outline: none;
 }
 input:-webkit-autofill,
@@ -20,16 +28,22 @@ select:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px transparent inset;
   transition: background-color 5000s ease-in-out 0s;
 }
-.footer{
+.price-breakup {
+  @apply flex justify-between my-2 text-sm;
+}
+.list-avatar {
+  @apply w-8 h-8 rounded-full text-white flex justify-center items-center mr-2 text-lg;
+}
+.footer {
   font-size: 1rem;
-  color:#696b79;
+  color: #696b79;
   line-height: 25px;
 }
-.headings{
-  color:#282c3f;
+.headings {
+  color: #282c3f;
 }
-.text-1{
-  color:#282c3f;
+.text-1 {
+  color: #282c3f;
   line-height: 25px;
 }
 .underline {
@@ -63,7 +77,8 @@ select:-webkit-autofill:focus {
     background: linear-gradient(87deg, #fb6340, #da1c5f) !important;
   }
 }
-button,button:focus{
+button,
+button:focus {
   outline: none;
 }
 .rnd-mnt {
@@ -78,34 +93,34 @@ button,button:focus{
   border: solid 1px #d4d5d9;
   margin: 1px;
 }
-.address{
-    border: 1px dashed #eaeaec;
-    box-shadow: 0 0 4px rgba(40,44,63,.08);
-    height: 200px;
-    width: 325px;
-    padding:4rem;
-    margin-bottom: 25px;
-    vertical-align: top;
-    border-radius: 4px;
-    cursor: pointer;
+.address {
+  border: 1px dashed #eaeaec;
+  box-shadow: 0 0 4px rgba(40, 44, 63, 0.08);
+  height: 200px;
+  width: 325px;
+  padding: 4rem;
+  margin-bottom: 25px;
+  vertical-align: top;
+  border-radius: 4px;
+  cursor: pointer;
 }
-.input-bg{
-  background-color: #F5F5F6;
+.input-bg {
+  background-color: #f5f5f6;
 }
 @media only screen and (max-width: 812px) {
   .toasted.outline.default {
     max-width: 23rem !important;
-    width:23rem !important;
+    width: 23rem !important;
   }
-  .toasted.outline.default  .flex.w-full{
-     max-width: 23rem !important;
-     width: 23rem !important;
+  .toasted.outline.default .flex.w-full {
+    max-width: 23rem !important;
+    width: 23rem !important;
   }
-  .toasted img.object-cover{
-    height:5rem;
+  .toasted img.object-cover {
+    height: 5rem;
     width: 5rem;
   }
-  .toasted-text{
+  .toasted-text {
     font-size: 14px;
     margin-left: 10px;
     padding: 1rem;
@@ -113,38 +128,38 @@ button,button:focus{
 }
 .sw-toast-container .toasted.outline {
   border: none;
-  border-radius: .125rem;
-  padding:0.5rem;
+  border-radius: 0.125rem;
+  padding: 0.5rem;
   font-weight: normal;
-  max-width:14rem;
+  max-width: 14rem;
 }
 .primary {
-    background: linear-gradient(87deg, #fb6340, #da1c5f) !important;
-    border-color: #fb6340;
-    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-    color:white;
+  background: linear-gradient(87deg, #fb6340, #da1c5f) !important;
+  border-color: #fb6340;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: white;
 }
-.secondary{
+.secondary {
   box-shadow: 10px 10px 30px -15px #1c45da;
-  background: linear-gradient(87deg,#40c8fb,#1c45da);
+  background: linear-gradient(87deg, #40c8fb, #1c45da);
   border-color: #69beda;
 }
-.muted{
+.muted {
   background: #e1e8f0;
 }
-.text-primary{
-   background: linear-gradient(87deg, #fb6340, #da1c5f);
-   -webkit-background-clip: text;	
-	-webkit-text-fill-color: transparent;
+.text-primary {
+  background: linear-gradient(87deg, #fb6340, #da1c5f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.text-secondary{
-   background: linear-gradient(87deg,#40c8fb,#1c45da);
-   -webkit-background-clip: text;	
-	-webkit-text-fill-color: transparent;
+.text-secondary {
+  background: linear-gradient(87deg, #40c8fb, #1c45da);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.mask{
+.mask {
   background: #f5f5f5;
   opacity: 0.5;
   pointer-events: none;

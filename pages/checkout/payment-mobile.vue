@@ -41,7 +41,9 @@
               class="text-secondary"
             >SELECT</a>
           </div>-->
-          <div class="px-3 flex justify-between px-2 py-3 border-b border-gray-300">
+          <div
+            class="px-3 flex justify-between px-2 py-3 border-b border-gray-300"
+          >
             <div>CASH/CARD ON DELIVERY</div>
             <!-- <span              class="text-secondary"            >SELECT</span> -->
           </div>
@@ -75,24 +77,32 @@
           </div>-->
         </div>
       </div>
-      <div class="p-2 lg:px-0 text-sm text-gray-700 p-2 lg:w-1/2 m-auto mb-32 lg:mb-2">
+      <div
+        class="p-2 lg:px-0 text-sm text-gray-700 p-2 lg:w-1/2 m-auto mb-32 lg:mb-2"
+      >
         <div>DELIVER TO:</div>
         <br />
         <div class="w-full flex justify-between bg-white shadow rounded">
           <div class="flex-1 p-2">
-            <div class="font-semibold">{{address.firstName}} {{address.lastName}}</div>
+            <div class="font-semibold">
+              {{ address.firstName }} {{ address.lastName }}
+            </div>
             <div class="py-2 text-xs">
-              <div>{{address.address}}</div>
-              <div>{{address.town}}</div>
-              <div>{{address.city}}</div>
-              <div>{{address.state}}</div>
-              <div>{{address.zip}}</div>
+              <div>{{ address.address }}</div>
+              <div>{{ address.town }}</div>
+              <div>{{ address.city }}</div>
+              <div>{{ address.state }}</div>
+              <div>{{ address.zip }}</div>
               <div class="pt-2">
                 Mobile:
-                <span class="font-bold">{{address.phone}}</span>
+                <span class="font-bold">{{ address.phone }}</span>
               </div>
               <div class="pt-2">
-                <nuxt-link to="/checkout/address" class="text-blue-700 font-semibold">Change Address</nuxt-link>
+                <nuxt-link
+                  to="/checkout/address"
+                  class="text-blue-700 font-semibold"
+                  >Change Address</nuxt-link
+                >
               </div>
             </div>
           </div>
@@ -106,13 +116,20 @@
       >
         <div class="flex p-3">
           <div class="flex-1 text-center">
-            <div>{{cart.total | currency}}</div>
+            <div>{{ cart.total | currency }}</div>
             <div>
-              <nuxt-link to="/cart" class="text-red-400">view details</nuxt-link>
+              <nuxt-link to="/cart" class="text-red-400"
+                >view details</nuxt-link
+              >
             </div>
           </div>
           <div class="flex-1 p-1">
-            <button @click="checkout" class="px-5 py-2 w-full primary text-white rounded">Pay Now</button>
+            <button
+              @click="checkout"
+              class="px-5 py-2 w-full primary text-white rounded"
+            >
+              Pay Now
+            </button>
           </div>
         </div>
       </div>
@@ -152,9 +169,12 @@ export default {
       vm.$store.commit("busy", true, { root: true });
       let rp = {};
       try {
-        rp = await this.$axios.$get("api/razorpay");
+        rp = await this.$axios.$post("api/razorpay", { address: this.address });
       } catch (e) {
-        return this.$store.commit("setErr", e.response.data);
+        return this.$store.commit(
+          "setErr",
+          e.response.data && e.response.data.message
+        );
       } finally {
         vm.$store.commit("busy", false, { root: true });
       }
@@ -167,12 +187,13 @@ export default {
         order_id: rp.id,
         handler: async function(response) {
           try {
-            const capture = await vm.$axios.$post("/razorpay/capture", {
+            const capture = await vm.$axios.$post("api/razorpay/capture", {
               id: response.razorpay_payment_id,
-              oid: rp.id
+              oid: response.razorpay_order_id
             });
             vm.$router.push(`/success?id=${capture}`);
           } catch (e) {
+            console.log("err", e);
             vm.$router.push(`/failure`);
           }
         },
@@ -208,5 +229,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

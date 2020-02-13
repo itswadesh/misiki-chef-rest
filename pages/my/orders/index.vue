@@ -1,39 +1,41 @@
 <template>
-  <div class="lg:w-2/4 mt-0 lg:mt-10 lg:pr-20 xs:w-full lg:px-10 px-2 headings">
-    <div class="text-2xl font-bold py-6 text-center lg:text-left">
-      <i
-        class="fa fa-arrow-left mr-2 block lg:invisible"
-        @click="$router.push('/my/')"
-        aria-hidden="true"
-      ></i>Orders</div>
-    <nuxt-link
-      :to="`/my/orders/${o._id}`"
-      v-for="o in orders"
-      :key="o._id"
-    >
+  <div class="text-center bg-gray-100 w-full mx-2">
+    <div class="flex items-center justify-start mx-2">
+      <nuxt-link to="/my" class="flex-1 text-left absolute font-bold"
+        ><i class="fa fa-arrow-left mr-1 text-gray-600"
+      /></nuxt-link>
+      <h1 class="bg-white font-semibold text-xl p-2 flex-1 text-center">
+        Orders
+      </h1>
+    </div>
+    <nuxt-link :to="`/my/orders/${o._id}`" v-for="o in orders" :key="o._id">
       <div class="w-full bg-white shadow rounded hover:shadow-xl my-4">
         <div class="bg-gray-100 rounded p-3">
-          <h1>Order # {{o.orderNo}}</h1>
-          <p class="text-gray-800">Date: <span class="text-xs"> {{o.createdAt | date}}</span></p>
+          <h1>Order # {{ o.orderNo }}</h1>
+          <p class="text-gray-800">
+            Date: <span class="text-xs"> {{ o.createdAt | date }}</span>
+          </p>
         </div>
         <hr />
         <div
-          v-for="(i,ix) in o.items"
+          v-for="(i, ix) in o.items"
           :key="i._id"
           class="flex flex-wrap p-3 justify-between"
-          :class="{'border-t':ix!=0}"
+          :class="{ 'border-t': ix != 0 }"
         >
           <div class="flex items-center">
             <div>
               <img
-                :src="$store.state.settings.CDN_URL+i.img[0]"
+                :src="$store.state.settings.CDN_URL + i.img[0]"
                 class="rounded-full bg-blue-500 mr-2 w-12 h-12"
                 alt=""
               />
             </div>
             <div>
-              <div class="text-sm font-semibold">{{i.name}}</div>
-              <div class="text-gray-500 text-xs">{{i.qty}} * {{i.price | currency}}</div>
+              <div class="text-sm font-semibold">{{ i.name }}</div>
+              <div class="text-gray-500 text-xs">
+                {{ i.qty }} * {{ i.price | currency }}
+              </div>
             </div>
           </div>
           <!-- <div class="p-2 shadow ml-3">
@@ -59,7 +61,7 @@ export default {
       redirect("/");
     }
     try {
-      const o = await $axios.$get(`api/orders/my`);
+      const o = await $axios.$get(`api/food-orders/my`);
       orders = o.data;
       err = null;
     } catch (e) {

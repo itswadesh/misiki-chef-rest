@@ -12,7 +12,7 @@
     <div class="lg:w-4/5 right-0 xs:9/12">
       <div class="pl-4 font-hairline">
         <p class="text-black mb-2">
-          <nuxt-link :to="`/${item.slug}?id=${item._id}`">{{item.name | truncate(30)}}</nuxt-link>
+          <nuxt-link :to="`/${item.slug}`">{{item.name | truncate(30)}}</nuxt-link>
         </p>
         <div class="flex">
           <span class="inline-block rounded-full bg-gray-300 h-2 w-2 m-2"></span>

@@ -1,2 +1,2 @@
-/api/*  https://api.litekart.in/api/:splat  200
-/images/*  https://api.litekart.in/images/:splat  200
+/api/*  https://apiv2.misiki.in/api/:splat  200
+/images/*  https://apiv2.misiki.in/images/:splat  200

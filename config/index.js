@@ -1,4 +1,4 @@
-export const API_URL = "https://api.litekart.in";
+export const API_URL = "https://apiv2.misiki.in";
 export const tokenExpiry = 60 * 60 * 15; // Login validity (15 minutes)
 export const typingTimeout = 0; // After this delay the search api will be fired
 export const loadingTimeout = 500; // Loading indicator will be shown after this delay
@@ -9,7 +9,7 @@ export const DESCRIPTION =
   "litekart.in offer Online Women Shopping in India. Huge Collection of Jewellery, Handbags, Clutches, Sunglasses, Clothing, Nightwear & More!";
 export const KEYWORDS =
   "litekart.in,litekart Accessories,Affordable Luxury,India's Best Women's Online Shopping,Online Jewellery,litekart, online shopping, online jewelry, jewellery, handbags, clutches, sunglasses, ethnic jewellery, nightwear, lingrie, clothing, bracelets, rings, sets, necklace, pendants, earrings, online jewellery in lahore, online shopping in India, litekart online shopping, litekart jewelry";
-export const HOST = "https://www.litekart.in";
+export const HOST = "https://www.misiki.in";
 export const sharingLogo = "https://www.frontendfun.com/logo.svg";
 export const cities = ["Sunabeda", "Berhampur"];
 export const PAY_KEY = "rzp_test_o1gRrVKAzCT2Ke";

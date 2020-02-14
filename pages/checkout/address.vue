@@ -61,18 +61,15 @@
         </div>
         <!-- Right sidebar -->
         <div class="w-full md:w-1/3 desktop1-base-right">
-          <label class="flex justify-start border rounded p-2 text-sm border-green-300 bg-green-100">
+          <label
+            class="flex justify-start border rounded p-2 text-sm border-green-300 bg-green-100"
+          >
             <div class="ml-2">
               <div class="font-bold text-black">Standard Delivery</div>
               <div class="text-gray-500">Delivery Charge ₹149</div>
             </div>
           </label>
-          <div
-            v-for="(item,ix) in cart.items"
-            :key="ix"
-            :item="item"
-            class="flex my-5"
-          >
+          <div v-for="(item,ix) in cart.items" :key="ix" :item="item" class="flex my-5">
             <img
               class="lg:rounded xs:rounded-b-none w-20"
               v-lazy="$store.state.settings.CDN_URL+item.img"
@@ -133,15 +130,27 @@ export default {
       this.selectedAddress = e;
     },
     del(a) {
-      if (!confirm("Are you sure to delete?")) return;
-      try {
-        this.$store.commit("busy", true);
-        this.$axios.$delete(`api/addresses/${a._id}`);
-        this.getAddress();
-        this.$store.commit("busy", false);
-      } catch (e) {
-        this.$store.commit("busy", false);
-      }
+      let vm = this;
+      this.$swal({
+        title: "Delete address?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(result => {
+        if (result.value) {
+          try {
+            this.$store.commit("busy", true);
+            this.$axios.$delete(`api/addresses/${a._id}`);
+            this.getAddress();
+            this.$store.commit("busy", false);
+          } catch (e) {
+            this.$store.commit("busy", false);
+          }
+        }
+      });
     },
     async getAddress() {
       try {

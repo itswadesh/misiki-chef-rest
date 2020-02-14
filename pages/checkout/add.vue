@@ -3,11 +3,15 @@
     <CheckoutHeader selected="address" />
     <div class="w-full pb-4 lg:w-1/3 m-auto">
       <div>
-        <div
-          class="p-3 flex shadow lg:shadow-none items-center justify-between"
-        >
-          <nuxt-link class="flex items-center" to="/checkout/address">
-            <i class="fa fa-arrow-left mb-1" aria-hidden="true"></i>
+        <div class="p-3 flex shadow lg:shadow-none items-center justify-between">
+          <nuxt-link
+            class="flex items-center"
+            to="/checkout/address"
+          >
+            <i
+              class="fa fa-arrow-left mb-1"
+              aria-hidden="true"
+            ></i>
             <div class="font-bold text-gray-700 text-xl ml-3">Add address</div>
           </nuxt-link>
           <div class="text-xs text-gray-600">Step 2 of 3</div>
@@ -46,7 +50,12 @@
             name="name"
             v-model="a.zip"
           />
-          <Textbox label="Town" class="w-full" name="name" v-model="a.town" />
+          <Textbox
+            label="Town"
+            class="w-full"
+            name="name"
+            v-model="a.town"
+          />
           <div class="w-full flex justify-between">
             <Textbox
               label="City"
@@ -61,11 +70,14 @@
               v-model="a.state"
             />
           </div>
-          <Textbox label="Phone" class="w-full" name="name" v-model="a.phone" />
+          <Textbox
+            label="Phone"
+            class="w-full"
+            name="name"
+            v-model="a.phone"
+          />
         </div>
-        <div
-          class="flex shadow lg:shadow-none fixed lg:relative bottom-0 justify-between w-full"
-        >
+        <div class="flex shadow lg:shadow-none fixed lg:relative bottom-0 justify-between w-full">
           <button
             type="button"
             @click="$router.push('/checkout/address')"

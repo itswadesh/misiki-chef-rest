@@ -1,20 +1,25 @@
 <template>
   <div class="text-center bg-gray-100">
     <div class="flex items-center justify-start mx-2">
-      <nuxt-link to="/my/orders" class="flex-1 text-left absolute font-bold"
-        ><i class="fa fa-arrow-left mr-1 text-gray-600"
-      /></nuxt-link>
+      <nuxt-link
+        to="/my/orders"
+        class="flex-1 text-left absolute font-bold"
+      ><i class="fa fa-arrow-left mr-1 text-gray-600" /></nuxt-link>
       <h1 class="bg-white font-semibold text-xl p-2 flex-1 text-center">
         Order
       </h1>
     </div>
-    <h1 class="text-center" v-if="!order">
+    <h1
+      class="text-center"
+      v-if="!order"
+    >
       Order not found
     </h1>
-    <div v-else class="flex flex-col pt-8 text-center">
-      <div
-        class="text-center text-sm text-black bg-white w-full py-5 tracking-widest"
-      >
+    <div
+      v-else
+      class="flex flex-col pt-8 text-center"
+    >
+      <div class="text-center text-sm text-black bg-white w-full py-5 tracking-widest">
         <p class="font-semibold">Order {{ order.orderNo }}</p>
         <Span class="flex flex-wrap justify-center text-gray-600 text-xs">
           Placed on {{ order.createdAt | date }}
@@ -29,10 +34,11 @@
       >
         
       </p> -->
-      <div class="flex justify-center" v-if="order.payment.method == 'COD'">
-        <button
-          class="bg-orange-500 py-2 px-8 rounded my-3 text-white font-semibold"
-        >
+      <div
+        class="flex justify-center"
+        v-if="order.payment.method == 'COD'"
+      >
+        <button class="bg-orange-500 py-2 px-8 rounded my-3 text-white font-semibold">
           Please pay {{ order.amount.total | currency }} to the delivery agent
         </button>
       </div>
@@ -42,7 +48,10 @@
             {{ order.address.firstName }} {{ order.address.lastName }}
           </div>
           <div class="flex">
-            <img src="img/contact-us.svg" class="h-4 w-4 my-1 mr-1" />
+            <img
+              src="img/contact-us.svg"
+              class="h-4 w-4 my-1 mr-1"
+            />
             <div class="text-left text-gray-500 font-medium text-sm">
               {{ order.address.address }}, {{ order.address.town }},
               {{ order.address.city }}, {{ order.address.state }} -
@@ -60,7 +69,10 @@
           v-for="i in order.items"
           :key="i._id"
         >
-          <img :src="i.img" class="h-12 m-2 w-12" />
+          <img
+            :src="i.img"
+            class="h-12 m-2 w-12"
+          />
           <div class="flex flex-col p-2 text-left">
             <div class="font-bold">{{ i.name }}</div>
             <div class="flex justify-between">
@@ -77,50 +89,59 @@
           </div>
         </div>
         <nuxt-link
-          to=""
+          to="/search"
           class="block border-b text-red-600 font-semibold text-sm bg-white p-2 text-left rounded"
         >
           Add more items +
         </nuxt-link>
       </div>
-    </div>
-    <div class="bg-white p-3 text-base">
-      <div class="price-breakup">
-        <div>Subtotal</div>
-        <div>{{ order.amount.subtotal | currency }}</div>
+      <div class="bg-white p-3 text-base">
+        <div class="price-breakup">
+          <div>Subtotal</div>
+          <div>{{ order.amount.subtotal | currency }}</div>
+        </div>
+        <div class="price-breakup">
+          <div>Tax & fees</div>
+          <div>{{ order.amount.tax | currency }}</div>
+        </div>
+        <div class="price-breakup">
+          <div>Offer</div>
+          <div>{{ order.amount.offer | currency }}</div>
+        </div>
+        <div class="price-breakup">
+          <div>Delivery</div>
+          <div>{{ order.amount.shipping | currency }}</div>
+        </div>
+        <hr />
+        <div class="price-breakup font-bold text-xl">
+          <div>Total</div>
+          <div>{{ order.amount.total | currency }}</div>
+        </div>
       </div>
-      <div class="price-breakup">
-        <div>Tax & fees</div>
-        <div>{{ order.amount.tax | currency }}</div>
+      <div class="border border-green-500 rounded p-4 mx-2 my-4 text-gray-700 text-sm font-semibold text-black-400">
+        <span class="text-semibold text-xs">PAYMENT MODE</span>
+        <br />
+        <div class="flex text-xs justify-between mt-1">
+          <div>{{order.payment.method}}</div>
+          <div>{{ order.amount.total | currency }}</div>
+        </div>
       </div>
-      <div class="price-breakup">
-        <div>Offer</div>
-        <div>{{ order.amount.offer | currency }}</div>
-      </div>
-      <div class="price-breakup">
-        <div>Delivery</div>
-        <div>{{ order.amount.shipping | currency }}</div>
-      </div>
-      <hr />
-      <div class="price-breakup font-bold text-xl">
-        <div>Total</div>
-        <div>{{ order.amount.total | currency }}</div>
-      </div>
-    </div>
-    <div
-      class="border border-green-500 rounded p-4 mx-2 my-4 text-gray-700 text-sm font-semibold text-black-400"
-    >
-      <span class="text-semibold text-xs">PAYMENT MODE</span>
-      <br />
-      <div class="flex text-xs justify-between mt-1">
-        <div>Cash on delivery</div>
-        <div>{{ order.amount.total | currency }}</div>
+      <div>
+        <HereMap
+          ref="map"
+          lat="18.732447"
+          lng="82.829516"
+          width="100"
+          height="300px"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import HereMap from "~/components/HereMap";
+
 export default {
   async asyncData({ params, query, route, redirect, $axios, store }) {
     let order = null,
@@ -143,6 +164,12 @@ export default {
       console.log("err...", `${err}`);
     }
     return { order };
+  },
+  mounted() {
+    this.$refs.map.route("18.732447,82.829516", "18.708187,82.852198");
+  },
+  components: {
+    HereMap
   }
 };
 </script>

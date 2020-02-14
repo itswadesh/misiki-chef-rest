@@ -16,7 +16,10 @@
         </p>
         <div class="flex">
           <span class="inline-block rounded-full bg-gray-300 h-2 w-2 m-2"></span>
-          <span style="color: rgb(237, 113, 0);" v-if="item.stock<5">{{item.stock}} left</span>
+          <span
+            style="color: rgb(237, 113, 0);"
+            v-if="item.stock<5"
+          >{{item.stock}} left</span>
         </div>
         <p class="relative mb-2">
           <span class="text-black font-bold mb-2 text-2xl">{{item.price | currency}}</span>
@@ -32,7 +35,10 @@
         <div class="justify-between text-sm">
           <div class="flex flex-wrap">
             <div class="w-full lg:w-3/5 my-2">
-              <CartButtons :product="item" />
+              <CartButtons
+                :product="item"
+                :notify="false"
+              />
             </div>
             <div class="w-full lg:w-2/5 text-right my-2">
               <div class="flex text-xs">
@@ -45,8 +51,16 @@
                   @click="checkAndAddToCart({pid: item._id, qty: -10000})"
                   :disabled="loading"
                 >
-                  <img src="/loading.svg" class="w-3 h-3 rotateOutDownLeft" v-if="loading" alt />
-                  <i class="fa fa-trash" v-else></i>
+                  <img
+                    src="/loading.svg"
+                    class="w-3 h-3 rotateOutDownLeft"
+                    v-if="loading"
+                    alt
+                  />
+                  <i
+                    class="fa fa-trash"
+                    v-else
+                  ></i>
                 </button>
               </div>
             </div>

@@ -1,14 +1,10 @@
 <template>
   <div class="here-map">
-    <div ref="map" v-bind:style="{ width: width + '%', height: height }" style="float: left"></div>
-    <ol
-      v-bind:style="{ width: (100 - width - 5) + '%'}"
-      style="float: right; min-height: 530px; margin-left: 20px; margin-top: 0"
-    >
-      <li v-for="(direction,ix) in directions" :key="ix">
-        <p v-html="direction.instruction"></p>
-      </li>
-    </ol>
+    <div
+      ref="map"
+      v-bind:style="{ width: width + '%', height: height }"
+      style="float: left"
+    ></div>
   </div>
 </template>
 
@@ -37,28 +33,21 @@ export default {
   },
   methods: {
     route(start, finish) {
-      // Instantiate a map and platform object:
       var platform = new H.service.Platform({
         apikey: HERE_KEY
       });
-      // Retrieve the target element for the map:
       var targetElement = this.$refs.map;
-
       // Get the default map types from the platform object:
       var defaultLayers = platform.createDefaultLayers();
-
       // Instantiate the map:
       var map = new H.Map(targetElement, defaultLayers.vector.normal.map, {
-        zoom: 10,
+        zoom: 4,
         center: { lat: 52.51, lng: 13.4 }
       });
       // Create the parameters for the routing request:
       var routingParameters = {
-        // The routing mode:
         mode: "fastest;car",
-        // The start point of the route:
         waypoint0: `geo!${start}`,
-        // The end point of the route:
         waypoint1: `geo!${finish}`,
         // To retrieve the shape of the route we choose the route
         // representation mode 'display'

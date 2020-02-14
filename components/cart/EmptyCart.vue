@@ -1,13 +1,14 @@
 <template>
-  <div class="text-center bg-gray-100">
-    <div class="flex items-center justify-start mx-2">
+  <div class="text-center">
+    <Heading title="Cart" />
+    <!-- <div class="flex items-center justify-start mx-2">
       <nuxt-link to="/" class="flex-1 text-left absolute font-bold"
         ><i class="fa fa-arrow-left mr-1 text-gray-600"
       /></nuxt-link>
       <h1 class="bg-white font-semibold text-xl p-2 flex-1 text-center">
         Cart
       </h1>
-    </div>
+    </div> -->
     <div class="py-32">
       <div class="flex justify-center py-6">
         <img src="seattle.jpg" class="h-40 w-40 rounded-full" />
@@ -20,3 +21,9 @@
     </div>
   </div>
 </template>
+<script>
+import Heading from "~/components/Heading";
+export default {
+  components: { Heading }
+};
+</script>

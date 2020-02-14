@@ -10,9 +10,9 @@ export const DESCRIPTION =
 export const KEYWORDS =
   "litekart.in,litekart Accessories,Affordable Luxury,India's Best Women's Online Shopping,Online Jewellery,litekart, online shopping, online jewelry, jewellery, handbags, clutches, sunglasses, ethnic jewellery, nightwear, lingrie, clothing, bracelets, rings, sets, necklace, pendants, earrings, online jewellery in lahore, online shopping in India, litekart online shopping, litekart jewelry";
 export const HOST = "https://www.litekart.in";
-export const sharingLogo = "https://randomuser.me/api/portraits/women/17.jpg";
+export const sharingLogo = "https://www.frontendfun.com/logo.svg";
 export const cities = ["Sunabeda", "Berhampur"];
-export const PAY_KEY = 'rzp_test_OBdyyGIBdthnuy'
+export const PAY_KEY = "rzp_test_o1gRrVKAzCT2Ke";
 export const head = {
   titleTemplate: "%s - Litekart",
   htmlAttrs: { lang: "en" },

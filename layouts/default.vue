@@ -1,6 +1,6 @@
 <template>
-  <div style="" class="antialiased min-h-screen">
-    <Header />
+  <div style="" class="bg-gray-100 antialiased min-h-screen">
+    <!-- <Header /> -->
     <div class="mb-24">
       <nuxt />
     </div>

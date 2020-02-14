@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header />
+    <Heading title="Success" />
     <Banner />
     <div class="container">
       <!-- <div class="flex flex-wrap">
@@ -20,12 +20,13 @@
 </template>
 
 <script>
-import Header from "~/components/Header.vue";
-import Footer from "~/components/footer/Footer.vue";
-import Banner from "~/components/Banner.vue";
-import Product from "~/components/Product.vue";
-import ListCard from "~/components/ListCard.vue";
-import Categories from "~/components/Categories.vue";
+import Header from "~/components/Header";
+import Heading from "~/components/Heading";
+import Footer from "~/components/footer/Footer";
+import Banner from "~/components/Banner";
+import Product from "~/components/Product";
+import ListCard from "~/components/ListCard";
+import Categories from "~/components/Categories";
 import StickyFooter from "~/components/footer/StickyFooter";
 
 export default {
@@ -43,6 +44,7 @@ export default {
     }
   },
   components: {
+    Heading,
     Header,
     Footer,
     Banner,

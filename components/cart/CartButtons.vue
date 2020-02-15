@@ -1,49 +1,30 @@
 <template>
-  <div
-    class="flex"
-    v-if="product"
-  >
+  <div class="flex" v-if="product">
     <span class="mt-1">Quantity: &nbsp;</span>
-    <div
-      v-if="!checkCart({ pid: product._id })"
-      @click="addToBag({pid:product._id,qty:1})"
-    >
-      <button class="text-gray-600 bg-gray-200 rounded px-2 rounded">
-        <img
-          src="/plus.svg"
-          alt="+"
-        />
+    <div v-if="!checkCart({ pid: product._id })" @click="addToBag({pid:product._id,qty:1})">
+      <button
+        class="primary rounded-full w-8 h-8"
+        :disabled="product.stock < 1 || loading"
+        @click="addToBag({pid:product._id,qty:1})"
+      >
+        <i class="fa fa-plus m-auto align-middle" aria-hidden="true"></i>
       </button>
     </div>
     <div v-else>
       <div class="flex flex-wrap">
-        <button
-          class="muted rounded-full w-8 h-8"
-          @click="addToBag({pid:product._id,qty:-1})"
-        >
-          <i
-            class="fa fa-minus m-auto"
-            aria-hidden="true"
-          ></i>
+        <button class="muted rounded-full w-8 h-8" @click="addToBag({pid:product._id,qty:-1})">
+          <i class="fa fa-minus m-auto align-middle" aria-hidden="true"></i>
         </button>
         <div class="px-2 flex items-center text-center">
           <div v-if="!loading">{{ getQty({ pid: product._id }) }}</div>
-          <img
-            alt="..."
-            class="w-3 h-4"
-            src="/loading.svg"
-            v-else
-          />
+          <img alt="..." class="w-3 h-4 align-middle" src="/loading.svg" v-else />
         </div>
         <button
           class="primary rounded-full w-8 h-8"
           :disabled="product.stock < 1 || loading"
           @click="addToBag({pid:product._id,qty:1})"
         >
-          <i
-            class="fa fa-plus m-auto"
-            aria-hidden="true"
-          ></i>
+          <i class="fa fa-plus m-auto align-middle" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -62,7 +43,7 @@ export default {
     ...mapActions({ addToCart: "cart/addToCart" }),
     addToBag(obj) {
       this.addToCart(obj);
-      if (!!this.notify) this.toast();
+      if (!!this.notify && obj.qty > 0) this.toast();
     },
     toast() {
       this.$toast
@@ -92,7 +73,7 @@ export default {
             }
           }
         )
-        .goAway(500000);
+        .goAway(5000);
     },
     setErr(e) {
       this.$store.commit("setErr", e);

@@ -2,8 +2,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 body {
-  font-family: "Montserrat", sans-serif;
-  color: #282c3f;
+  font-family: Karla,Roboto,sans-serif;
+  color: #2d2d2d;
 }
 html,
 body,
@@ -35,6 +35,30 @@ select:-webkit-autofill:focus {
 .page-enter,
 .page-leave-to {
   opacity: 0;
+}
+img[lazy="loaded"] {
+  animation-name: zoom;
+  animation-duration: 0.8s;
+}
+img[lazy="loading"] {
+  filter: blur(10px);
+}
+@keyframes zoom {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.category-item{
+  @apply cursor-pointer px-2 py-3 flex flex-col flex-1 justify-center items-center;
+}
+.category-item:hover{
+  @apply bg-gray-200;
 }
 .price-breakup {
   @apply flex justify-between my-2 text-sm;
@@ -142,7 +166,8 @@ button:focus {
   max-width: 14rem;
 }
 .primary {
-  background: linear-gradient(87deg, #fb6340, #da1c5f) !important;
+  /* background: linear-gradient(87deg, #fb6340, #da1c5f) !important; */
+  background:linear-gradient(87deg,#fb6340,#fbb140)!important;
   border-color: #fb6340;
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   color: white;

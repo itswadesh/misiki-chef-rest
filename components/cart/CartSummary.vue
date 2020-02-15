@@ -1,18 +1,8 @@
 <template>
-  <div class="lg:w-1/4 mt-10 lg:pr-20 xs:w-full px-3">
-    <div class="w-full flex flex-wrap hr-line justify-between pb-2 relative">
-      <input
-        type="search"
-        class="bg-gray-200 border p-2 w-full rounded focus:outline-none"
-        placeholder="Promo Code"
-      />
-      <button
-        class="absolute right-0 text-sm mt-2 text-gray-500 pr-2 focus:outline-none hover:text-gray-600 cursor-pointer"
-      >APPLY</button>
-    </div>
+  <div class="lg:w-1/4 xs:w-full px-3 py-4 bg-gray-100">
     <div class="4/5 right-0 border-b border-dotted lg:mb-0">
       <div>
-        <p class="text-black mt-4 font-normal text-xl">Price Summary</p>
+        <p class="text-black font-normal text-xl">Price Summary</p>
         <span class="text-gray-400 text-xs">Includes GST and all government taxes</span>
         <div class="flex justify-between mt-1">
           <div class="w-1/2 text-sm text-left">Total item price</div>
@@ -46,7 +36,7 @@
       </div>
       <div class="text-xs bg-red-100 rounded p-2 text-gray-500 my-2">
         <div class="flex items-center">
-          <img src="/shield.png" class="w-12 pr-2" alt="" />
+          <img src="/shield.png" class="w-12 pr-2" alt />
           <div class="ml-1 justify">
             Genuine products. 15 day returns. 100% secure payments.
             <span

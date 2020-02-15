@@ -14,6 +14,10 @@ module.exports = {
     extend: {
       colors: {
         cyan: "#9cdbff",
+        cgray: {
+          "100": "#e1e8f0",
+          "200": "#dbdbdb"
+        },
         cpink: {
           "100": "#9cdbf5",
           "200": "red",

@@ -1,39 +1,31 @@
 <template>
   <div
-    class="my-2 shadow-lg w-full bg-gray-100 border-t overflow-x-auto sticky top-0 z-10"
+    class="flex mb-2 shadow-lg w-full bg-gray-100 border-t overflow-x-auto sticky top-0 z-10 text-gray-600"
   >
-    <div class="flex px-6 py-1 justify-around items-center">
-      <a
-        href="/search"
-        class="cursor-pointer flex flex-col flex-1 justify-center items-center"
-      >
-        <i class="fa fa-search" /><span>Discovery</span>
-      </a>
-      <a
-        href="/search"
-        class="cursor-pointer flex flex-col flex-1 justify-center items-center"
-      >
-        <i class="fa fa-truck" /><span>Delivery</span>
-      </a>
-      <a
-        href="/search"
-        class="cursor-pointer flex flex-col flex-1 justify-center items-center"
-      >
-        <i class="fa fa-user" /><span>Account</span>
-      </a>
-      <a
-        href="/search"
-        class="cursor-pointer flex flex-col flex-1 justify-center items-center"
-      >
-        <i class="fa fa-tag" /><span>Offers</span>
-      </a>
-      <a
-        href="/search"
-        class="cursor-pointer flex flex-col flex-1 justify-center items-center"
-      >
-        <i class="fa fa-shopping-cart" /><span>Cart</span>
-      </a>
-    </div>
+    <nuxt-link to="/category/rice" class="category-item">
+      <i class="fa fa-search" />
+      <span class="text-xs">Rice/Biryani</span>
+    </nuxt-link>
+    <nuxt-link to="/category/tandoori" class="category-item">
+      <i class="fa fa-truck" />
+      <span class="text-xs">Tandoori</span>
+    </nuxt-link>
+    <nuxt-link to="/category/roti" class="category-item">
+      <i class="fa fa-user" />
+      <span class="text-xs">Roti/Bread</span>
+    </nuxt-link>
+    <nuxt-link to="/category/tiffin" class="category-item">
+      <i class="fa fa-tag" />
+      <span class="text-xs">Tiffin</span>
+    </nuxt-link>
+    <nuxt-link to="/category/curries" class="category-item">
+      <i class="fa fa-tag" />
+      <span class="text-xs">Curries</span>
+    </nuxt-link>
+    <nuxt-link to="/category/combo" class="category-item">
+      <i class="fa fa-tag" />
+      <span class="text-xs">Combo</span>
+    </nuxt-link>
   </div>
 </template>
 

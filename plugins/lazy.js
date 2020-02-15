@@ -8,26 +8,17 @@ Vue.use(vueLazy, {
   loading: "/loading.svg",
   attempt: 1,
   adapter: {
-    loaded({
-      bindType,
-      el,
-      naturalHeight,
-      naturalWidth,
-      $parent,
-      src,
-      loading,
-      error,
-      Init
-    }) {
-      const CDN = `https://ik.imagekit.io/misiki/images`;
-      src = CDN + src;
+    loaded({ src, loading, error }) {
+      // const CDN = `https://ik.imagekit.io/misiki/images`;
+      // src = CDN + src;
     }
   },
   filter: {
     progressive(listener, options) {
       const CDN = `https://ik.imagekit.io/misiki/images`;
       listener.el.setAttribute("lazy-progressive", "true");
-      listener.loading = listener.src + "?tr=w-3,h-2";
+      listener.loading = CDN + listener.src + "?tr=w-3,h-2";
+      listener.src = CDN + listener.src;
     },
     error(listender, Init) {}
   }

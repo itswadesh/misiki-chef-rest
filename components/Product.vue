@@ -5,7 +5,7 @@
       class="absolute w-5 top-0 right-0 mr-1 mt-1"
     />
     <nuxt-link :to="`/${p.slug}`">
-      <img v-lazy="`/empty-listing.png`" alt class="object-cover h-24 mb-2" />
+      <img v-lazy="`${p.img}`" alt class="w-full object-cover h-24 mb-2" />
     </nuxt-link>
     <div class="px-2">
       <div v-if="p.ratings">
@@ -19,9 +19,12 @@
       <div class="flex flex-wrap justify-between items-center my-2">
         <div class="font-bold">{{ p.rate | currency }}</div>
         <div class="text-red-500 text-xs">Only {{ p.stock }} left</div>
-        <img :src="p.type === 'V' ? 'veg.png' : 'non-veg.png'" class="w-5 mr-1 mt-1" />
+        <img
+          :src="p.type === 'V' ? 'veg.png' : 'non-veg.png'"
+          class="w-5 mr-1 mt-1"
+        />
       </div>
-      <div class="border-t py-1">By {{ p.restaurant }}</div>
+      <div class="border-t py-1 text-xs">By {{ p.restaurant }}</div>
     </div>
   </div>
 </template>

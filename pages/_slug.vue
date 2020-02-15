@@ -2,6 +2,11 @@
   <div>
     <h1 v-if="!product">Not found</h1>
     <div v-else>
+      <img
+        v-lazy="`${product.img}`"
+        alt
+        class="w-full object-cover h-48 mb-2"
+      />
       <h1>{{ product.name }}</h1>
       <div>{{ product.description }}</div>
       <div>{{ product.type }}</div>
@@ -9,7 +14,11 @@
       <div>{{ product.stock }}</div>
       <div>{{ product.restaurant }}</div>
       <div>{{ product.img }}</div>
-      <CartButtons :product="product" :variant="userSelectedVariant" :notify="true" />
+      <CartButtons
+        :product="product"
+        :variant="userSelectedVariant"
+        :notify="true"
+      />
       <div class="items-center text-sm px-3 bg-gray-100 my-3 p-3 lg:my-0">
         <div class="flex items-center">
           <span class="mr-4"> SELECT SIZE: </span>

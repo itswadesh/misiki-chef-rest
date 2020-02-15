@@ -1,5 +1,4 @@
 require("dotenv").config();
-const axios = require("axios");
 const { API_URL, head, HOST } = require("./config");
 const PROXY = process.env.API_URL || API_URL;
 
@@ -25,6 +24,7 @@ export default {
     "@nuxtjs/axios",
     "@nuxtjs/font-awesome",
     "@nuxtjs/pwa",
+    // "@nuxtjs/onesignal",
     "@nuxtjs/toast",
     "cookie-universal-nuxt"
   ],

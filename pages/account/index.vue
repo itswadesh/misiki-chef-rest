@@ -1,6 +1,7 @@
 <template>
-  <div class="flex flex-col justify-between">
-    <div class="flex bg-gray-200 border-b">
+  <div class="flex flex-col justify-between w-full">
+    <AccountMenu class="block md:hidden" />
+    <!-- <div class="flex bg-gray-200 border-b">
       <img src="img/malibu.jpg" class="my-4 mx-4 h-20 w-20 rounded-full" />
       <div class="flex justify-center flex-col">
         <h1 class="font-bold text-xl">Cannon camera</h1>
@@ -91,6 +92,15 @@
           <img class="h-3 w-3 my-3 mx-1" />
         </li>
       </ul>
-    </div>
+    </div> -->
+    <!-- <StickyFooter /> -->
   </div>
 </template>
+
+<script>
+import AccountMenu from "~/components/AccountMenu";
+export default {
+  layout: "account",
+  components: { AccountMenu }
+};
+</script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Heading title="Success" />
+    <Heading title="Search" />
     <Banner />
     <div class="container">
       <!-- <div class="flex flex-wrap">

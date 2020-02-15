@@ -6,17 +6,19 @@
       style="min-height:71.8vh"
     >
       <AccountMenu class="hidden md:block" />
-      <nuxt />
+      <div class="flex-1">
+        <nuxt />
+      </div>
     </div>
-    <Footer />
+    <StickyFooter />
   </div>
 </template>
 
 <script>
 import Header from "~/components/Header";
-import Footer from "~/components/footer/Footer";
+import StickyFooter from "~/components/footer/StickyFooter";
 import AccountMenu from "~/components/AccountMenu";
 export default {
-  components: { Header, Footer, AccountMenu }
+  components: { Header, StickyFooter, AccountMenu }
 };
 </script>

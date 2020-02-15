@@ -71,6 +71,7 @@
         <img src="/seattle.jpg " class="h-20 w-20 rounded mx-2" />
       </div>
     </div>
+    <StickyFooter class="" />
   </div>
   <!-- <div>
     <h1 v-if="!product">Not found</h1>
@@ -148,9 +149,10 @@
 
 <script>
 import CartButtons from "~/components/cart/CartButtons";
+import StickyFooter from "~/components/footer/StickyFooter";
 import { mapGetters } from "vuex";
 export default {
-  components: { CartButtons },
+  components: { CartButtons, StickyFooter },
   data() {
     return {
       shake: false,

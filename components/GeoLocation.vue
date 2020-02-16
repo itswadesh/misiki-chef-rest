@@ -19,9 +19,9 @@
 </template>
 
 <script>
-import m from "~/mixins";
+import { geo } from "~/mixins";
 export default {
-  mixins: [m],
+  mixins: [geo],
   async mounted() {
     this.geo = await this.locateMe();
   }

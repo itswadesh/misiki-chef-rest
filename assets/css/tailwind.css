@@ -2,7 +2,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 body {
-  font-family: Karla,Roboto,sans-serif;
+  font-family: Karla,sans-serif;
   color: #2d2d2d;
 }
 html,
@@ -53,6 +53,14 @@ img[lazy="loading"] {
   100% {
     transform: scale(1);
   }
+}
+.fab{
+  @apply primary absolute bottom-0 right-0 mr-1 mb-1 w-10 h-10 rounded-full text-center;
+}
+.fab i{
+  @apply m-auto align-middle translate-y-1/2;
+  transform: translateY(50%);
+  cursor: pointer;
 }
 .category-item{
   @apply cursor-pointer px-2 py-3 flex flex-col flex-1 justify-center items-center;

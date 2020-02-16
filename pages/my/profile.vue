@@ -1,194 +1,174 @@
 <template>
-  <div class="lg:w-1/2 mt-0 lg:mt-10 w-full bg-white shadow lg:ml-10 ml-0 py-5">
-    <div class="text-xl headings font-bold p-5 border-b border-gray-200 text-center items-center px-10">
-      <i
-        class="fa fa-arrow-left mr-2 block lg:invisible"
-        @click="$router.push('/my/')"
-        aria-hidden="true"
-      ></i>Profile details
-    </div>
-    <div class="px-0 lg:px-10">
-      <div class="w-full text-sm text-center mb-5 px-8">
-        <!-- Just 2 step(s) to go and your profile's complete -->
-        <div class="w-full h-1 bg-green-500 rounded-lg m-1 text-xs leading-none text-center text-white"></div>
-      </div>
-    </div>
+  <div>
+    <Heading title="Chef Details" />
+    <div class="w-full pb-4 lg:w-1/3 m-auto">
+      <form
+        class="lg:mx-15 form w-full mb-1"
+        novalidate
+        autocomplete="off"
+        @submit.stop.prevent="submit(a)"
+      >
+        <div class="p-2">
+          <div
+            label="Phone"
+            class="w-full text-center mb-4"
+            name="name"
+          >Phone: {{a.phone}}
+          </div>
+          <div class="w-full flex justify-between">
+            <Textbox
+              label="First Name"
+              class="w-full"
+              name="firstName"
+              v-model="a.firstName"
+            />
+            <Textbox
+              label="Last Name"
+              class="w-full"
+              name="lastName"
+              v-model="a.lastName"
+            />
+          </div>
+          <Textbox
+            label="Address"
+            class="w-full"
+            name="name"
+            v-model="a.address"
+          />
+          <Textbox
+            label="Pin Code"
+            class="w-full"
+            name="name"
+            v-model="a.zip"
+          />
+          <Textbox
+            label="Town"
+            class="w-full"
+            name="name"
+            v-model="a.town"
+          />
+          <div class="w-full flex justify-between">
+            <Textbox
+              label="City"
+              class="w-1/2 mr-1"
+              name="name"
+              v-model="a.city"
+            />
+            <Textbox
+              label="State"
+              class="w-1/2 ml-1"
+              name="name"
+              v-model="a.state"
+            />
+          </div>
 
-    <div class="w-full">
-      <ul class="w-full">
-        <div class="px-0 lg:px-10 hover:bg-gray-200">
-          <li class="flex-wrap flex mb-5 px-8">
-            <div class="w-1/12">
-              <img
-                src="/name.png"
-                class="w-5"
-                alt=""
-              />
-            </div>
-            <div class="w-10/12 flex">
-              <Textbox
-                v-model="profile.firstName"
-                label="First Name"
-                class=" mr-4 flex-1"
-              />
-              <Textbox
-                v-model="profile.lastName"
-                label="Last Name"
-                class="flex-1"
-              />
-            </div>
-            <!-- <div class="w-1/12">
-                <i
-                  class="fa fa-angle-right"
-                  aria-hidden="true"
-                ></i>
-              </div> -->
-          </li>
         </div>
-
-        <div class="px-0 lg:px-10 hover:bg-gray-200">
-          <li class="flex-wrap flex mb-5 hover:bg-gray-200 px-8">
-            <div class="w-1/12 text-xl">
-              <i
-                class="fa fa-mobile"
-                aria-hidden="true"
-              ></i>
-            </div>
-            <div class="w-10/12">
-              <Textbox
-                v-model="profile.phone"
-                label="Phone"
-              />
-            </div>
-            <!-- <div class="w-1/12">
-                <i
-                  class="fa fa-angle-right"
-                  aria-hidden="true"
-                ></i>
-              </div> -->
-          </li>
+        <div class="flex shadow lg:shadow-none fixed lg:relative bottom-0 justify-between w-full">
+          <button
+            type="button"
+            @click="$router.push('/checkout/address')"
+            class="tracking-widest p-3 w-1/2 bg-white text-black text-sm font-semibold lg:rounded"
+          >
+            CANCEL
+          </button>
+          <button
+            type="submit"
+            class="tracking-widest p-3 w-1/2 primary text-sm font-semibold lg:rounded"
+          >
+            CONTINUE
+          </button>
         </div>
-
-        <div class="px-0 lg:px-10 hover:bg-gray-200">
-          <li class="flex-wrap flex mb-5 hover:bg-gray-200 px-8">
-            <div class="w-1/12">
-              <i
-                class="fa fa-envelope-o"
-                aria-hidden="true"
-              ></i>
-            </div>
-            <div class="w-10/12">
-              <Textbox
-                v-model="profile.email"
-                label="Email"
-              />
-            </div>
-            <!-- <div class="w-1/12">
-                <i
-                  class="fa fa-angle-right"
-                  aria-hidden="true"
-                ></i>
-              </div> -->
-          </li>
-        </div>
-
-        <div class="px-0 lg:px-10 hover:bg-gray-200">
-          <nuxt-link to="/my/password">
-            <li class="flex-wrap flex mb-5 hover:bg-gray-200 py-5 px-8">
-              <div class="w-1/12">
-                <i
-                  class="fa fa-key"
-                  aria-hidden="true"
-                ></i>
-              </div>
-              <div class="w-10/12">Password</div>
-              <div class="w-1/12">
-                <i
-                  class="fa fa-angle-right"
-                  aria-hidden="true"
-                ></i>
-              </div>
-            </li>
-          </nuxt-link>
-        </div>
-      </ul>
+      </form>
     </div>
   </div>
 </template>
 
-
 <script>
-import { mapGetters, mapActions } from "vuex";
-import Textbox from "~/components/ui/Textbox";
-
+import { mapActions } from "vuex";
+const Heading = () => import("~/components/Heading");
+const Textbox = () => import("~/components/ui/Textbox");
+import { geo } from "~/mixins";
 export default {
   fetch({ store, redirect }) {
     if (!(store.state.auth || {}).user)
-      return redirect("/account/login?return=my/profile");
+      return redirect("/login?return=/checkout/add");
   },
-  async asyncData({ store }) {
-    let profile = {};
-    let userDetails = await store.dispatch("auth/fetch");
-    profile = Object.assign({}, userDetails);
-    profile.dob = profile.dob || {};
-    profile.state = profile.state || {};
-    return { profile };
-  },
+  mixins: [geo],
   data() {
     return {
-      user: null,
-      showImageModal: false,
-      userAvatar: null,
-      states: [],
-      cities: [],
-      dd: null,
-      mm: null,
-      yyyy: null
+      a: {}
     };
   },
-  computed: {
-    ...mapGetters({
-      loading: "loading"
-    })
+  components: {
+    Heading,
+    Textbox
   },
-  components: { Textbox },
-  async mounted() {
-    this.getStates(this.profile.country);
-    this.getCities(this.profile.state);
+  computed: {
+    user() {
+      return (this.$store.state.auth || {}).user || null;
+    }
+  },
+  async created() {
+    try {
+      this.$store.commit("busy", true);
+      // const me = await this.$axios.$get(`api/me`);
+      this.a = await this.locateMe();
+      this.a.address = this.user.address.address || this.a.address;
+      this.a.town = this.user.address.county || this.a.county;
+      this.a.city = this.user.address.city || this.a.state_district;
+      this.a.zip = this.user.address.zip || this.a.postcode;
+      this.a.firstName = this.user.address.firstName || this.user.firstName;
+      this.a.lastName = this.user.address.lastName || this.user.lastName;
+      this.a.phone = this.user.phone;
+      this.$store.commit("busy", false);
+    } catch (e) {
+    } finally {
+      this.$store.commit("busy", false);
+    }
   },
   methods: {
-    async getCities(state) {
-      this.cities = await this.$axios.$get("api/countries/cities", {
-        params: { state }
-      });
-    },
-    async getStates() {
-      this.states = await this.$axios.$get("api/countries/states");
-    },
     ...mapActions({
       updateProfile: "auth/updateProfile"
     }),
-    splitDate(date) {
-      if (!date) return {};
-      var dd = date.getDate();
-      var mm = date.getMonth() + 1; //January is 0!
-      var yyyy = date.getFullYear();
-      if (dd < 10) {
-        dd = "0" + dd;
+    go(url) {
+      this.$router.push(url);
+    },
+    async submit(address) {
+      this.$store.commit("busy", true);
+      try {
+        await this.updateProfile({ address });
+        this.$store.commit("busy", false);
+        this.go("/foods");
+      } catch (e) {
+        this.$store.commit("busy", false);
       }
-      if (mm < 10) {
-        mm = "0" + mm;
-      }
-      var date = { dd, mm, yyyy };
-      return date;
     }
   },
-  head() {
-    return {
-      title: "Update your profile"
-    };
-  },
-  layout: "account"
+  layout: "none"
 };
 </script>
 
+<style scoped>
+/* form */
+form {
+  display: inline-block;
+}
+.field {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+label {
+  order: -1;
+  padding-left: 5px;
+  font-size: 14px;
+  transition: all 0.3s ease-in;
+  transform: translateY(30px);
+  pointer-events: none;
+}
+input:focus + label,
+textarea:focus + label {
+  transform: translateY(16px);
+}
+/* form ends */
+</style>

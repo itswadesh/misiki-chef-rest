@@ -6,7 +6,7 @@
         class="lg:mx-15 form w-full mb-1"
         novalidate
         autocomplete="off"
-        @submit.stop.prevent="submit(a)"
+        @submit.stop.prevent="submit(profile)"
       >
         <div class="p-2">
           <div
@@ -15,18 +15,24 @@
             name="name"
           >Phone: {{a.phone}}
           </div>
+            <Textbox
+              label="Restaurant"
+              class="w-full"
+              name="restaurant"
+              v-model="profile.restaurant"
+            />
           <div class="w-full flex justify-between">
             <Textbox
               label="First Name"
               class="w-full"
               name="firstName"
-              v-model="a.firstName"
+              v-model="profile.firstName"
             />
             <Textbox
               label="Last Name"
               class="w-full"
               name="lastName"
-              v-model="a.lastName"
+              v-model="profile.lastName"
             />
           </div>
           <Textbox
@@ -62,6 +68,13 @@
             />
           </div>
 
+          <SingleImageUpload
+            :image="profile.avatar"
+            name="avatar"
+            folder="avatar"
+            @remove="remove"
+            @save="save"
+          />
         </div>
         <div class="flex shadow lg:shadow-none fixed lg:relative bottom-0 justify-between w-full">
           <button
@@ -80,6 +93,7 @@
         </div>
       </form>
     </div>
+    <GeoLocation/>
   </div>
 </template>
 
@@ -87,6 +101,8 @@
 import { mapActions } from "vuex";
 const Heading = () => import("~/components/Heading");
 const Textbox = () => import("~/components/ui/Textbox");
+const GeoLocation = () => import("~/components/GeoLocation");
+const SingleImageUpload = () => import("~/components/SingleImageUpload");
 import { geo } from "~/mixins";
 export default {
   fetch({ store, redirect }) {
@@ -96,47 +112,63 @@ export default {
   mixins: [geo],
   data() {
     return {
-      a: {}
+      a: {},
+      profile:{}
     };
   },
   components: {
     Heading,
-    Textbox
+    Textbox,
+    GeoLocation,
+    SingleImageUpload
   },
   computed: {
-    user() {
-      return (this.$store.state.auth || {}).user || null;
-    }
+    // user() {
+    //   return (this.$store.state.auth || {}).user || null;
+    // }
   },
   async created() {
+    // await this.$axios.$get(`/api/geo/remove`);
+    // this.$cookies.remove("geo");
     try {
       this.$store.commit("busy", true);
-      // const me = await this.$axios.$get(`api/me`);
+      this.user = await this.$axios.$get(`api/users/me`);
+      this.profile={...this.user}
       this.a = await this.locateMe();
-      this.a.address = this.user.address.address || this.a.address;
-      this.a.town = this.user.address.county || this.a.county;
-      this.a.city = this.user.address.city || this.a.state_district;
-      this.a.zip = this.user.address.zip || this.a.postcode;
-      this.a.firstName = this.user.address.firstName || this.user.firstName;
-      this.a.lastName = this.user.address.lastName || this.user.lastName;
-      this.a.phone = this.user.phone;
-      this.$store.commit("busy", false);
+      this.profile.address = this.profile.address || {}
+      this.a.address = this.profile.address.address || this.a.address;
+      this.a.town = this.profile.address.county || this.a.county;
+      this.a.city = this.profile.address.city || this.a.state_district;
+      this.a.zip = this.profile.address.zip || this.a.postcode;
+      this.a.firstName = this.profile.address.firstName || this.profile.firstName;
+      this.a.lastName = this.profile.address.lastName || this.profile.lastName;
+      this.a.phone = this.profile.phone;
     } catch (e) {
     } finally {
       this.$store.commit("busy", false);
     }
   },
   methods: {
-    ...mapActions({
-      updateProfile: "auth/updateProfile"
-    }),
+    save(name, image) {
+      this.profile.avatar = image;
+      // this.submit();
+    },
+    remove(name) {
+      this.profile.avatar = "";
+    },
+    // ...mapActions({
+    //   updateProfile: "auth/updateProfile"
+    // }),
     go(url) {
       this.$router.push(url);
     },
-    async submit(address) {
+    async submit(profile) {
       this.$store.commit("busy", true);
       try {
-        await this.updateProfile({ address });
+      this.profile.info = {restaurant: this.profile.restaurant}
+      this.profile.address = this.a
+      const data = await this.$axios.$put('api/users/profile', this.profile)
+        // await this.updateProfile({profile });
         this.$store.commit("busy", false);
         this.go("/foods");
       } catch (e) {

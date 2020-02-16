@@ -1,100 +1,102 @@
 <template>
   <div>
-    <Heading title="My Dishes" />
+    <Heading title="Kitchen Photos" />
     <div
       class="container"
-      v-if="user && user.verified"
     >
-      <!-- <button
-        class="button-lg blue"
-        style="margin-bottom:20px"
-        @click="go('/my/food/dishes/new')"
-      >Add New</button> -->
-      <!-- <v-pagination
-        v-if="noOfPages>1"
-        v-model="currentPage"
-        @input="changePage(currentPage)"
-        :length="noOfPages"
-        :total-visible="10"
-        circle
-      ></v-pagination> -->
-      <Search />
+   <h1 class="text-xl font-bold text-center text-gray-700"> {{info.restaurant}} </h1>
+   <ImageUpload
+          name="kitchen"
+          folder="kitchen"
+          @remove="remove"
+          @save="save"
+        />
       <div class="flex flex-wrap mx-1 mt-2">
         <div
-          v-for="d in data"
-          :key="d._id"
-          @click="go('/foods/'+d._id)"
-          class="w-1/2 p-2 self-stretch shadow px-1 bg-gray-100 mb-2"
+          v-for="(d,ix) in info.kitchenPhotos"
+          :key="ix"
+          class="w-1/2 p-2 self-stretch shadow relative px-1 bg-gray-100 mb-2"
         >
-              <img
-                v-lazy="d.img"
-                class="h-32 bg-cover w-full border-b"
-              />
-              <!-- <div class="delete-icon">
-                    <v-icon>delete</v-icon>
-                </div> -->
-            <div class="p-3">
-              <div class="flex justify-between items-center">
-                <div
-                  class="text-red-500"
-                  v-if="d.stock>0"
-                >Only {{d.stock}} left</div>
-                <div
-                  class="text-green-500"
-                  v-else
-                > Sold out</div>
-                <img
-                  v-if="d.type=='N'"
-                  src="/non-veg.png"
-                  class="w-5 h-5"
-                />
-                <img
-                  v-else
-                  src="/veg.png"
-                  class="w-5 h-5"
-                />
-              </div>
-              <div class="p-name">{{d.name}}</div>
-            </div>
+          <button type="button" @click="remove(d)" class="w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200 absolute top-0 right-0">
+          <i class="fa fa-close" />
+        </button>
+          <img
+            v-lazy="d"
+            class="h-32 bg-cover w-full border-b"
+          />
         </div>
+        
       </div>
-      <nuxt-link
-        class="fab top-0"
-        to="/foods/new"
-      >
-        <i
-          class="fa fa-plus "
-          aria-hidden="true"
-        ></i>
-      </nuxt-link>
     </div>
-    <div
-      v-else
-      class="text-center"
-    >You must be verified by admin to add new Dish</div>
     <StickyFooter/>
   </div>
 </template>
 <script>
 import Heading from "~/components/Heading";
 import StickyFooter from "~/components/footer/StickyFooter";
-import Search from "~/components/Search";
-import { query, search, pagination } from "~/mixins";
+import ImageUpload from "~/components/ImageUpload";
 
 export default {
   fetch({ store, redirect }) {
     if (!store.getters["auth/hasRole"]("chef")) return redirect("/login");
   },
-  mixins: [query, search, pagination],
-  components: { Heading, Search,StickyFooter },
+  components: { Heading, ImageUpload,StickyFooter },
   data() {
-    return { loading: false, foods: [], apiQ: "api/foods/my" };
+    return { loading: false, kitchenPhotos: [],info:{} };
   },
   layout: "none",
   computed: {
     user() {
       return (this.$store.state.auth || {}).user || null;
     }
+  },
+  created(){
+    this.getData()
+  },
+  methods:{
+    save(name, image) {
+      this.info.kitchenPhotos = [...this.info.kitchenPhotos, ...image];
+      this.submit(this.info)
+    },
+    remove(name) {
+      this.$swal({
+        title: "Delete address?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(result => {
+        if (result.value) {
+          this.info.kitchenPhotos= this.info.kitchenPhotos.filter(function(value, index, kf){
+              return value !=name;
+          });
+          this.submit(this.info);
+        }
+      })
+    },
+    async submit(info) {
+      this.$store.commit("busy", true);
+      try {
+      const data = await this.$axios.$put('api/users/profile', {info})
+      } catch (e) {}finally{
+          this.$store.commit("busy", false);
+      }
+    },
+    async getData() {
+      let params = this.$route.query;
+      this.$store.commit('busy', true);
+      try {
+        let {info} = await this.$axios.$get(`api/users/me`)
+        this.info = info
+      }
+      catch (e) {
+        this.$store.commit('setErr', e);
+      }finally{
+        this.$store.commit('busy', false);
+      }
+    },
   },
   head() {
     return {

@@ -55,7 +55,7 @@ img[lazy="loading"] {
   }
 }
 .fab{
-  @apply primary absolute bottom-0 right-0 mr-1 mb-1 w-10 h-10 rounded-full text-center;
+  @apply primary fixed bottom-0 right-0 mr-1 mb-1 w-10 h-10 rounded-full text-center;
 }
 .fab i{
   @apply m-auto align-middle translate-y-1/2;

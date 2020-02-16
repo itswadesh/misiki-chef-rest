@@ -2,10 +2,9 @@
   <div>
     <Heading title="My Dishes" />
     <div
-      class="container fx center"
+      class="container"
       v-if="user && user.verified"
     >
-
       <!-- <button
         class="button-lg blue"
         style="margin-bottom:20px"
@@ -20,47 +19,43 @@
         circle
       ></v-pagination> -->
       <Search />
-      <div class="align-row">
+      <div class="flex flex-wrap mx-1 mt-2">
         <div
           v-for="d in data"
           :key="d._id"
-          @click="go('/my/food/dishes/'+d._id)"
-          class="listingcard"
+          @click="go('/foods/'+d._id)"
+          class="w-1/2 p-2 self-stretch shadow px-1 bg-gray-100 mb-2"
         >
-          <div class="a-listing">
-            <div class="height ">
               <img
                 v-lazy="d.img"
-                class="backgroundimg"
+                class="h-32 bg-cover w-full border-b"
               />
               <!-- <div class="delete-icon">
                     <v-icon>delete</v-icon>
                 </div> -->
-            </div>
-            <div class="card-container">
-              <div class="a-contain">
+            <div class="p-3">
+              <div class="flex justify-between items-center">
                 <div
-                  class="pinky"
+                  class="text-red-500"
                   v-if="d.stock>0"
                 >Only {{d.stock}} left</div>
                 <div
-                  class="greenclr"
+                  class="text-green-500"
                   v-else
                 > Sold out</div>
                 <img
                   v-if="d.type=='N'"
                   src="/non-veg.png"
-                  class="image-size"
+                  class="w-5 h-5"
                 />
                 <img
                   v-else
                   src="/veg.png"
-                  class="image-size"
+                  class="w-5 h-5"
                 />
               </div>
               <div class="p-name">{{d.name}}</div>
             </div>
-          </div>
         </div>
       </div>
       <nuxt-link
@@ -91,7 +86,7 @@ export default {
   mixins: [query, search, pagination],
   components: { Heading, Search },
   data() {
-    return { loading: false, foods: [], apiQ: "foods/my" };
+    return { loading: false, foods: [], apiQ: "api/foods/my" };
   },
   layout: "none",
   computed: {
@@ -158,15 +153,6 @@ body {
   display: flex;
   flex-direction: column;
 }
-.image-size {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-.a-contain {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 .p-name {
   line-height: 1.2rem;
 }
@@ -190,13 +176,7 @@ body {
   color: rgb(255, 0, 104);
   letter-spacing: 1px;
 }
-.card-container {
-  /* padding: 0.4rem; */
-  padding-top: 7.5rem;
-  padding-left: 0.4rem;
-  padding-right: 0.4rem;
-  padding-bottom: 0.4rem;
-}
+
 /* .time {
   font-size: 0.8rem;
   color: #eee;

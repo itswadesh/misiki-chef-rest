@@ -1,17 +1,6 @@
 <template>
   <div>
-    <div class="heading">
-      <v-btn
-        icon
-        @click="$router.go(-1)"
-      >
-        <img
-          src="/backarrow.svg"
-          style="width:30px; height:30px;margin-top: 8px;"
-        />
-      </v-btn>&nbsp;
-      Add Food Details
-    </div>
+    <Heading title="Add food details" />
     <form
       novalidate
       autocomplete="off"
@@ -26,56 +15,55 @@
             @change="submit()"
             label="Open Kitchen"
           /> -->
-          <v-text-field
+          <Textbox
+            class="w-full"
             label="Dish Name"
             name="name"
             v-model="food.name"
-            filled
           />
-          <v-text-field
+          <Textbox
+            class="w-full"
             label="Description"
             name="description"
             v-model="food.description"
-            filled
           />
-          <v-text-field
+          <Textbox
+            class="w-full"
             label="Rate"
             name="rate"
             v-model="food.rate"
-            filled
           />
-          <v-text-field
+          <Textbox
+            class="w-full"
             label="Qty"
             name="qty"
             v-model="food.stock"
-            filled
           />
-          <v-btn-toggle v-model="food.type">
-            <v-btn
-              :text="food.type!='V'"
-              value="V"
-              color="green"
-            >
-              Veg
-            </v-btn>
-            <v-btn
-              :text="food.type!='N'"
-              value="N"
-              color="red"
-            >
-              Non Veg
-            </v-btn>
-          </v-btn-toggle>
+          <Radio
+            v-model="food.type"
+            value="V"
+            color="green"
+            class="mr-2"
+          >Veg</Radio>
+          <Radio
+            v-model="food.type"
+            value="N"
+            color="red"
+            class="mr-2"
+          >Non Veg</Radio>
           <br />
           <br />
-          <v-radio-group v-model="food.time">
-            <v-radio
+          <div class="flex">
+            <Radio
+              v-model="food.time"
               v-for="(s,ix) in deliveryslots"
               :key="ix"
-              :label="s.name"
               :value="s.val"
-            ></v-radio>
-          </v-radio-group>
+              class="mr-2"
+            >
+              {{s.name}}
+            </Radio>
+          </div>
           <single-image-upload
             :image="food.img"
             name="food"
@@ -95,32 +83,31 @@
           <br />
         </div>
       </div>
-      <div class="footer">
-        <div class="form-element">
-          <button
-            type="submit"
-            v-if="$route.params.id == 'new'"
-          >Add Dish</button>
-          <button
-            type="submit"
-            v-else
-          >Save Changes</button>
-        </div>
+      <div class=" fixed bottom-0 text-center px-auto py-3 text-xl primary w-full">
+        <button
+          type="submit"
+          v-if="$route.params.id == 'new'"
+        >Add Dish</button>
+        <button
+          type="submit"
+          v-else
+        >Save Changes</button>
       </div>
     </form>
-
   </div>
 </template>
 <script>
 import { timesList } from "~/config";
-// const Header = () => import("~/components/HeaderFood");
+const Radio = () => import("~/components/ui/Radio");
+const Textbox = () => import("~/components/ui/Textbox");
+const Heading = () => import("~/components/Heading");
 import SingleImageUpload from "@/components/SingleImageUpload";
 
 export default {
   fetch({ store, redirect }) {
     if (!store.getters["auth/hasRole"]("chef")) return redirect("/login");
   },
-  components: { SingleImageUpload },
+  components: { SingleImageUpload, Radio, Textbox,Heading },
   data() {
     return {
       loading: false,
@@ -141,9 +128,9 @@ export default {
   async created() {
     try {
       this.$store.commit("busy", true);
-      const deliveryslots = await this.$axios.$get("deliveryslots/public");
+      const deliveryslots = await this.$axios.$get("api/deliveryslots/public");
       this.deliveryslots = deliveryslots.data;
-      const food = await this.$axios.$get("foods/" + this.$route.params.id);
+      const food = await this.$axios.$get("api/foods/" + this.$route.params.id);
       if (!food.time) food.time = "8:30 - 9:30 PM";
       this.food = food;
       this.$store.commit("busy", false);
@@ -154,7 +141,7 @@ export default {
     }
     try {
       this.$store.commit("busy", true);
-      this.dishes = await this.$axios.$get("dishes/chef");
+      this.dishes = await this.$axios.$get("api/dishes/chef");
       this.$store.commit("busy", false);
     } catch (err) {
       this.$store.commit("busy", false);
@@ -165,7 +152,7 @@ export default {
   methods: {
     save(name, image) {
       this.food.img = image;
-      this.submit();
+      // this.submit();
     },
     remove(name) {
       this.food.img = "";
@@ -235,9 +222,9 @@ export default {
       if (this.$route.params.id == "new") {
         try {
           this.$store.commit("busy", true);
-          res = await this.$axios.$post("foods", this.food);
+          res = await this.$axios.$post("api/foods", this.food);
           this.$store.commit("busy", false);
-          this.$router.push("/my/food/dishes");
+          this.$router.push("/foods");
         } catch (e) {
           this.$store.commit("busy", false);
           this.$store.commit("setErr", e);
@@ -247,11 +234,11 @@ export default {
         try {
           this.$store.commit("busy", true);
           res = await this.$axios.$put(
-            "foods/" + this.$route.params.id,
+            "api/foods/" + this.$route.params.id,
             this.food
           );
           this.$store.commit("busy", false);
-          this.$router.push("/my/food/dishes");
+          this.$router.push("/foods");
         } catch (e) {
           this.$store.commit("busy", false);
           this.$store.commit("setErr", e);

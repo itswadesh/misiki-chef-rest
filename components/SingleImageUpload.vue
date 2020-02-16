@@ -1,64 +1,47 @@
 <template>
-  <v-container>
-    <v-card
-      max-width="375"
-      class="mx-auto"
+  <div
+    class="mt-4 bg-gray-100 mx-auto relative"
+  >
+    <div
+      v-if="image"
+      v-lazy:background-image="`${image}`"
+      class="bg-contain h-48 relative"
     >
-      <v-img
-        v-if="image"
-        :src="$store.state.settings.CDN_URL+image+'?tr=w-300,h-200'"
-        height="300px"
-        dark
-      >
-        <v-layout
-          column
-          fill-height
+      <div class="absolute right-0 top-0">
+        <button type="button" @click="removeImage(image)" class="w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200">
+          <i class="fa fa-close" />
+        </button>
+      </div>
+    </div>
+    <form
+      enctype="multipart/form-data"
+      novalidate
+      v-else
+    >
+      <div class="dropbox">
+        <input
+          type="file"
+          name="photos"
+          :disabled="isSaving"
+          @change="filesChange($event.target.name, $event.target.files,name); fileCount = $event.target.files.length"
+          accept="image/*"
+          class="input-file"
         >
-          <v-card-title>
-            <v-spacer></v-spacer>
-            <v-btn
-              fab
-              dark
-              small
-              color="pink"
-              @click="removeImage(image)"
-            >
-              <v-icon>close</v-icon>
-            </v-btn>
-          </v-card-title>
-          <v-spacer></v-spacer>
-        </v-layout>
-      </v-img>
-      <form
-        enctype="multipart/form-data"
-        novalidate
-        v-else
-      >
-        <div class="dropbox">
-          <input
-            type="file"
-            name="photos"
-            :disabled="isSaving"
-            @change="filesChange($event.target.name, $event.target.files,name); fileCount = $event.target.files.length"
-            accept="image/*"
-            class="input-file"
-          >
-          <p v-if="isInitial">
-            Drag food image here to upload<br> or click to browse
-          </p>
-          <p v-if="isSaving">
-            Uploading {{ fileCount }} files...
-          </p>
-          <p v-if="isSuccess">
-            {{ fileCount }} files uploaded successfully...
-          </p>
-          <p v-if="isFailed">
-            Upload failed. Please <a @click="currentStatus=0">try again</a>
-          </p>
-        </div>
-      </form>
-    </v-card>
-  </v-container>
+        <p v-if="isInitial">
+          Drag food image here to upload<br> or click to browse
+        </p>
+        <p v-if="isSaving">
+          Uploading {{ fileCount }} files...
+        </p>
+        <p v-if="isSuccess">
+          {{ fileCount }} files uploaded successfully...
+        </p>
+        <p v-if="isFailed">
+          Upload failed. Please <a @click="currentStatus=0">try again</a>
+        </p>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -128,7 +111,7 @@ export default {
     },
     async deleteConfirmed(img) {
       this.img = "";
-      await this.$axios.$delete("media/single", {
+      await this.$axios.$delete("api/media/single", {
         data: { img: img }
       });
       this.$emit("remove", this.name);
@@ -150,7 +133,7 @@ export default {
       try {
         this.currentStatus = 1;
         let x = await this.$axios.$post(
-          "media/nocrunch/" + this.folder,
+          "api/media/nocrunch/" + this.folder,
           formData
         ); // When name is passed, it acts as logo upload. Where it uploads to img directory and replaces the original file rather than adding it to the uploads directory
         const path = x[0]; // Where the variable is assigned

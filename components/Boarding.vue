@@ -6,7 +6,7 @@
     <div class="font-black text-4xl my-3 text-center">SUNABEDA</div>
     <nuxt-link
       to="/my/profile"
-      class="flex border mx-1/4 rounded-full bg-yellow-500 text-white"
+      class="flex border mx-1/4 rounded-full primary text-white"
     >
       <div class="mx-10 my-auto font-bold">Welcome</div>
       <i class="fa fa-long-arrow-right w-18 border-l rounded-l-full p-2 align-middle" />

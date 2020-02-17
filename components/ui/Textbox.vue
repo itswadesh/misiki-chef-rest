@@ -25,7 +25,7 @@ export default {
   props: {
     label: { type: String },
     type: { type: String, default: "text" },
-    value: { type: String }
+    value: { type: [Number, String] }
   }
 };
 </script>

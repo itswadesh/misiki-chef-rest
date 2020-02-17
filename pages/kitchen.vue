@@ -1,34 +1,34 @@
 <template>
   <div>
     <Heading title="Kitchen Photos" />
-    <div
-      class="container"
-    >
-   <h1 class="text-xl font-bold text-center text-gray-700"> {{info.restaurant}} </h1>
-   <ImageUpload
-          name="kitchen"
-          folder="kitchen"
-          @remove="remove"
-          @save="save"
-        />
+    <div v-if="info" class="container">
+      <h1 class="text-xl font-bold text-center text-gray-700">
+        {{ info.restaurant }}
+      </h1>
+      <ImageUpload
+        name="kitchen"
+        folder="kitchen"
+        @remove="remove"
+        @save="save"
+      />
       <div class="flex flex-wrap mx-1 mt-2">
         <div
-          v-for="(d,ix) in info.kitchenPhotos"
+          v-for="(d, ix) in info.kitchenPhotos"
           :key="ix"
           class="w-1/2 p-2 self-stretch shadow relative px-1 bg-gray-100 mb-2"
         >
-          <button type="button" @click="remove(d)" class="w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200 absolute top-0 right-0">
-          <i class="fa fa-close" />
-        </button>
-          <img
-            v-lazy="d"
-            class="h-32 bg-cover w-full border-b"
-          />
+          <button
+            type="button"
+            @click="remove(d)"
+            class="w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200 absolute top-0 right-0"
+          >
+            <i class="fa fa-close" />
+          </button>
+          <img v-lazy="d" class="h-32 bg-cover w-full border-b" />
         </div>
-        
       </div>
     </div>
-    <StickyFooter/>
+    <StickyFooter />
   </div>
 </template>
 <script>
@@ -40,9 +40,9 @@ export default {
   fetch({ store, redirect }) {
     if (!store.getters["auth/hasRole"]("chef")) return redirect("/login");
   },
-  components: { Heading, ImageUpload,StickyFooter },
+  components: { Heading, ImageUpload, StickyFooter },
   data() {
-    return { loading: false, kitchenPhotos: [],info:{} };
+    return { loading: false, kitchenPhotos: [], info: null };
   },
   layout: "none",
   computed: {
@@ -50,13 +50,14 @@ export default {
       return (this.$store.state.auth || {}).user || null;
     }
   },
-  created(){
-    this.getData()
+  created() {
+    this.getData();
   },
-  methods:{
+  methods: {
     save(name, image) {
+      this.info.kitchenPhotos = this.info.kitchenPhotos || [];
       this.info.kitchenPhotos = [...this.info.kitchenPhotos, ...image];
-      this.submit(this.info)
+      this.submit(this.info);
     },
     remove(name) {
       this.$swal({
@@ -69,34 +70,39 @@ export default {
         confirmButtonText: "Yes, delete it!"
       }).then(result => {
         if (result.value) {
-          this.info.kitchenPhotos= this.info.kitchenPhotos.filter(function(value, index, kf){
-              return value !=name;
+          this.info.kitchenPhotos = this.info.kitchenPhotos.filter(function(
+            value,
+            index,
+            kf
+          ) {
+            return value != name;
           });
           this.submit(this.info);
         }
-      })
+      });
     },
     async submit(info) {
       this.$store.commit("busy", true);
       try {
-      const data = await this.$axios.$put('api/users/profile', {info})
-      } catch (e) {}finally{
-          this.$store.commit("busy", false);
+        const data = await this.$axios.$put("api/users/profile", { info });
+        this.getData();
+      } catch (e) {
+      } finally {
+        this.$store.commit("busy", false);
       }
     },
     async getData() {
       let params = this.$route.query;
-      this.$store.commit('busy', true);
+      this.$store.commit("busy", true);
       try {
-        let {info} = await this.$axios.$get(`api/users/me`)
-        this.info = info
+        let { info } = await this.$axios.$get(`api/users/me`);
+        this.info = info;
+      } catch (e) {
+        this.$store.commit("setErr", e);
+      } finally {
+        this.$store.commit("busy", false);
       }
-      catch (e) {
-        this.$store.commit('setErr', e);
-      }finally{
-        this.$store.commit('busy', false);
-      }
-    },
+    }
   },
   head() {
     return {
@@ -193,4 +199,3 @@ body {
   color: green;
 }
 </style>
-

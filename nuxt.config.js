@@ -14,6 +14,7 @@ export default {
     { src: "~/plugins/lazy.js", mode: "client" },
     { src: "~/plugins/carousel.js", mode: "client" },
     { src: "~/plugins/swal.js", mode: "client" },
+    { src: "~/plugins/scroll.js", ssr: false },
     { src: "~/plugins/vue-slider-component", mode: "client" } // Price slider
   ],
   buildModules: ["@nuxtjs/tailwindcss"],

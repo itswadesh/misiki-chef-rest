@@ -1,12 +1,7 @@
 <template>
   <div>
     <Heading title="Add food details" />
-    <form
-      novalidate
-      autocomplete="off"
-      @submit.stop.prevent="submit()"
-      class="container"
-    >
+    <form novalidate autocomplete="off" @submit.stop.prevent="submit()" class="container">
       <div class="card shadow columns">
         <br />
         <div class="margin-phn">
@@ -14,43 +9,18 @@
             v-model="food.active"
             @change="submit()"
             label="Open Kitchen"
-          /> -->
-          <Textbox
-            class="w-full"
-            label="Dish Name"
-            name="name"
-            v-model="food.name"
-          />
+          />-->
+          <Textbox class="w-full" label="Dish Name" name="name" v-model="food.name" />
           <Textbox
             class="w-full"
             label="Description"
             name="description"
             v-model="food.description"
           />
-          <Textbox
-            class="w-full"
-            label="Rate"
-            name="rate"
-            v-model="food.rate"
-          />
-          <Textbox
-            class="w-full"
-            label="Qty"
-            name="qty"
-            v-model="food.stock"
-          />
-          <Radio
-            v-model="food.type"
-            value="V"
-            color="green"
-            class="mr-2"
-          >Veg</Radio>
-          <Radio
-            v-model="food.type"
-            value="N"
-            color="red"
-            class="mr-2"
-          >Non Veg</Radio>
+          <Textbox class="w-full" label="Rate" name="rate" v-model="food.rate" />
+          <Textbox class="w-full" label="Qty" name="qty" v-model="food.stock" />
+          <Radio v-model="food.type" value="V" color="green" class="mr-2">Veg</Radio>
+          <Radio v-model="food.type" value="N" color="red" class="mr-2">Non Veg</Radio>
           <br />
           <br />
           <div class="flex">
@@ -60,9 +30,7 @@
               :key="ix"
               :value="s.val"
               class="mr-2"
-            >
-              {{s.name}}
-            </Radio>
+            >{{s.name}}</Radio>
           </div>
           <single-image-upload
             :image="food.img"
@@ -74,7 +42,7 @@
           <!-- <img
             v-if="food.img"
             v-lazy="IMAGEKIT+'/images'+food.img"
-          /> -->
+          />-->
           <div class="msg">{{msg}}</div>
           <br />
           <br />
@@ -83,15 +51,9 @@
           <br />
         </div>
       </div>
-      <div class=" fixed bottom-0 text-center px-auto py-3 text-xl primary w-full">
-        <button
-          type="submit"
-          v-if="$route.params.id == 'new'"
-        >Add Dish</button>
-        <button
-          type="submit"
-          v-else
-        >Save Changes</button>
+      <div class="fixed bottom-0 text-center px-auto py-3 text-xl primary w-full">
+        <button type="submit" v-if="$route.params.id == 'new'">Add Dish</button>
+        <button type="submit" v-else>Save Changes</button>
       </div>
     </form>
   </div>
@@ -107,7 +69,7 @@ export default {
   fetch({ store, redirect }) {
     if (!store.getters["auth/hasRole"]("chef")) return redirect("/login");
   },
-  components: { SingleImageUpload, Radio, Textbox,Heading },
+  components: { SingleImageUpload, Radio, Textbox, Heading },
   data() {
     return {
       loading: false,
@@ -193,7 +155,7 @@ export default {
           this.$swal({
             title: "Are you sure to activate this dish?",
             text: "This will be available for booking by users",
-            type: "warning",
+            icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",

@@ -2,7 +2,7 @@
   <div>
     <Header class="noprint" />
     <div class="heading noprint">Today's Orders</div>
-    <button @click="printOut()" class="noprint fab">
+    <button @click="printOut()" class="noprint fab top-0">
       <i class="fa fa-print" />
     </button>
     <div>
@@ -12,13 +12,15 @@
         <div>{{ orders && orders[0] && orders[0].createdAt | date }}</div>
       </div>
       <div v-for="s in todaySummary" :key="s._id" class="noprint text-center">
-        <span class="font-bold"
-          >{{ s._id }} *
+        <span class="font-bold">
+          {{ s._id }} *
           <span class="text-green-500 text-xl">{{ s.count }}</span> =
-          <span class="text-red-500 text-xl">{{
+          <span class="text-red-500 text-xl">
+            {{
             s.amount | currency
-          }}</span></span
-        >
+            }}
+          </span>
+        </span>
       </div>
       <ul class="flex flex-wrap">
         <li
@@ -26,42 +28,38 @@
           v-for="(o, ix) in orders"
           :key="ix"
         >
-          <h1 class="text-3xl font-black text-red-500">
-            QrNo: {{ o.address.qrno }}
-          </h1>
+          <h1 class="text-3xl font-black text-red-500">QrNo: {{ o.address.qrno }}</h1>
           <p class="font-bold">
             {{ o.address.firstName }} - {{ o.address.lastName }} ({{
-              o.address.phone
+            o.address.phone
             }})
           </p>
           <ul>
             <ol class="flex">
               <div
                 class="mr-2 shadow-xl font-bold w-8 h-8 rounded-full bg-gray-300 text-center align-middle"
-              >
-                1
-              </div>
-              <div class="">{{ o.item.name }}</div>
+              >1</div>
+              <div class>{{ o.item.name }}</div>
             </ol>
           </ul>
           <p>
             {{ o.rate | currency }} * {{ o.qty }} =
-            <span class="text-3xl font-bold">{{ o.amount | currency }}</span>
+            <span
+              class="text-3xl font-bold"
+            >{{ o.amount | currency }}</span>
           </p>
           <h3 class="text-right tracking-wide">{{ o.vendor.restaurant }}</h3>
-          <div class="text-cyan-500 text-xs text-right">
-            {{ o.createdAt | date }}
-          </div>
+          <div class="text-cyan-500 text-xs text-right">{{ o.createdAt | date }}</div>
         </li>
       </ul>
     </div>
-    <nuxt-link to="/my/food/customers/old/" class="noprint"
-      >Old Customers</nuxt-link
-    >
+    <StickyFooter />
+    <!-- <nuxt-link to="/my/food/customers/old/" class="noprint">Old Customers</nuxt-link> -->
   </div>
 </template>
 <script>
 const Header = () => import("~/components/Header");
+const StickyFooter = () => import("~/components/footer/StickyFooter");
 // import io from "socket.io-client";
 // import { WS_URL } from "~/config";
 // let socket = io(WS_URL);
@@ -85,7 +83,7 @@ export default {
     //   vm.orders = await axios.$get("food-orders/my-customers");
     // });
   },
-  components: { Header },
+  components: { Header, StickyFooter },
   methods: {
     printOut() {
       if (process.client) {

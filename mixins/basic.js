@@ -53,7 +53,7 @@ export default {
       const cloneConfirmTitle = 'Would you like to clone the ' + this.api + '?'
       this.$swal({
         title: cloneConfirmTitle,
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes, do it!"
       }).then(result => {
@@ -75,7 +75,7 @@ export default {
       this.$swal({
         title: "Are you sure to delete?",
         text: "You won't be able to revert this!",
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",

@@ -1,44 +1,36 @@
 <template>
-  <div
-    class="mt-4 bg-gray-100 mx-auto relative"
-  >
-    <div
-      v-if="image"
-      v-lazy:background-image="`${image}`"
-      class="bg-contain h-48 relative"
-    >
+  <div class="mt-4 bg-gray-100 mx-auto relative">
+    <div v-if="image" v-lazy:background-image="`${image}`" class="bg-contain h-48 relative">
       <div class="absolute right-0 top-0">
-        <button type="button" @click="removeImage(image)" class="w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200">
+        <button
+          type="button"
+          @click="removeImage(image)"
+          class="w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200"
+        >
           <i class="fa fa-close" />
         </button>
       </div>
     </div>
-    <form
-      enctype="multipart/form-data"
-      novalidate
-      v-else
-    >
+    <form enctype="multipart/form-data" novalidate v-else>
       <div class="dropbox">
         <input
-        multiple
+          multiple
           type="file"
           name="photos"
           :disabled="isSaving"
           @change="filesChange($event.target.name, $event.target.files,name); fileCount = $event.target.files.length"
           accept="image/*"
           class="input-file"
-        >
+        />
         <p v-if="isInitial">
-          Drag food image here to upload<br> or click to browse
+          Drag food image here to upload
+          <br />or click to browse
         </p>
-        <p v-if="isSaving">
-          Uploading {{ fileCount }} files...
-        </p>
-        <p v-if="isSuccess">
-          {{ fileCount }} files uploaded successfully...
-        </p>
+        <p v-if="isSaving">Uploading {{ fileCount }} files...</p>
+        <p v-if="isSuccess">{{ fileCount }} files uploaded successfully...</p>
         <p v-if="isFailed">
-          Upload failed. Please <a @click="currentStatus=0">try again</a>
+          Upload failed. Please
+          <a @click="currentStatus=0">try again</a>
         </p>
       </div>
     </form>
@@ -91,7 +83,6 @@ export default {
       return `${i}?a=${Math.random()}`;
     },
     save(imagePath) {
-      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',imagePath);
       this.img = imagePath;
       this.$emit("save", this.name, imagePath);
     },
@@ -100,7 +91,7 @@ export default {
       this.$swal({
         title: "Delete image?",
         text: "You won't be able to revert this!",
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",

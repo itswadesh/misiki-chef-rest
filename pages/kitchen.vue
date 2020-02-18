@@ -2,15 +2,8 @@
   <div>
     <Heading title="Kitchen Photos" />
     <div v-if="info" class="container">
-      <h1 class="text-xl font-bold text-center text-gray-700">
-        {{ info.restaurant }}
-      </h1>
-      <ImageUpload
-        name="kitchen"
-        folder="kitchen"
-        @remove="remove"
-        @save="save"
-      />
+      <h1 class="text-xl font-bold text-center text-gray-700">{{ info.restaurant }}</h1>
+      <ImageUpload name="kitchen" folder="kitchen" @remove="remove" @save="save" />
       <div class="flex flex-wrap mx-1 mt-2">
         <div
           v-for="(d, ix) in info.kitchenPhotos"
@@ -28,6 +21,7 @@
         </div>
       </div>
     </div>
+    <div v-else>Please update restaurant info in profile</div>
     <StickyFooter />
   </div>
 </template>

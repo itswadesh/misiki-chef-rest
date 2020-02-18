@@ -1,15 +1,12 @@
 <template>
   <div>
     <Heading title="My Dishes" />
-    <div
-      class="container"
-      v-if="user && user.verified"
-    >
+    <div class="container" v-if="user && user.verified">
       <!-- <button
         class="button-lg blue"
         style="margin-bottom:20px"
         @click="go('/my/food/dishes/new')"
-      >Add New</button> -->
+      >Add New</button>-->
       <!-- <v-pagination
         v-if="noOfPages>1"
         v-model="currentPage"
@@ -17,7 +14,7 @@
         :length="noOfPages"
         :total-visible="10"
         circle
-      ></v-pagination> -->
+      ></v-pagination>-->
       <Search />
       <div class="flex flex-wrap mx-1 mt-2">
         <div
@@ -26,53 +23,30 @@
           @click="go('/foods/'+d._id)"
           class="w-1/2 p-2 self-stretch shadow px-1 bg-gray-100 mb-2"
         >
-              <img
-                v-lazy="d.img"
-                class="h-32 bg-cover w-full border-b"
-              />
-              <!-- <div class="delete-icon">
+          <img v-lazy="d.img" class="h-32 bg-cover w-full border-b" />
+          <!-- <div class="delete-icon">
                     <v-icon>delete</v-icon>
-                </div> -->
-            <div class="p-3">
-              <div class="flex justify-between items-center">
-                <div
-                  class="text-red-500"
-                  v-if="d.stock>0"
-                >Only {{d.stock}} left</div>
-                <div
-                  class="text-green-500"
-                  v-else
-                > Sold out</div>
-                <img
-                  v-if="d.type=='N'"
-                  src="/non-veg.png"
-                  class="w-5 h-5"
-                />
-                <img
-                  v-else
-                  src="/veg.png"
-                  class="w-5 h-5"
-                />
-              </div>
-              <div class="p-name">{{d.name}}</div>
+          </div>-->
+          <div class="p-3">
+            <div class="flex justify-between items-center">
+              <div class="text-red-500" v-if="d.stock>0">Only {{d.stock}} left</div>
+              <div class="text-green-500" v-else>Sold out</div>
+              <img v-if="d.type=='N'" src="/non-veg.png" class="w-5 h-5" />
+              <img v-else src="/veg.png" class="w-5 h-5" />
             </div>
+            <div class="p-name">{{d.name}}</div>
+          </div>
         </div>
       </div>
-      <nuxt-link
-        class="fab top-0"
-        to="/foods/new"
-      >
-        <i
-          class="fa fa-plus "
-          aria-hidden="true"
-        ></i>
+      <nuxt-link class="fab top-0 mt-1" to="/foods/new">
+        <i class="fa fa-plus" aria-hidden="true"></i>
       </nuxt-link>
     </div>
     <div
       v-else
-      class="text-center"
+      class="mx-atuo justify-center flex text-center align-middle h-72 items-center"
     >You must be verified by admin to add new Dish</div>
-    <StickyFooter/>
+    <StickyFooter />
   </div>
 </template>
 <script>
@@ -86,7 +60,7 @@ export default {
     if (!store.getters["auth/hasRole"]("chef")) return redirect("/login");
   },
   mixins: [query, search, pagination],
-  components: { Heading, Search,StickyFooter },
+  components: { Heading, Search, StickyFooter },
   data() {
     return { loading: false, foods: [], apiQ: "api/foods/my" };
   },

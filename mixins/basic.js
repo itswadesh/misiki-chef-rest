@@ -1,5 +1,4 @@
 import { typingTimeout } from "@/config";
-import ListImage from "@/components/ListImage";
 
 export default {
   data: () => ({
@@ -53,7 +52,7 @@ export default {
       const cloneConfirmTitle = 'Would you like to clone the ' + this.api + '?'
       this.$swal({
         title: cloneConfirmTitle,
-        icon: "warning",
+        type: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes, do it!"
       }).then(result => {
@@ -75,10 +74,8 @@ export default {
       this.$swal({
         title: "Are you sure to delete?",
         text: "You won't be able to revert this!",
-        icon: "warning",
+        type: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!"
       }).then(result => {
         if (result.value) {
@@ -188,5 +185,4 @@ export default {
       }
     }
   },
-  components: { ListImage }
 }

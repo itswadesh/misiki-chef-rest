@@ -8,7 +8,10 @@
         autocomplete="off"
         @submit.stop.prevent="submit(profile)"
       >
-        <div class="p-2">
+        <div
+          class="p-2"
+          v-if="a"
+        >
           <div
             label="Phone"
             class="w-full text-center mb-4"
@@ -103,13 +106,13 @@ const Heading = () => import("~/components/Heading");
 const Textbox = () => import("~/components/ui/Textbox");
 const GeoLocation = () => import("~/components/GeoLocation");
 const SingleImageUpload = () => import("~/components/SingleImageUpload");
-import { geo } from "~/mixins";
+import { location } from "~/mixins";
 export default {
   fetch({ store, redirect }) {
     if (!(store.state.auth || {}).user)
       return redirect("/login?return=/my/profile");
   },
-  mixins: [geo],
+  mixins: [location],
   data() {
     return {
       a: {},
@@ -135,15 +138,16 @@ export default {
       this.user = await this.$axios.$get(`api/users/me`);
       this.profile = { ...this.user };
       this.a = await this.locateMe();
-      this.profile.address = this.profile.address || {};
-      this.a.address = this.profile.address.address || this.a.address;
-      this.a.town = this.profile.address.county || this.a.county;
-      this.a.city = this.profile.address.city || this.a.state_district;
-      this.a.zip = this.profile.address.zip || this.a.postcode;
-      this.a.firstName =
-        this.profile.address.firstName || this.profile.firstName;
-      this.a.lastName = this.profile.address.lastName || this.profile.lastName;
-      this.a.phone = this.profile.phone;
+      console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", this.a);
+      // this.profile.address = this.profile.address || {};
+      // this.a.address = this.profile.address.address || this.a.address;
+      // this.a.town = this.profile.address.county || this.a.county;
+      // this.a.city = this.profile.address.city || this.a.state_district;
+      // this.a.zip = this.profile.address.zip || this.a.postcode;
+      // this.a.firstName =
+      //   this.profile.address.firstName || this.profile.firstName;
+      // this.a.lastName = this.profile.address.lastName || this.profile.lastName;
+      // this.a.phone = this.profile.phone;
     } catch (e) {
     } finally {
       this.$store.commit("busy", false);

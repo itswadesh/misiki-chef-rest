@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CheckoutHeader />
+    <Header />
     <div class="w-full pb-4 lg:w-1/3 m-auto">
       <div>
         <div class="p-3 flex shadow lg:shadow-none items-center justify-between">
@@ -94,7 +94,7 @@
 
 <script>
 const Textbox = () => import("~/components/ui/Textbox");
-const CheckoutHeader = () => import("~/components/checkout/CheckoutHeader");
+const Header = () => import("~/components/Header");
 export default {
   data() {
     return {
@@ -102,7 +102,7 @@ export default {
     };
   },
   components: {
-    CheckoutHeader,
+    Header,
     Textbox
   },
   async created() {

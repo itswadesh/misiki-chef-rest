@@ -1,5 +1,6 @@
 export const API_URL = "https://apiv2.misiki.in";
 export const tokenExpiry = 60 * 60 * 15; // Login validity (15 minutes)
+export const locationExpiry = 60 * 60 * 60 * 365 * 5; // Login validity (5 years)
 export const typingTimeout = 0; // After this delay the search api will be fired
 export const loadingTimeout = 500; // Loading indicator will be shown after this delay
 export const userRoles = ["user", "vendor", "manager", "admin"]; // This should be in ascending order of authority. e.g. In this case user will not have access to any other role, where as admin will have the role of user+vendor+manager+admin
@@ -11,7 +12,16 @@ export const KEYWORDS =
   "litekart.in,litekart Accessories,Affordable Luxury,India's Best Women's Online Shopping,Online Jewellery,litekart, online shopping, online jewelry, jewellery, handbags, clutches, sunglasses, ethnic jewellery, nightwear, lingrie, clothing, bracelets, rings, sets, necklace, pendants, earrings, online jewellery in lahore, online shopping in India, litekart online shopping, litekart jewelry";
 export const HOST = "https://www.misiki.in";
 export const sharingLogo = "https://www.frontendfun.com/logo.svg";
-export const cities = ["Sunabeda", "Berhampur"];
+export const cities = [
+  {
+    name: "Sunabeda",
+    coords: { latitude: "18.729889", longitude: "82.831749" }
+  },
+  {
+    name: "Berhampur",
+    coords: { latitude: "19.311403", longitude: "84.788816" }
+  }
+];
 export const PAY_KEY = "rzp_test_o1gRrVKAzCT2Ke";
 export const head = {
   titleTemplate: "%s - Litekart",
@@ -76,53 +86,3 @@ export const timesList = [
   "11 PM",
   "12 AM"
 ]
-export const popularSearches = [
-  "Adidas",
-  "Arrow",
-  "Fila",
-  "Online Shopping",
-  "Nike",
-  "Pepe Jeans",
-  "Puma",
-  "United Colors of Benetton",
-  "Fastrack",
-  "Shorts",
-  "Being Human",
-  "Skirts",
-  "Woodland",
-  "Supra",
-  "Dresses",
-  "Clothing",
-  "Jewellery",
-  "T-shirts",
-  "Shoes",
-  "Bags",
-  "Watches",
-  "Caps",
-  "Shirts",
-  "Backpacks",
-  "Flip Flops",
-  "Sunglasses",
-  "Kurtas",
-  "Lingerie",
-  "Jackets",
-  "Skechers",
-  "Saree",
-  "Sandals",
-  "Puma Tshirts",
-  "Woodland Shoes",
-  "Titan Watches",
-  "Fastrack Watches",
-  "Wrangler Shirts",
-  "Adidas Tshirts",
-  "Nike Shoes",
-  "Roadster Shirts",
-  "Casual Shoes",
-  "Running Shoes",
-  "Nike Sports Shoes",
-  "Jeans",
-  "Being Human",
-  "Tshirts",
-  "Converse Shoes",
-  "Cricket Shoes"
-];

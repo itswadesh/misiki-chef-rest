@@ -2,7 +2,10 @@
   <div>
     <Header class="noprint" />
     <div class="heading noprint">Today's Orders</div>
-    <button @click="printOut()" class="noprint fab top-0">
+    <button
+      @click="printOut()"
+      class="noprint fab top-0"
+    >
       <i class="fa fa-print" />
     </button>
     <div>
@@ -11,7 +14,11 @@
         <h1>{{ todayTotal.total | currency }}</h1>
         <div>{{ orders && orders[0] && orders[0].createdAt | date }}</div>
       </div>
-      <div v-for="s in todaySummary" :key="s._id" class="noprint text-center">
+      <div
+        v-for="s in todaySummary"
+        :key="s._id"
+        class="noprint text-center"
+      >
         <span class="font-bold">
           {{ s._id }} *
           <span class="text-green-500 text-xl">{{ s.count }}</span> =
@@ -34,21 +41,20 @@
             o.address.phone
             }})
           </p>
-          <ul>
+          <ul v-if="o.item">
             <ol class="flex">
-              <div
-                class="mr-2 shadow-xl font-bold w-8 h-8 rounded-full bg-gray-300 text-center align-middle"
-              >1</div>
+              <div class="mr-2 shadow-xl font-bold w-8 h-8 rounded-full bg-gray-300 text-center align-middle">1</div>
               <div class>{{ o.item.name }}</div>
             </ol>
           </ul>
           <p>
             {{ o.rate | currency }} * {{ o.qty }} =
-            <span
-              class="text-3xl font-bold"
-            >{{ o.amount | currency }}</span>
+            <span class="text-3xl font-bold">{{ o.amount | currency }}</span>
           </p>
-          <h3 class="text-right tracking-wide">{{ o.vendor.restaurant }}</h3>
+          <h3
+            v-if="o.vendor"
+            class="text-right tracking-wide"
+          >{{ o.vendor.restaurant }}</h3>
           <div class="text-cyan-500 text-xs text-right">{{ o.createdAt | date }}</div>
         </li>
       </ul>

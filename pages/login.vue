@@ -1,88 +1,120 @@
 <template>
-  <div>
-    <div class="bg-gray-100 xs:mobile-login h-full px-4">
-      <div class="container mx-auto h-full flex items-center">
-        <div class="lg:w-1/3 w-full">
-          <div class="border-teal border-t-12 bg-white mb-6 rounded shadow-2xl">
-            <div class="p-0 secondary text-white rounded rounded-b-none">
-              <h1 class="text-xl mb-6 text-left p-3">
-                <span class="font-extrabold" v-if="!signup">SIGN IN</span>
-                <span class="font-extrabold" v-else>SIGN UP</span> TO YOUR ACCOUNT
-              </h1>
+  <div class="bg-gray-200 h-screen flex flex-col items-center justify-center">
+    <div class="lg:w-1/3 w-full px-4">
+      <div class="bg-white rounded shadow">
+        <div class="text-secondary text-white">
+          <h1 class="text-xl mb-2 text-center p-3">
+            <span
+              class="font-extrabold"
+              v-if="!signup"
+            >SIGN IN</span>
+            <span
+              class="font-extrabold"
+              v-else
+            >SIGN UP</span> TO YOUR ACCOUNT
+          </h1>
+        </div>
+        <form
+          novalidate
+          autocomplete="off"
+          @submit.stop.prevent="submit()"
+          class="center"
+        >
+          <div class="p-6">
+            <div>
+              <Textbox
+                v-model="uid"
+                label="Email/Phone"
+                @keyup="onPhoneChange"
+                class="bg-gray-200"
+              />
             </div>
-            <form novalidate autocomplete="off" @submit.stop.prevent="submit()" class="center">
-              <div class="p-6">
-                <div>
-                  <Textbox v-model="uid" label="Email/Phone" @keyup="onPhoneChange" />
-                </div>
-                <div v-if="showOTP">
-                  <Textbox v-if="signup" v-model="firstName" label="Fisrt Name" class="w-full" />
-                  <Textbox v-if="signup" v-model="lastName" label="Last Name" class="w-full" />
-                  <!-- <p class="text-red-500 mb-5 text-xs font-hairline">Please enter password</p> -->
-                  <!-- Show password box -->
-                  <div v-if="!isPhone">
-                    <Textbox
-                      v-model="password"
-                      name="password"
-                      label="Password"
-                      ref="password"
-                      type="password"
-                      class="w-full"
-                    />
-                  </div>
-                  <!-- Show OTP box -->
-                  <div v-else>
-                    <div
-                      id="wraper1"
-                      class="otp-seperator w-1 h-1 rounded absolute"
-                      :class="{'wraper-hide':otp.length>0}"
-                    ></div>
-                    <div
-                      id="wraper2"
-                      class="otp-seperator w-1 h-1 rounded absolute"
-                      :class="{'wraper-hide':otp.length>1}"
-                    ></div>
-                    <div
-                      id="wraper3"
-                      class="otp-seperator w-1 h-1 rounded absolute"
-                      :class="{'wraper-hide':otp.length>2}"
-                    ></div>
-                    <div
-                      id="wraper4"
-                      class="otp-seperator w-1 h-1 rounded absolute"
-                      :class="{'wraper-hide':otp.length>3}"
-                    ></div>
-                    <input
-                      v-model="otp"
-                      name="otp"
-                      ref="otp"
-                      class="outline-none pl-4 otp-content w-32 bg-transparent border border-gray-400"
-                      maxlength="4"
-                      autocomplete="off"
-                      @keyup="onKeyUpEvent(otp.length, $event)"
-                    />
-                  </div>
-                </div>
-                <div class="flex-col items-center justify-between">
-                  <button
-                    type="submit"
-                    :disabled="loading"
-                    class="flex items-center justify-center h-14 text-2xl outline-none w-full font-bold py-2 rounded"
-                    :class="{'primary text-white':!loading,'border border-gray-400 bg-gray-300':loading}"
-                  >
-                    <div v-if="loading">
-                      <img src="/loading.svg" :class="{'loading':loading}" alt />
-                    </div>
-                    <span v-else>{{submitText}}</span>
-                  </button>
-                  <p class="text-xs mt-2">
-                    <nuxt-link to="/account/forgot-password">Forgot Password?</nuxt-link>
-                  </p>
+            <div v-if="showOTP">
+              <Textbox
+                v-if="signup"
+                v-model="firstName"
+                label="Fisrt Name"
+                class="w-full bg-gray-200"
+              />
+              <Textbox
+                v-if="signup"
+                v-model="lastName"
+                label="Last Name"
+                class="w-full bg-gray-200"
+              />
+              <!-- <p class="text-red-500 mb-5 text-xs font-hairline">Please enter password</p> -->
+              <!-- Show password box -->
+              <div v-if="!isPhone">
+                <Textbox
+                  v-model="password"
+                  name="password"
+                  label="Password"
+                  ref="password"
+                  type="password"
+                  class="w-full  bg-gray-200"
+                />
+              </div>
+              <!-- Show OTP box -->
+              <div
+                v-else
+                class=" text-center"
+              >
+                <p class="text-red-500 mb-5 text-xs font-hairline">Please enter OTP sent to mobile number</p>
+                <div class="otp-container relative inline-block rounded p-2 w-32 w-12 mb-10 bg-gray-200">
+                  <div
+                    id="wraper1"
+                    class="otp-seperator w-1 h-1 rounded absolute"
+                    :class="{'wraper-hide':otp.length>0}"
+                  ></div>
+                  <div
+                    id="wraper2"
+                    class="otp-seperator w-1 h-1 rounded absolute"
+                    :class="{'wraper-hide':otp.length>1}"
+                  ></div>
+                  <div
+                    id="wraper3"
+                    class="otp-seperator w-1 h-1 rounded absolute"
+                    :class="{'wraper-hide':otp.length>2}"
+                  ></div>
+                  <div
+                    id="wraper4"
+                    class="otp-seperator w-1 h-1 rounded absolute"
+                    :class="{'wraper-hide':otp.length>3}"
+                  ></div>
+                  <input
+                    v-model="otp"
+                    name="otp"
+                    ref="otp"
+                    class="outline-none pl-4 otp-content w-32 bg-transparent border border-gray-400"
+                    maxlength="4"
+                    autocomplete="off"
+                    @keyup="onKeyUpEvent(otp.length, $event)"
+                  />
                 </div>
               </div>
-            </form>
+            </div>
+            <div class="flex-col items-center justify-between">
+              <button
+                type="submit"
+                :disabled="loading"
+                class="flex items-center justify-center h-14 text-2xl outline-none w-full font-bold py-2 rounded"
+                :class="{'primary text-white':!loading,'border border-gray-400 bg-gray-300':loading}"
+              >
+                <div v-if="loading">
+                  <img
+                    src="/loading.svg"
+                    :class="{'loading':loading}"
+                    alt
+                  />
+                </div>
+                <span v-else>{{submitText}}</span>
+              </button>
+              <!-- <p class="text-xs mt-2">
+                    <nuxt-link to="/account/forgot-password">Forgot Password?</nuxt-link>
+                  </p> -->
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
@@ -90,7 +122,9 @@
 
 <script>
 import Textbox from "~/components/ui/Textbox";
+import { location } from "~/mixins";
 export default {
+  mixins: [location],
   data() {
     return {
       loading: false,
@@ -106,6 +140,11 @@ export default {
       otp: "",
       showOTP: false
     };
+  },
+  async created() {
+    // let geoCookie = await this.$cookies.get("geo");
+    // let geo = await this.locateMe(geoCookie.coords);
+    // console.log(geo);
   },
   components: { Textbox },
   computed: {
@@ -175,7 +214,12 @@ export default {
             password: this.otp,
             route: this.$route.query.return
           });
+          let geoCookie = this.$cookies.get("geo");
+          if (!geoCookie && process.client) {
+            this.$router.push("/change-location");
+          }
         } catch (e) {
+          this.$store.commit("setErr", e.response.data);
         } finally {
           this.loading = false;
         }
@@ -293,5 +337,45 @@ export default {
 .container {
   max-height: 80vh !important;
   min-height: 80vh !important;
+}
+.wraper-hide {
+  visibility: hidden;
+}
+.border-t {
+  border-bottom: 1px solid lightgray;
+}
+.big-button {
+  background: linear-gradient(87deg, #fb6340, #da1c5f) !important;
+  border-color: #fb6340;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.otp-container .otp-seperator {
+  background-color: #dfe1e6;
+  border: 1px solid #dfe1e6;
+}
+.otp-container #wraper1 {
+  top: 20px;
+  left: 28px;
+}
+.otp-container #wraper2 {
+  top: 20px;
+  left: 51px;
+}
+.otp-container #wraper3 {
+  top: 20px;
+  left: 76px;
+}
+.otp-container #wraper4 {
+  top: 20px;
+  left: 100px;
+}
+.otp-container .otp-content {
+  letter-spacing: 15px;
+  border: 1px solid transparent;
+}
+input + label {
+  position: relative;
+  z-index: 999;
 }
 </style>

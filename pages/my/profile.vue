@@ -137,17 +137,18 @@ export default {
       this.$store.commit("busy", true);
       this.user = await this.$axios.$get(`api/users/me`);
       this.profile = { ...this.user };
-      this.a = await this.locateMe();
-      console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", this.a);
-      // this.profile.address = this.profile.address || {};
-      // this.a.address = this.profile.address.address || this.a.address;
-      // this.a.town = this.profile.address.county || this.a.county;
-      // this.a.city = this.profile.address.city || this.a.state_district;
-      // this.a.zip = this.profile.address.zip || this.a.postcode;
-      // this.a.firstName =
-      //   this.profile.address.firstName || this.profile.firstName;
-      // this.a.lastName = this.profile.address.lastName || this.profile.lastName;
-      // this.a.phone = this.profile.phone;
+      this.a = this.$cookies.get("geo");
+      this.profile.address = this.profile.address || {};
+      this.a.address =
+        this.profile.address.address || (this.a && this.a.address);
+      this.a.town = this.profile.address.county || (this.a && this.a.county);
+      this.a.city =
+        this.profile.address.city || (this.a && this.a.state_district);
+      this.a.zip = this.profile.address.zip || (this.a && this.a.postcode);
+      this.a.firstName =
+        this.profile.address.firstName || this.profile.firstName;
+      this.a.lastName = this.profile.address.lastName || this.profile.lastName;
+      this.a.phone = this.profile.phone;
     } catch (e) {
     } finally {
       this.$store.commit("busy", false);
@@ -161,22 +162,22 @@ export default {
     remove(name) {
       this.profile.avatar = "";
     },
-    // ...mapActions({
-    //   updateProfile: "auth/updateProfile"
-    // }),
+    ...mapActions({
+      updateProfile: "auth/updateProfile"
+    }),
     go(url) {
       this.$router.push(url);
     },
     async submit(profile) {
-      this.$store.commit("busy", true);
       try {
+        this.$store.commit("busy", true);
         this.profile.info = { restaurant: this.profile.restaurant };
         this.profile.address = this.a;
-        const data = await this.$axios.$put("api/users/profile", this.profile);
-        // await this.updateProfile({profile });
-        this.$store.commit("busy", false);
+        // const data = await this.$axios.$put("api/users/profile", this.profile);
+        await this.updateProfile(this.profile);
         this.go("/foods");
       } catch (e) {
+      } finally {
         this.$store.commit("busy", false);
       }
     }

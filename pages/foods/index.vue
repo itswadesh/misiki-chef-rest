@@ -21,7 +21,7 @@
           v-for="d in data"
           :key="d._id"
           @click="go('/foods/'+d._id)"
-          class="w-1/2 p-2 self-stretch shadow px-1 bg-gray-100 mb-2"
+          class="w-1/2 shadow bg-gray-100 mb-2"
         >
           <img v-lazy="d.img" class="h-32 bg-cover w-full border-b" />
           <!-- <div class="delete-icon">
@@ -78,9 +78,6 @@ export default {
 };
 </script>
 <style scoped>
-body {
-  font-family: Oswald;
-}
 .big-button {
   text-transform: initial;
   color: #fff;

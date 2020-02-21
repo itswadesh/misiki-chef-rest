@@ -19,18 +19,19 @@
           />
           <Textbox class="w-full" label="Rate" name="rate" v-model="food.rate" />
           <Textbox class="w-full" label="Qty" name="qty" v-model="food.stock" />
-          <Radio v-model="food.type" value="V" color="green" class="mr-2">Veg</Radio>
-          <Radio v-model="food.type" value="N" color="red" class="mr-2">Non Veg</Radio>
-          <br />
-          <br />
+          <div class="mb-4">
+            <Radio v-model="food.type" value="V" color="green" class="mr-2">Veg</Radio>
+            <Radio v-model="food.type" value="N" color="red" class="mr-2">Non Veg</Radio>
+          </div>
           <div class="flex">
             <Radio
+              color="secondary"
               v-model="food.time"
               v-for="(s,ix) in deliveryslots"
               :key="ix"
               :value="s.val"
               class="mr-2"
-            >{{s.name}}</Radio>
+            >{{s.name}} [{{s.val}}]</Radio>
           </div>
           <single-image-upload
             :image="food.img"
@@ -95,18 +96,14 @@ export default {
       const food = await this.$axios.$get("api/foods/" + this.$route.params.id);
       if (!food.time) food.time = "8:30 - 9:30 PM";
       this.food = food;
-      this.$store.commit("busy", false);
     } catch (e) {
-      this.$store.commit("busy", false);
     } finally {
       this.$store.commit("busy", false);
     }
     try {
       this.$store.commit("busy", true);
       this.dishes = await this.$axios.$get("api/dishes/chef");
-      this.$store.commit("busy", false);
     } catch (err) {
-      this.$store.commit("busy", false);
     } finally {
       this.$store.commit("busy", false);
     }
@@ -169,9 +166,7 @@ export default {
           this.$store.commit("setErr", "Quantity must be >= 0");
           return;
         }
-        this.$store.commit("busy", false);
       } catch (e) {
-        this.$store.commit("busy", false);
         this.$store.commit("setErr", e.toString());
         return;
       } finally {
@@ -185,11 +180,11 @@ export default {
         try {
           this.$store.commit("busy", true);
           res = await this.$axios.$post("api/foods", this.food);
-          this.$store.commit("busy", false);
           this.$router.push("/foods");
         } catch (e) {
-          this.$store.commit("busy", false);
           this.$store.commit("setErr", e);
+        } finally {
+          this.$store.commit("busy", false);
         }
       } else {
         // if (!this.food.active) this.food.stock = 0;
@@ -199,11 +194,11 @@ export default {
             "api/foods/" + this.$route.params.id,
             this.food
           );
-          this.$store.commit("busy", false);
           this.$router.push("/foods");
         } catch (e) {
-          this.$store.commit("busy", false);
           this.$store.commit("setErr", e);
+        } finally {
+          this.$store.commit("busy", false);
         }
       }
     }

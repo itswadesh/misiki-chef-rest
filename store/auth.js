@@ -195,9 +195,11 @@ export const actions = {
             zip,
             phone,
             avatar,
+            verified,
             gender,
             dob,
-            language
+            language,
+            info
         }
     ) {
         if (rootState.settings.demo) {
@@ -214,23 +216,25 @@ export const actions = {
                 city,
                 zip,
                 phone,
-                avatar,
+                avatar, verified,
                 gender,
                 dob,
-                language
+                language,
+                info
             });
             if (data) {
                 commit("setUser", {
                     firstName: data.firstName,
                     lastName: data.lastName,
-                    avatar: data.avatar,
+                    avatar: data.avatar, verified: data.verified,
                     dob: data.dob,
                     gender: data.gender,
                     language: data.language,
                     state: data.state,
                     city: data.city,
                     zip: data.zip,
-                    phone: data.phone
+                    phone: data.phone,
+                    info: data.info
                 });
                 commit("info", "Profile updated.", { root: true });
                 return data;

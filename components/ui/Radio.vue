@@ -1,47 +1,74 @@
 <template>
   <label class="radio">
-    <input type="radio" :checked="shouldBeChecked" :value="value" @change="updateInput" class="mr-1 align-middle">
-     <slot class="align-middle"/>
-    <div class="common-radioIndicator align-middle"></div>
+    <input
+      type="radio"
+      :checked="shouldBeChecked"
+      :value="value"
+      @change="updateInput"
+      class="mr-1 align-middle"
+    />
+    <slot class="align-middle" />
+    <div class="common-radioIndicator align-middle bg-green-500" :class="color"></div>
   </label>
 </template>
 <script>
 export default {
   model: {
-    prop: 'modelValue',
-    event: 'change'
+    prop: "modelValue",
+    event: "change"
   },
   props: {
     value: {
-      type: String,
+      type: String
     },
     modelValue: {
       default: ""
+    },
+    color: {
+      default: "red"
     }
   },
   computed: {
     shouldBeChecked() {
-      return this.modelValue == this.value
+      return this.modelValue == this.value;
     }
   },
   methods: {
     updateInput() {
-      this.$emit('change', this.value)
+      this.$emit("change", this.value);
     }
   }
-}
+};
 </script>
 
 <style scoped>
+.radio input:checked ~ .primary:before {
+  border-color: #fbb140;
+  background: #fb6340;
+}
+.radio input:checked ~ .secondary:before {
+  border-color: #40c8fb;
+  background: #1c45da;
+}
+.radio input:checked ~ .green:before {
+  border-color: #16ce3e;
+  background: #16ce3e;
+}
+.radio input:checked ~ .blue:before {
+  border-color: #3522dd;
+  background: #3522dd;
+}
+.radio input:checked ~ .red:before {
+  border-color: #ff3f6c;
+  background: #ff3f6c;
+}
 .radio input:checked ~ .common-radioIndicator:before {
   -webkit-transform: rotate(-90deg);
   -moz-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
   transform: rotate(-90deg);
-  border-color: #ff3f6c;
   visibility: visible;
-  background: #ff3f6c;
   -webkit-box-shadow: inset 0 0 0 3px #fff;
   -moz-box-shadow: inset 0 0 0 3px #fff;
   box-shadow: inset 0 0 0 3px #fff;

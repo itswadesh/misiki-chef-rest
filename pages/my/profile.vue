@@ -45,6 +45,7 @@
             v-model="a.address"
           />
           <Textbox
+            type="tel"
             label="Pin Code"
             class="w-full"
             name="name"

@@ -6,25 +6,33 @@
         class="lg:mx-15 form w-full mb-1"
         novalidate
         autocomplete="off"
-        @submit.stop.prevent="submit(profile)"
+        @submit.stop.prevent="submit(profile);go('/my')"
       >
         <div
-          class="p-2"
+          class="p-2 mb-4"
           v-if="a"
         >
           <div
+            type="tel"
             label="Phone"
-            class="w-full text-center mb-4"
+            class="w-full text-center"
             name="name"
-          >Phone: {{a.phone}}
+          >Phone: {{a.phone}}</div>
+          <div class="text-center">
+            <input
+              type="checkbox"
+              id="checkbox"
+              v-model="profile.public"
+            />
+            <label for="checkbox">Show name to public? {{ profile.public }}</label>
           </div>
           <Textbox
             label="Restaurant"
-            class="w-full"
+            class="w-full mb-4"
             name="restaurant"
             v-model="profile.restaurant"
           />
-          <div class="w-full flex justify-between">
+          <div class="w-full flex justify-between mb-4">
             <Textbox
               label="First Name"
               class="w-full"
@@ -40,24 +48,23 @@
           </div>
           <Textbox
             label="Address"
-            class="w-full"
+            class="w-full mb-4"
             name="name"
             v-model="a.address"
           />
           <Textbox
-            type="tel"
             label="Pin Code"
-            class="w-full"
+            class="w-full mb-4"
             name="name"
             v-model="a.zip"
           />
           <Textbox
             label="Town"
-            class="w-full"
+            class="w-full mb-4"
             name="name"
             v-model="a.town"
           />
-          <div class="w-full flex justify-between">
+          <div class="w-full flex justify-between mb-4">
             <Textbox
               label="City"
               class="w-1/2 mr-1"
@@ -71,7 +78,6 @@
               v-model="a.state"
             />
           </div>
-
           <SingleImageUpload
             :image="profile.avatar"
             name="avatar"
@@ -85,15 +91,11 @@
             type="button"
             @click="$router.push('/my')"
             class="tracking-widest p-3 w-1/2 bg-white text-black text-sm font-semibold lg:rounded"
-          >
-            CANCEL
-          </button>
+          >CANCEL</button>
           <button
             type="submit"
             class="tracking-widest p-3 w-1/2 primary text-sm font-semibold lg:rounded"
-          >
-            CONTINUE
-          </button>
+          >CONTINUE</button>
         </div>
       </form>
     </div>
@@ -105,6 +107,7 @@
 import { mapActions } from "vuex";
 const Heading = () => import("~/components/Heading");
 const Textbox = () => import("~/components/ui/Textbox");
+const Checkbox = () => import("~/components/ui/Checkbox");
 const GeoLocation = () => import("~/components/GeoLocation");
 const SingleImageUpload = () => import("~/components/SingleImageUpload");
 import { location } from "~/mixins";
@@ -123,6 +126,7 @@ export default {
   components: {
     Heading,
     Textbox,
+    Checkbox,
     GeoLocation,
     SingleImageUpload
   },
@@ -150,6 +154,8 @@ export default {
         this.profile.address.firstName || this.profile.firstName;
       this.a.lastName = this.profile.address.lastName || this.profile.lastName;
       this.a.phone = this.profile.phone;
+      if (!this.profile.info) this.profile.info = {};
+      else this.profile.public = this.profile.info.public;
     } catch (e) {
     } finally {
       this.$store.commit("busy", false);
@@ -158,10 +164,11 @@ export default {
   methods: {
     save(name, image) {
       this.profile.avatar = image;
-      // this.submit();
+      this.submit();
     },
     remove(name) {
       this.profile.avatar = "";
+      this.submit();
     },
     ...mapActions({
       updateProfile: "auth/updateProfile"
@@ -172,11 +179,13 @@ export default {
     async submit(profile) {
       try {
         this.$store.commit("busy", true);
-        this.profile.info = { restaurant: this.profile.restaurant };
+        this.profile.info = {
+          restaurant: this.profile.restaurant,
+          public: this.profile.public
+        };
         this.profile.address = this.a;
         // const data = await this.$axios.$put("api/users/profile", this.profile);
         await this.updateProfile(this.profile);
-        this.go("/foods");
       } catch (e) {
       } finally {
         this.$store.commit("busy", false);

@@ -90,7 +90,7 @@
                     class="outline-none pl-4 otp-content w-32 bg-transparent border border-gray-400"
                     maxlength="4"
                     autocomplete="off"
-                    @keyup="onKeyUpEvent(otp.length, $event)"
+                    @keyup="onOTPEnter(otp.length, $event)"
                   />
                 </div>
               </div>
@@ -279,7 +279,7 @@ export default {
         }
       }
     },
-    onKeyUpEvent(index, event) {
+    onOTPEnter(index, event) {
       const eventCode = event.which || event.keyCode;
       if (index == 4) {
         this.submit(); // Submit code

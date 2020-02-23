@@ -1,9 +1,17 @@
 <template>
   <div>
     <Heading title="Kitchen Photos" />
-    <div v-if="info" class="container">
+    <div
+      v-if="info"
+      class="container"
+    >
       <h1 class="text-xl font-bold text-center text-gray-700">{{ info.restaurant }}</h1>
-      <ImageUpload name="kitchen" folder="kitchen" @remove="remove" @save="save" />
+      <ImageUpload
+        name="kitchen"
+        folder="kitchen"
+        @remove="remove"
+        @save="save"
+      />
       <div class="flex flex-wrap mx-1 mt-2">
         <div
           v-for="(d, ix) in info.kitchenPhotos"
@@ -17,11 +25,18 @@
           >
             <i class="fa fa-close" />
           </button>
-          <img v-lazy="d" class="h-32 bg-cover w-full border-b" />
+          <img
+            v-lazy="d"
+            class="h-32 bg-cover w-full border-b"
+          />
         </div>
       </div>
     </div>
-    <div v-else>Please update restaurant info in profile</div>
+    <div
+      v-else
+      class="mx-atuo justify-center flex text-center align-middle h-72 items-center"
+    >Please update restaurant info in&nbsp;<nuxt-link to="/my/profile">profile</nuxt-link>
+    </div>
     <StickyFooter />
   </div>
 </template>

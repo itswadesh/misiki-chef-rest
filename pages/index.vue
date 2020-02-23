@@ -9,6 +9,7 @@
         </div>
       </div>
       <nuxt-link
+        v-if="orders"
         to="/orders"
         class="flex justify-center mt-12"
       >

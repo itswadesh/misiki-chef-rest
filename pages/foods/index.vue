@@ -1,7 +1,10 @@
 <template>
   <div>
     <Heading title="My Dishes" />
-    <div class="container" v-if="user && user.verified">
+    <div
+      class="container"
+      v-if="user && user.verified"
+    >
       <!-- <button
         class="button-lg blue"
         style="margin-bottom:20px"
@@ -23,29 +26,56 @@
           @click="go('/foods/'+d._id)"
           class="w-1/2 shadow bg-gray-100 mb-2"
         >
-          <img v-lazy="d.img" class="h-32 bg-cover w-full border-b" />
+          <img
+            v-lazy="d.img"
+            class="h-32 bg-cover w-full border-b"
+          />
           <!-- <div class="delete-icon">
                     <v-icon>delete</v-icon>
           </div>-->
           <div class="p-3">
             <div class="flex justify-between items-center">
-              <div class="text-red-500" v-if="d.stock>0">Only {{d.stock}} left</div>
-              <div class="text-green-500" v-else>Sold out</div>
-              <img v-if="d.type=='N'" src="/non-veg.png" class="w-5 h-5" />
-              <img v-else src="/veg.png" class="w-5 h-5" />
+              <div
+                class="text-red-500"
+                v-if="d.stock>0"
+              >Only {{d.stock}} left</div>
+              <div
+                class="text-green-500"
+                v-else
+              >Sold out</div>
+              <img
+                v-if="d.type=='N'"
+                src="/non-veg.png"
+                class="w-5 h-5"
+              />
+              <img
+                v-else
+                src="/veg.png"
+                class="w-5 h-5"
+              />
             </div>
             <div class="p-name">{{d.name}}</div>
           </div>
         </div>
       </div>
-      <nuxt-link class="fab top-0 mt-1" to="/foods/new">
-        <i class="fa fa-plus" aria-hidden="true"></i>
+      <nuxt-link
+        class="fab top-0 mt-1"
+        to="/foods/new"
+      >
+        <i
+          class="fa fa-plus"
+          aria-hidden="true"
+        ></i>
       </nuxt-link>
     </div>
     <div
       v-else
-      class="mx-atuo justify-center flex text-center align-middle h-72 items-center"
-    >You must be verified by admin to add new Dish</div>
+      class="mx-atuo justify-center flex flex-col text-center align-middle h-72 items-center"
+    ><i
+        class="fa fa-history text-gray-700 mb-2 text-primary"
+        style="font-size:4rem"
+      />
+      You must be verified by admin to add new Dish</div>
     <StickyFooter />
   </div>
 </template>

@@ -295,20 +295,18 @@ export default {
   },
   head() {
     return {
-      title: "Login to Litekart",
+      title: "Login to Misiki",
       meta: [
         {
           hid: "description",
           name: "description",
-          content:
-            "After this checkout process we will ship the item and it should be delivered within 7 working days"
+          content: "Login to Misiki"
         },
         {
           hid: "og:description",
           name: "Description",
           property: "og:description",
-          content:
-            "After this checkout process we will ship the item and it should be delivered within 7 working days"
+          content: "Login to Misiki"
         },
 
         {
@@ -324,8 +322,7 @@ export default {
         },
         {
           name: "twitter:description",
-          content:
-            "After this checkout process we will ship the item and it should be delivered within 7 working days"
+          content: "Login to Misiki"
         }
       ]
     };

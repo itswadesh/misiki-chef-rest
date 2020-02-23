@@ -9,7 +9,10 @@
       <i class="fa fa-print" />
     </button>
     <div>
-      <div class="flex noprint justify-center text-gray-600">
+      <div
+        class="flex noprint justify-center text-gray-600"
+        v-if="todayTotal"
+      >
         <h2>{{ todayTotal.count }}</h2>
         <h1>{{ todayTotal.total | currency }}</h1>
         <div>{{ orders && orders[0] && orders[0].createdAt | date }}</div>

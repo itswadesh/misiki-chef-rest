@@ -1,7 +1,6 @@
-<script>
-</script>
 <template>
   <form
+    class="text-center relative lg:w-1/2"
     novalidate
     autocomplete="off"
     @submit.stop.prevent="submit(search)"
@@ -13,12 +12,22 @@
       />
     </div>
     <input
+      aria-label="Search Box"
       type="text"
-      v-model="$route.query.q"
-      class="w-full px-10 bg-purple-white pr-4 border border-gray-200 rounded-full    border-0 h-10 focus:outline-none text-xs shadow"
-      placeholder="Search for items"
+      v-model="search"
+      class="w-full px-10 bg-purple-white pr-4 border border-gray-200 rounded-full border-0 h-10 focus:outline-none text-xs shadow"
+      placeholder="Search for food"
       name="search"
     />
+    <button
+      @click="go(-1)"
+      class="absolute right-0 top-0"
+    >
+      <i
+        class="fa fa-long-arrow-left m-3 text-gray-500"
+        aria-hidden="true"
+      />
+    </button>
   </form>
 </template>
 
@@ -70,9 +79,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-img {
-  margin-right: 1rem;
-}
-</style>

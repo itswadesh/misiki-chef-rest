@@ -6,7 +6,7 @@ const PROXY = process.env.API_URL || API_URL;
 export default {
   mode: "spa",
   head,
-  loading: "~/components/ui/Loading.vue",
+  // loading: "~/components/ui/Loading.vue",
   css: [],
   plugins: [
     "~/plugins/filters.js",
@@ -43,6 +43,10 @@ export default {
     "/api/": PROXY,
     "/auth": PROXY,
     "/images": PROXY
+  },
+  generate: {
+    dir: 'dist',
+    fallback: true
   },
   build: {
     postcss: {

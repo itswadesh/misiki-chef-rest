@@ -28,8 +28,7 @@ import StickyFooter from "~/components/footer/StickyFooter";
 
 export default {
   fetch({ store, redirect }) {
-    if (!(store.state.auth || {}).user)
-      return redirect("/login?return=my/profile");
+    if (!(store.state.auth || {}).user) return redirect("/login?return=/foods");
   },
   async asyncData({ $axios }) {
     let orders = [],

@@ -22,7 +22,7 @@ import Banner from "~/components/Banner";
 import Product from "~/components/Product";
 import ListCard from "~/components/ListCard";
 import Categories from "~/components/Categories";
-import { query, search, infiniteScroll } from "~/mixins";
+import { query, infiniteScroll } from "~/mixins";
 import { TITLE, DESCRIPTION, KEYWORDS, sharingLogo } from "~/config";
 import { constructURL } from "~/lib/";
 export default {

@@ -15,7 +15,11 @@
         </button>
       </div>
     </div>
-    <form enctype="multipart/form-data" novalidate v-else>
+    <form
+      enctype="multipart/form-data"
+      novalidate
+      v-else
+    >
       <div class="dropbox">
         <input
           type="file"
@@ -26,7 +30,7 @@
           class="input-file"
         />
         <p v-if="isInitial">
-          Drag food image here to upload
+          Drag image here to upload
           <br />or click to browse
         </p>
         <p v-if="isSaving">Uploading {{ fileCount }} files...</p>

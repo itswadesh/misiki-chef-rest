@@ -1,7 +1,12 @@
 <template>
   <div>
     <Heading title="Add food details" />
-    <form novalidate autocomplete="off" @submit.stop.prevent="submit()" class="container">
+    <form
+      novalidate
+      autocomplete="off"
+      @submit.stop.prevent="submit()"
+      class="container"
+    >
       <div class="card shadow columns">
         <br />
         <div class="margin-phn">
@@ -10,18 +15,43 @@
             @change="submit()"
             label="Open Kitchen"
           />-->
-          <Textbox class="w-full" label="Dish Name" name="name" v-model="food.name" />
           <Textbox
-            class="w-full"
+            class="w-full mb-4"
+            label="Dish Name"
+            name="name"
+            v-model="food.name"
+          />
+          <Textbox
+            class="w-full mb-4"
             label="Description"
             name="description"
             v-model="food.description"
           />
-          <Textbox class="w-full" label="Rate" name="rate" v-model="food.rate" />
-          <Textbox class="w-full" label="Qty" name="qty" v-model="food.stock" />
+          <Textbox
+            class="w-full mb-4"
+            label="Rate"
+            name="rate"
+            v-model="food.rate"
+          />
+          <Textbox
+            class="w-full mb-4"
+            label="Qty"
+            name="qty"
+            v-model="food.stock"
+          />
           <div class="mb-4">
-            <Radio v-model="food.type" value="V" color="green" class="mr-2">Veg</Radio>
-            <Radio v-model="food.type" value="N" color="red" class="mr-2">Non Veg</Radio>
+            <Radio
+              v-model="food.type"
+              value="V"
+              color="green"
+              class="mr-2"
+            >Veg</Radio>
+            <Radio
+              v-model="food.type"
+              value="N"
+              color="red"
+              class="mr-2"
+            >Non Veg</Radio>
           </div>
           <div class="flex">
             <Radio
@@ -53,8 +83,14 @@
         </div>
       </div>
       <div class="fixed bottom-0 text-center px-auto py-3 text-xl primary w-full">
-        <button type="submit" v-if="$route.params.id == 'new'">Add Dish</button>
-        <button type="submit" v-else>Save Changes</button>
+        <button
+          type="submit"
+          v-if="$route.params.id == 'new'"
+        >Add Dish</button>
+        <button
+          type="submit"
+          v-else
+        >Save Changes</button>
       </div>
     </form>
   </div>

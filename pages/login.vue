@@ -95,7 +95,7 @@
                 </div>
               </div>
             </div>
-            <div class="flex-col items-center justify-between">
+            <div class="flex-col items-center justify-between mt-6">
               <button
                 type="submit"
                 :disabled="loading"

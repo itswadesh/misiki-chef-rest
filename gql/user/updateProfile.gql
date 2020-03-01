@@ -1,0 +1,11 @@
+mutation updateProfile($firstName:String,$lastName:String,$restaurant:String,$kitchenPhotos:String[]){
+  updateProfile(
+    firstName: $firstName
+    lastName: $lastName
+    info: {restaurant:$restaurant, kitchenPhotos:$kitchenPhotos}
+  ) {
+   firstName
+    lastName
+    info {restaurant,kitchenPhotos}
+  }
+}

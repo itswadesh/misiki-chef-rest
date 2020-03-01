@@ -1,11 +1,14 @@
 <template>
   <div>
     <!-- https://codepen.io/adamwathan/pen/KKKqKLB -->
-    <div class="text-center lg:w-1/5 lg:mt-10 bg-white shadow leading-loose w-full p-10 border-b border-gray-200">
+    <div
+      v-if="user"
+      class="text-center lg:w-1/5 lg:mt-10 bg-white shadow leading-loose w-full p-10 border-b border-gray-200"
+    >
       <span class="h-20 w-20 p-2 text-4xl text-gray-600 rounded-full bg-gray-200 inline-block">{{user.firstName | first}}</span>
       <br />
       <span class="text-lg">{{user.firstName}}</span>
-      <span class="text-sm text-gray-500">{{user.email}}</span>
+      <span class="text-sm text-gray-500">{{user.phone}}</span>
     </div>
     <div class="antialiased bg-gray-200 min-h-screen p-8">
       <div class="flex justify-center">
@@ -216,15 +219,21 @@
 </template>
 
 <script>
+import signOut from "~/gql/user/signOut.gql";
+import me from "~/gql/user/me.gql";
 export default {
   data() {
     return {
-      selected: 0
+      selected: 0,
+      user: null
     };
   },
-  computed: {
-    user() {
-      return (this.$store.state.auth || {}).user || {};
+  async created() {
+    const res = (await this.$apollo.query({ query: me })).data;
+    if (res) {
+      this.user = res.me;
+    } else {
+      this.user = {};
     }
   },
   methods: {
@@ -233,7 +242,7 @@ export default {
       this.$router.push(url);
     },
     async logout() {
-      await this.$store.dispatch("auth/logout");
+      await this.$apollo.mutate({ mutation: signOut });
       this.$router.push("/");
     }
   }

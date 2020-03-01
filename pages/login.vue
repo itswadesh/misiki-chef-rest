@@ -125,8 +125,11 @@
 <script>
 import Textbox from "~/components/ui/Textbox";
 import { location } from "~/mixins";
+import getOtp from "../gql/user/getOtp.gql";
+import verifyOtp from "../gql/user/verifyOtp.gql";
 export default {
   mixins: [location],
+  middleware: ["isGuest"],
   data() {
     return {
       loading: false,
@@ -135,13 +138,17 @@ export default {
       p: {},
       msg: null,
       signup: false,
-      uid: "",
+      uid: "8895092508",
       password: "",
       firstName: "",
       lastName: "",
       otp: "",
       showOTP: false
     };
+  },
+  async mounted() {
+    const isAuthenticated = !!this.$apolloHelpers.getToken();
+    if (isAuthenticated) this.$router.push("/my");
   },
   async created() {
     // let geoCookie = await this.$cookies.get("geo");
@@ -193,16 +200,22 @@ export default {
     },
     async phoneLogin() {
       this.loading = true;
+      const phone = this.uid;
+      const otp = this.otp;
       if (!this.showOTP) {
         // When clicked 1st time
         try {
-          const otp = await this.$axios.get("api/users/phone/" + this.uid);
-          if (otp.status == 200 || otp.status == 201) {
-            this.showOTP = true;
-            this.msg = "Please enter OTP sent to your Mobile";
-            // this.$refs.otp.focus();
-            return;
-          }
+          const res = (
+            await this.$apollo.mutate({
+              mutation: getOtp,
+              variables: { phone }
+            })
+          ).data;
+          this.successfulData = res;
+          this.showOTP = true;
+          this.msg = "Please enter OTP sent to your Mobile";
+          // this.$refs.otp.focus();
+          return;
         } catch (e) {
           console.log("err...", e);
         } finally {
@@ -211,15 +224,15 @@ export default {
       } else {
         try {
           this.loading = true;
-          const res = await this.$store.dispatch("auth/login", {
-            phone: this.uid,
-            password: this.otp,
-            route: this.$route.query.return
+          await this.$apollo.mutate({
+            mutation: verifyOtp,
+            variables: { phone, otp }
           });
           let geoCookie = this.$cookies.get("geo");
           if (!geoCookie && process.client) {
             this.$router.push("/change-location");
           }
+          this.$router.push("/my");
         } catch (e) {
           this.$store.commit("setErr", e.response.data);
         } finally {

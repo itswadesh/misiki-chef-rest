@@ -1,0 +1,20 @@
+mutation createProduct($name:String,$type:String,$rate:String,$qty:Number,$img:String,time:String){
+  createProduct(name: $name,     type:$type,    rate:$rate,    qty:$qty,    img:$img,    time:$img){
+      id
+      name
+      slug
+      type
+      rate
+      qty
+      img
+      time
+      vendor{
+        id
+        name
+        phone
+        info{
+          restaurant
+        }
+      }
+  }
+}

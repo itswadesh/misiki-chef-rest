@@ -25,6 +25,7 @@
     "analyze": "nuxt build -a"
   },
   "dependencies": {
+    "@nuxtjs/apollo": "^4.0.0-rc19",
     "@nuxtjs/axios": "^5.9.5",
     "@nuxtjs/font-awesome": "^1.0.4",
     "@nuxtjs/onesignal": "^3.0.0-beta.16",

@@ -1,11 +1,11 @@
-mutation createProduct($name:String,$type:String,$rate:String,$qty:Number,$img:String,time:String){
-  createProduct(name: $name,     type:$type,    rate:$rate,    qty:$qty,    img:$img,    time:$img){
+mutation createProduct($name:String,$type:String,$rate:String,$stock:Number,$img:String,time:String){
+  createProduct(name: $name,     type:$type,    rate:$rate,    stock:$stock,    img:$img,    time:$img){
       id
       name
       slug
       type
       rate
-      qty
+      stock
       img
       time
       vendor{

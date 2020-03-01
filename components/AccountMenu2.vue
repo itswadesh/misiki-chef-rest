@@ -229,10 +229,14 @@ export default {
     };
   },
   async created() {
-    const res = (await this.$apollo.query({ query: me })).data;
-    if (res) {
-      this.user = res.me;
-    } else {
+    try {
+      const res = (await this.$apollo.query({ query: me })).data;
+      if (res) {
+        this.user = res.me;
+      } else {
+        this.user = {};
+      }
+    } catch (e) {
       this.user = {};
     }
   },

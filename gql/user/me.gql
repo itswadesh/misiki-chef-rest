@@ -4,5 +4,8 @@ query me{
     firstName
     lastName
     phone
+    role
+    verified
+    active
   }
 }

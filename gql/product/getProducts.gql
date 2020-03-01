@@ -5,7 +5,7 @@ query Products {
     name
     type
     rate
-    qty
+    stock
     img
     time
     vendor{

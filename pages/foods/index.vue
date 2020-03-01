@@ -84,22 +84,28 @@ import Heading from "~/components/Heading";
 import StickyFooter from "~/components/footer/StickyFooter";
 import Search from "~/components/Search";
 import { query, search, pagination } from "~/mixins";
+import getProducts from "~/gql/product/getProducts.gql";
+import me from "~/gql/user/me.gql";
 
 export default {
-  fetch({ store, redirect }) {
-    if (!store.getters["auth/hasRole"]("chef")) return redirect("/login");
-  },
+  middleware: "isAuth",
   mixins: [query, search, pagination],
   components: { Heading, Search, StickyFooter },
   data() {
-    return { loading: false, foods: [], apiQ: "api/foods/my" };
+    return {
+      data: null,
+      user: null
+    };
+  },
+  async created() {
+    try {
+      const res = (await this.$apollo.query({ query: getProducts })).data;
+      this.data = res.products;
+      const r = (await this.$apollo.query({ query: me })).data;
+      this.user = r.me;
+    } catch (error) {}
   },
   layout: "none",
-  computed: {
-    user() {
-      return (this.$store.state.auth || {}).user || null;
-    }
-  },
   head() {
     return {
       title: "Post Your Food"

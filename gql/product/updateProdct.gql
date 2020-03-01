@@ -1,0 +1,20 @@
+mutation updateProduct($name:String,$type:String,$rate:String,$stock:Number,$img:String,time:String){
+  updateProduct(name: $name,     type:$type,    rate:$rate,    stock:$stock,    img:$img,    time:$img){
+      id
+      name
+      slug
+      type
+      rate
+      stock
+      img
+      time
+      vendor{
+        id
+        name
+        phone
+        info{
+          restaurant
+        }
+      }
+  }
+}

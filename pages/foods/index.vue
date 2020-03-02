@@ -1,7 +1,6 @@
 <template>
   <div>
     <Heading title="My Dishes" />
-    {{loading}} == {{error}}
     <div
       class="container"
       v-if="user && user.verified"
@@ -104,14 +103,10 @@ export default {
   async mounted() {
     try {
       const { loading, error, data } = await this.$apollo.query({
-        query: getProducts
+        query: getProducts,
+        fetchPolicy: "no-cache"
       });
       const user = (await this.$apollo.query({ query: me })).data.me;
-      console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", {
-        loading,
-        error,
-        data
-      });
       this.products = data.products;
       this.loading = loading;
       this.error = error;

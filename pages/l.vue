@@ -83,7 +83,6 @@ export default {
         variables: {}
       })
     ).data;
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", res.products);
     this.products = res.products;
     this.isAuthenticated = !!this.$apolloHelpers.getToken();
   },

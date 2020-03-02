@@ -40,8 +40,8 @@ export default {
       }
     },
     defaultOptions: {
-      query: {
-        fetchPolicy: 'no-cache',
+      $query: {
+        fetchPolicy: "no-cache"
       },
     },
   },

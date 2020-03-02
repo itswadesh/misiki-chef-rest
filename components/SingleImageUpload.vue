@@ -60,7 +60,7 @@ const STATUS_INITIAL = 0,
 export default {
   // name required for removing
   props: {
-    image: { type: [String, null], required: true, default: "" },
+    image: { required: true, default: "" },
     name: { type: String, required: true },
     folder: { type: String, required: true },
     crunch: { type: Boolean, default: false }
@@ -68,7 +68,6 @@ export default {
   data() {
     return {
       currentStatus: 0,
-      img: this.image,
       data: null,
       error: null
     };
@@ -114,10 +113,10 @@ export default {
       return `${i}?a=${Math.random()}`;
     },
     save(imagePath) {
-      this.img = imagePath;
+      this.image = imagePath;
       this.$emit("save", this.name, imagePath);
     },
-    removeImage(img) {
+    removeImage(image) {
       let vm = this;
       this.$swal({
         title: "Delete image?",
@@ -129,15 +128,15 @@ export default {
         confirmButtonText: "Yes, delete it!"
       }).then(result => {
         if (result.value) {
-          vm.deleteConfirmed(img);
+          vm.deleteConfirmed(image);
         }
       });
     },
-    async deleteConfirmed(img) {
-      this.img = "";
+    async deleteConfirmed(image) {
+      this.image = "";
       await this.$apollo.mutate({
         mutation: deleteFile,
-        variables: { path: img }
+        variables: { path: image }
       });
       this.$emit("remove", this.name);
     },

@@ -144,7 +144,8 @@ export default {
       const food = (
         await this.$apollo.query({
           query: product,
-          variables: { id: this.$route.params.id }
+          variables: { id: this.$route.params.id },
+          fetchPolicy: "no-cache"
         })
       ).data;
       if (!food.time) food.time = "8:30 - 9:30 PM";
@@ -236,13 +237,13 @@ export default {
           }).then(async result => {
             if (result.value) {
               await vm.publishDish();
-              this.$router.push("/foods");
             }
           });
         } else {
           this.$store.commit("setErr", "Quantity must be >= 0");
           return;
         }
+        this.$router.push("/foods");
       } catch (e) {
         this.$store.commit("setErr", e.toString());
         return;

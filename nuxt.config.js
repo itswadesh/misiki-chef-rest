@@ -1,4 +1,4 @@
-import { join } from 'path'
+import { join } from "path";
 require("dotenv").config();
 const { API_URL, head, HOST, HTTP_ENDPOINT, WS_ENDPOINT } = require("./config");
 const PROXY = process.env.API_URL || API_URL;
@@ -20,7 +20,7 @@ export default {
   ],
   buildModules: ["@nuxtjs/tailwindcss"],
   modules: [
-    '@nuxtjs/apollo',
+    "@nuxtjs/apollo",
     "@nuxtjs/dotenv",
     // "~/modules/routes",
     "@nuxtjs/robots",
@@ -32,9 +32,10 @@ export default {
     "cookie-universal-nuxt"
   ],
   apollo: {
+    // errorHandler: "~/apollo/customErrorHandler.js",
     clientConfigs: {
       default: {
-        httpEndpoint: '/graphql',
+        httpEndpoint: "/graphql",
         wsEndpoint: process.env.WS_ENDPOINT
       }
     }
@@ -55,18 +56,15 @@ export default {
     "/images": PROXY
   },
   generate: {
-    dir: 'dist',
+    dir: "dist",
     fallback: true
   },
   build: {
     postcss: {
       plugins: {
-        tailwindcss: join(__dirname, 'tailwind.config.js'),
-        'postcss-pxtorem': {
-          propList: [
-            '*',
-            '!border*',
-          ]
+        tailwindcss: join(__dirname, "tailwind.config.js"),
+        "postcss-pxtorem": {
+          propList: ["*", "!border*"]
         }
       }
     }

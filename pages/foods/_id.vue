@@ -101,11 +101,13 @@ const Radio = () => import("~/components/ui/Radio");
 const Textbox = () => import("~/components/ui/Textbox");
 const Heading = () => import("~/components/Heading");
 import SingleImageUpload from "@/components/SingleImageUpload";
+import product from "~/gql/product/product.gql";
+import createProduct from "~/gql/product/createProduct.gql";
+import updateProduct from "~/gql/product/updateProduct.gql";
+import slots from "~/gql/product/slots.gql";
 
 export default {
-  fetch({ store, redirect }) {
-    if (!store.getters["auth/hasRole"]("chef")) return redirect("/login");
-  },
+  middleware: "isAuth",
   components: { SingleImageUpload, Radio, Textbox, Heading },
   data() {
     return {
@@ -127,22 +129,27 @@ export default {
   async created() {
     try {
       this.$store.commit("busy", true);
-      const deliveryslots = await this.$axios.$get("api/deliveryslots/public");
-      this.deliveryslots = deliveryslots.data;
-      const food = await this.$axios.$get("api/foods/" + this.$route.params.id);
+      const deliveryslots = (await this.$apollo.query({ query: slots })).data;
+      this.deliveryslots = deliveryslots.slots;
+      const food = (
+        await this.$apollo.query({
+          query: product,
+          variables: { id: this.$route.params.id }
+        })
+      ).data;
       if (!food.time) food.time = "8:30 - 9:30 PM";
-      this.food = food;
+      this.food = food.product;
     } catch (e) {
     } finally {
       this.$store.commit("busy", false);
     }
-    try {
-      this.$store.commit("busy", true);
-      this.dishes = await this.$axios.$get("api/dishes/chef");
-    } catch (err) {
-    } finally {
-      this.$store.commit("busy", false);
-    }
+    // try {
+    //   this.$store.commit("busy", true);
+    //   this.dishes = await this.$axios.$get("api/dishes/chef");
+    // } catch (err) {
+    // } finally {
+    //   this.$store.commit("busy", false);
+    // }
   },
   methods: {
     save(name, image) {
@@ -215,8 +222,11 @@ export default {
       if (this.$route.params.id == "new") {
         try {
           this.$store.commit("busy", true);
-          res = await this.$axios.$post("api/foods", this.food);
-          this.$router.push("/foods");
+          await this.$apollo.mutate({
+            mutation: createProduct
+          });
+          // res = await this.$axios.$post("api/foods", this.food);
+          // this.$router.push("/foods");
         } catch (e) {
           this.$store.commit("setErr", e);
         } finally {
@@ -226,11 +236,12 @@ export default {
         // if (!this.food.active) this.food.stock = 0;
         try {
           this.$store.commit("busy", true);
-          res = await this.$axios.$put(
-            "api/foods/" + this.$route.params.id,
-            this.food
-          );
-          this.$router.push("/foods");
+          this.food.stock = +this.food.stock;
+          await this.$apollo.mutate({
+            mutation: updateProduct,
+            variables: { id: this.$route.params.id, ...this.food }
+          });
+          // this.$router.push("/foods");
         } catch (e) {
           this.$store.commit("setErr", e);
         } finally {

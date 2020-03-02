@@ -22,8 +22,8 @@
       <div class="flex flex-wrap mx-1 mt-2">
         <div
           v-for="d in data"
-          :key="d._id"
-          @click="go('/foods/'+d._id)"
+          :key="d.id"
+          @click="go('/foods/'+d.id)"
           class="w-1/2 shadow bg-gray-100 mb-2"
         >
           <img
@@ -84,7 +84,7 @@ import Heading from "~/components/Heading";
 import StickyFooter from "~/components/footer/StickyFooter";
 import Search from "~/components/Search";
 import { query, search, pagination } from "~/mixins";
-import getProducts from "~/gql/product/getProducts.gql";
+import getProducts from "~/gql/product/products.gql";
 import me from "~/gql/user/me.gql";
 
 export default {
@@ -103,7 +103,9 @@ export default {
       this.data = res.products;
       const r = (await this.$apollo.query({ query: me })).data;
       this.user = r.me;
-    } catch (error) {}
+    } catch (e) {
+      console.error("err... ", e);
+    }
   },
   layout: "none",
   head() {

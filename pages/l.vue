@@ -56,7 +56,7 @@
 
 <script>
 import authenticateUserGql from "../gql/user/authenticateUser.gql";
-import getProducts from "../gql/product/getProducts.gql";
+import getProducts from "../gql/product/products.gql";
 export default {
   head() {
     return {

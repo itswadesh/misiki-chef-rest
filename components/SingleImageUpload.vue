@@ -1,5 +1,11 @@
 <template>
   <div class="mt-4 bg-gray-100 mx-auto relative">
+    <div v-if="$apollo.loading">Loading...</div>
+    <input
+      type="file"
+      accept="image/*"
+      @change="uploadPhoto"
+    >
     <div
       v-if="image"
       v-lazy:background-image="`${image}`"
@@ -41,10 +47,18 @@
         </p>
       </div>
     </form>
+    <div>
+      <h2 v-if="data">Good: {{data.goodField}}</h2>
+      <pre v-if="error">Bad: 
+        {{error}}
+        <span v-for="(e,ix) in error.graphQLErrors" :key="ix">{{e.message}}</span>
+      </pre>
+    </div>
   </div>
 </template>
 
 <script>
+import singleUpload from "~/gql/product/singleUpload.gql";
 const STATUS_INITIAL = 0,
   STATUS_SAVING = 1,
   STATUS_SUCCESS = 2,
@@ -60,7 +74,9 @@ export default {
   data() {
     return {
       currentStatus: 0,
-      img: this.image
+      img: this.image,
+      data: null,
+      error: null
     };
   },
   computed: {
@@ -86,6 +102,17 @@ export default {
     // }
   },
   methods: {
+    async uploadPhoto({ target }) {
+      try {
+        this.data = await this.$apollo.mutate({
+          mutation: singleUpload,
+          variables: target.files[0]
+        });
+      } catch (e) {
+        console.log("err... ", e.errors);
+        this.error = e;
+      }
+    },
     imgPath(i) {
       return `${i}?a=${Math.random()}`;
     },
@@ -132,15 +159,16 @@ export default {
     async saveImage(formData, name) {
       try {
         this.currentStatus = 1;
-        let x = await this.$axios.$post(
-          "api/media/nocrunch/" + this.folder,
-          formData
-        ); // When name is passed, it acts as logo upload. Where it uploads to img directory and replaces the original file rather than adding it to the uploads directory
+        let x = await this.$apollo.mutate({
+          mutation: singleUpload,
+          variables: { file: formData }
+        });
         const path = x[0]; // Where the variable is assigned
         this.currentStatus = 2;
         this.save(path); // Save the image against api
       } catch (e) {
         this.currentStatus = 3;
+
         this.err(e);
       }
     },

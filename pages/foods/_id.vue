@@ -5,8 +5,15 @@
       novalidate
       autocomplete="off"
       @submit.stop.prevent="submit()"
-      class="container"
+      class="container relative"
     >
+      <button
+        type="button"
+        @click="deleteProduct(food.id)"
+        class="absolute right-0 top-0 w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200 z-10"
+      >
+        <i class="fa fa-close" />
+      </button>
       <div class="card shadow columns">
         <br />
         <div class="margin-phn">
@@ -67,8 +74,8 @@
             :image="food.img"
             name="food"
             folder="food"
-            @remove="remove"
-            @save="save"
+            @remove="removeImage"
+            @save="saveImage"
           />
           <!-- <img
             v-if="food.img"
@@ -84,10 +91,12 @@
       </div>
       <div class="fixed bottom-0 text-center px-auto py-3 text-xl primary w-full">
         <button
+          class="w-full"
           type="submit"
           v-if="$route.params.id == 'new'"
         >Add Dish</button>
         <button
+          class="w-full"
           type="submit"
           v-else
         >Save Changes</button>
@@ -104,6 +113,7 @@ import SingleImageUpload from "@/components/SingleImageUpload";
 import product from "~/gql/product/product.gql";
 import createProduct from "~/gql/product/createProduct.gql";
 import updateProduct from "~/gql/product/updateProduct.gql";
+import deleteProduct from "~/gql/product/deleteProduct.gql";
 import slots from "~/gql/product/slots.gql";
 
 export default {
@@ -152,12 +162,35 @@ export default {
     // }
   },
   methods: {
-    save(name, image) {
+    async deleteProduct(id) {
+      this.$swal({
+        title: "Are you sure to delete this dish?",
+        text: "This will permanently delete including image",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Delete!"
+      }).then(async result => {
+        if (result.value) {
+          try {
+            await this.$apollo.mutate({
+              mutation: deleteProduct,
+              variables: { id }
+            });
+            this.$router.push("/foods");
+          } catch (e) {}
+        }
+      });
+    },
+    saveImage(name, image) {
       this.food.img = image;
+      this.publishDish();
       // this.submit();
     },
-    remove(name) {
+    removeImage(name) {
       this.food.img = "";
+      this.publishDish();
     },
     // add(qty) {
     //   if (qty < 5 && this.qty <= 0) return;
@@ -203,6 +236,7 @@ export default {
           }).then(async result => {
             if (result.value) {
               await vm.publishDish();
+              this.$router.push("/foods");
             }
           });
         } else {
@@ -218,35 +252,26 @@ export default {
       }
     },
     async publishDish() {
-      let res = {};
-      if (this.$route.params.id == "new") {
-        try {
-          this.$store.commit("busy", true);
+      try {
+        this.$store.commit("busy", true);
+        this.food.rate = +this.food.rate;
+        this.food.stock = +this.food.stock;
+        if (this.$route.params.id == "new") {
           await this.$apollo.mutate({
-            mutation: createProduct
+            mutation: createProduct,
+            variables: this.food
           });
-          // res = await this.$axios.$post("api/foods", this.food);
-          // this.$router.push("/foods");
-        } catch (e) {
-          this.$store.commit("setErr", e);
-        } finally {
-          this.$store.commit("busy", false);
-        }
-      } else {
-        // if (!this.food.active) this.food.stock = 0;
-        try {
-          this.$store.commit("busy", true);
-          this.food.stock = +this.food.stock;
+        } else {
           await this.$apollo.mutate({
             mutation: updateProduct,
             variables: { id: this.$route.params.id, ...this.food }
           });
-          // this.$router.push("/foods");
-        } catch (e) {
-          this.$store.commit("setErr", e);
-        } finally {
-          this.$store.commit("busy", false);
         }
+        // this.$router.push("/foods");
+      } catch (e) {
+        this.$store.commit("setErr", e);
+      } finally {
+        this.$store.commit("busy", false);
       }
     }
   },

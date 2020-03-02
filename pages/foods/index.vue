@@ -1,6 +1,7 @@
 <template>
   <div>
     <Heading title="My Dishes" />
+    {{loading}} == {{error}}
     <div
       class="container"
       v-if="user && user.verified"
@@ -21,13 +22,13 @@
       <Search />
       <div class="flex flex-wrap mx-1 mt-2">
         <div
-          v-for="d in data"
-          :key="d.id"
-          @click="go('/foods/'+d.id)"
+          v-for="p in products"
+          :key="p.id"
+          @click="go('/foods/'+p.id)"
           class="w-1/2 shadow bg-gray-100 mb-2"
         >
           <img
-            v-lazy="d.img"
+            v-lazy="p.img"
             class="h-32 bg-cover w-full border-b"
           />
           <!-- <div class="delete-icon">
@@ -37,14 +38,14 @@
             <div class="flex justify-between items-center">
               <div
                 class="text-red-500"
-                v-if="d.stock>0"
-              >Only {{d.stock}} left</div>
+                v-if="p.stock>0"
+              >Only {{p.stock}} left</div>
               <div
                 class="text-green-500"
                 v-else
               >Sold out</div>
               <img
-                v-if="d.type=='N'"
+                v-if="p.type=='N'"
                 src="/non-veg.png"
                 class="w-5 h-5"
               />
@@ -54,7 +55,7 @@
                 class="w-5 h-5"
               />
             </div>
-            <div class="p-name">{{d.name}}</div>
+            <div class="p-name">{{p.name}}</div>
           </div>
         </div>
       </div>
@@ -91,18 +92,30 @@ export default {
   middleware: "isAuth",
   mixins: [query, search, pagination],
   components: { Heading, Search, StickyFooter },
+
   data() {
     return {
-      data: null,
+      loading: false,
+      error: null,
+      products: null,
       user: null
     };
   },
-  async created() {
+  async mounted() {
     try {
-      const res = (await this.$apollo.query({ query: getProducts })).data;
-      this.data = res.products;
-      const r = (await this.$apollo.query({ query: me })).data;
-      this.user = r.me;
+      const { loading, error, data } = await this.$apollo.query({
+        query: getProducts
+      });
+      const user = (await this.$apollo.query({ query: me })).data.me;
+      console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", {
+        loading,
+        error,
+        data
+      });
+      this.products = data.products;
+      this.loading = loading;
+      this.error = error;
+      this.user = user;
     } catch (e) {
       console.error("err... ", e);
     }

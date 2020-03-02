@@ -15,14 +15,12 @@ export default ({ store, app: { $axios } }) => {
     },
     filter: {
       progressive(listener, options) {
-        const CDN =
-          store.state.settings.CDN_URL ||
-          `https://ik.imagekit.io/misiki/images`;
+        const CDN = '';
         listener.el.setAttribute("lazy-progressive", "true");
         listener.loading = CDN + listener.src + "?tr=w-3,h-2";
         listener.src = CDN + listener.src;
       },
-      error(listender, Init) {}
+      error(listender, Init) { }
     }
   });
 };

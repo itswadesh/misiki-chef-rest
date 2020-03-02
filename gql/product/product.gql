@@ -3,6 +3,7 @@ query Product($id: ID!) {
     id
     slug
     name
+    description
     type
     rate
     stock

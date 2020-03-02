@@ -1,25 +1,18 @@
 <template>
   <div class="mt-4 bg-gray-100 mx-auto relative">
     <div v-if="$apollo.loading">Loading...</div>
-    <input
-      type="file"
-      accept="image/*"
-      @change="uploadPhoto"
-    >
     <div
       v-if="image"
       v-lazy:background-image="`${image}`"
       class="bg-cover bg-no-repeat h-64 relative"
     >
-      <div class="absolute right-0 top-0">
-        <button
-          type="button"
-          @click="removeImage(image)"
-          class="w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200"
-        >
-          <i class="fa fa-close" />
-        </button>
-      </div>
+      <button
+        type="button"
+        @click="removeImage(image)"
+        class="absolute right-0 top-0 w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200"
+      >
+        <i class="fa fa-close" />
+      </button>
     </div>
     <form
       enctype="multipart/form-data"
@@ -31,7 +24,7 @@
           type="file"
           name="photos"
           :disabled="isSaving"
-          @change="filesChange($event.target.name, $event.target.files,name); fileCount = $event.target.files.length"
+          @change="uploadPhoto"
           accept="image/*"
           class="input-file"
         />
@@ -47,18 +40,19 @@
         </p>
       </div>
     </form>
-    <div>
+    <!-- <div>
       <h2 v-if="data">Good: {{data.goodField}}</h2>
       <pre v-if="error">Bad: 
         {{error}}
-        <span v-for="(e,ix) in error.graphQLErrors" :key="ix">{{e.message}}</span>
+        <span v-for="(e,ix) in error" :key="ix">{{e.message}}</span>
       </pre>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import singleUpload from "~/gql/product/singleUpload.gql";
+import deleteFile from "~/gql/product/deleteFile.gql";
 const STATUS_INITIAL = 0,
   STATUS_SAVING = 1,
   STATUS_SUCCESS = 2,
@@ -66,7 +60,7 @@ const STATUS_INITIAL = 0,
 export default {
   // name required for removing
   props: {
-    image: { type: String, required: true, default: "" },
+    image: { type: [String, null], required: true, default: "" },
     name: { type: String, required: true },
     folder: { type: String, required: true },
     crunch: { type: Boolean, default: false }
@@ -104,13 +98,16 @@ export default {
   methods: {
     async uploadPhoto({ target }) {
       try {
-        this.data = await this.$apollo.mutate({
-          mutation: singleUpload,
-          variables: target.files[0]
-        });
+        this.image = (
+          await this.$apollo.mutate({
+            mutation: singleUpload,
+            variables: { file: target.files[0], folder: this.folder }
+          })
+        ).data.singleUpload.filename;
+        this.$emit("save", this.name, this.image);
       } catch (e) {
-        console.log("err... ", e.errors);
-        this.error = e;
+        console.log("err... ", e);
+        this.error = e.graphQLErrors;
       }
     },
     imgPath(i) {
@@ -138,8 +135,9 @@ export default {
     },
     async deleteConfirmed(img) {
       this.img = "";
-      await this.$axios.$delete("api/media/single", {
-        data: { img: img }
+      await this.$apollo.mutate({
+        mutation: deleteFile,
+        variables: { path: img }
       });
       this.$emit("remove", this.name);
     },

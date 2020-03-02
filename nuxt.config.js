@@ -38,7 +38,12 @@ export default {
         httpEndpoint: "/graphql",
         wsEndpoint: process.env.WS_ENDPOINT
       }
-    }
+    },
+    defaultOptions: {
+      query: {
+        fetchPolicy: 'no-cache',
+      },
+    },
   },
   toast: {
     theme: "bubble",
@@ -53,7 +58,7 @@ export default {
     "/graphql": process.env.HTTP_ENDPOINT,
     "/api/": PROXY,
     "/auth": PROXY,
-    "/images": PROXY
+    "/images": process.env.HTTP_ENDPOINT
   },
   generate: {
     dir: "dist",

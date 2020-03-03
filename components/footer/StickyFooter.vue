@@ -15,7 +15,7 @@
         active-class="text-primary"
       >
         <i class="fa fa-user" />
-        <span class="text-xs">Profile</span>
+        <span class="text-xs">Account</span>
       </nuxt-link>
       <nuxt-link
         to="/orders"

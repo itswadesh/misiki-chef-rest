@@ -6,7 +6,7 @@
         class="lg:mx-15 form w-full mb-1"
         novalidate
         autocomplete="off"
-        @submit.stop.prevent="submit(profile);go('/my')"
+        @submit.stop.prevent="submit(profile)"
       >
         <div
           class="p-2 mb-4"
@@ -18,30 +18,35 @@
             class="w-full text-center"
             name="name"
           >Phone: {{a.phone}}</div>
-          <div class="text-center">
+          <div
+            class="text-center cursor-pointer"
+            v-if="profile.info"
+          >
             <input
               type="checkbox"
               id="checkbox"
-              v-model="profile.public"
+              name="checkbox"
+              v-model="profile.info.public"
             />
-            <label for="checkbox">Show name to public? {{ profile.public }}</label>
+            <label for="checkbox">Show name to public? {{ profile.info.public }}</label>
           </div>
           <Textbox
             label="Restaurant"
             class="w-full mb-4"
             name="restaurant"
+            v-if="profile.info"
             v-model="profile.restaurant"
           />
           <div class="w-full flex justify-between mb-4">
             <Textbox
               label="First Name"
-              class="w-full"
+              class="w-1/2 mr-1"
               name="firstName"
               v-model="profile.firstName"
             />
             <Textbox
               label="Last Name"
-              class="w-full"
+              class="w-1/2 ml-1"
               name="lastName"
               v-model="profile.lastName"
             />
@@ -52,12 +57,20 @@
             name="name"
             v-model="a.address"
           />
-          <Textbox
-            label="Pin Code"
-            class="w-full mb-4"
-            name="name"
-            v-model="a.zip"
-          />
+          <div class="w-full flex justify-between mb-4">
+            <Textbox
+              label="Pin Code"
+              class="w-1/2 mr-1"
+              name="zip"
+              v-model="a.zip"
+            />
+            <Textbox
+              label="Phone"
+              class="w-1/2 ml-1"
+              name="phone"
+              v-model="a.phone"
+            />
+          </div>
           <Textbox
             label="Town"
             class="w-full mb-4"
@@ -82,8 +95,8 @@
             :image="profile.avatar"
             name="avatar"
             folder="avatar"
-            @remove="remove"
-            @save="save"
+            @remove="removeImage"
+            @save="saveImage"
           />
         </div>
         <div class="flex shadow lg:shadow-none fixed lg:relative bottom-0 justify-between w-full">
@@ -99,6 +112,30 @@
         </div>
       </form>
     </div>
+    <ul
+      v-if="nwErr"
+      class="mx-2"
+    >
+      <li
+        class="bg-red-200 p-3 mb-2 rounded"
+        v-for="(e,ix) in nwErr"
+        :key="ix"
+      >
+        {{e.message}}
+      </li>
+    </ul>
+    <ul
+      v-if="graphErr"
+      class="mx-2"
+    >
+      <li
+        class="bg-red-200 p-3 mb-2 rounded"
+        v-for="(e,ix) in graphErr"
+        :key="ix"
+      >
+        {{e.message}}
+      </li>
+    </ul>
     <GeoLocation />
   </div>
 </template>
@@ -110,17 +147,18 @@ const Textbox = () => import("~/components/ui/Textbox");
 const Checkbox = () => import("~/components/ui/Checkbox");
 const GeoLocation = () => import("~/components/GeoLocation");
 const SingleImageUpload = () => import("~/components/SingleImageUpload");
+import me from "~/gql/user/me.gql";
+
 import { location } from "~/mixins";
 export default {
-  fetch({ store, redirect }) {
-    if (!(store.state.auth || {}).user)
-      return redirect("/login?return=/my/profile");
-  },
+  middleware: ["isAuth"],
   mixins: [location],
   data() {
     return {
       a: {},
-      profile: {}
+      profile: {},
+      nwErr: null,
+      graphErr: null
     };
   },
   components: {
@@ -135,38 +173,39 @@ export default {
     //   return (this.$store.state.auth || {}).user || null;
     // }
   },
-  async created() {
+  async mounted() {
     // await this.$axios.$get(`/api/geo/remove`);
     // this.$cookies.remove("geo");
     try {
       this.$store.commit("busy", true);
-      this.user = await this.$axios.$get(`api/users/me`);
-      this.profile = { ...this.user };
+      const user = (await this.$apollo.query({ query: me })).data.me;
+      this.profile = { ...user };
       this.a = this.$cookies.get("geo");
       this.profile.address = this.profile.address || {};
       this.a.address =
         this.profile.address.address || (this.a && this.a.address);
-      this.a.town = this.profile.address.county || (this.a && this.a.county);
-      this.a.city =
-        this.profile.address.city || (this.a && this.a.state_district);
-      this.a.zip = this.profile.address.zip || (this.a && this.a.postcode);
+      this.a.town = this.profile.address.town || (this.a && this.a.town);
+      this.a.city = this.profile.address.city || (this.a && this.a.city);
+      this.a.zip = this.profile.address.zip || (this.a && this.a.zip);
       this.a.firstName =
         this.profile.address.firstName || this.profile.firstName;
       this.a.lastName = this.profile.address.lastName || this.profile.lastName;
       this.a.phone = this.profile.phone;
       if (!this.profile.info) this.profile.info = {};
-      else this.profile.public = this.profile.info.public;
+      this.profile.public = this.profile.info.public || false;
+      this.profile.restaurant = this.profile.info.restaurant;
     } catch (e) {
     } finally {
       this.$store.commit("busy", false);
     }
   },
   methods: {
-    save(name, image) {
+    saveImage(name, image) {
       this.profile.avatar = image;
       this.submit();
+      // this.submit();
     },
-    remove(name) {
+    removeImage(name) {
       this.profile.avatar = "";
       this.submit();
     },
@@ -177,16 +216,20 @@ export default {
       this.$router.push(url);
     },
     async submit(profile) {
+      this.nwErr = null;
+      this.graphErr = null;
       try {
         this.$store.commit("busy", true);
-        this.profile.info = {
-          restaurant: this.profile.restaurant,
-          public: this.profile.public
-        };
+        this.profile.restaurant = this.profile.info.restaurant;
+        this.profile.public = !!this.profile.info.public;
         this.profile.address = this.a;
         // const data = await this.$axios.$put("api/users/profile", this.profile);
         await this.updateProfile(this.profile);
       } catch (e) {
+        if (e.graphQLErrors) this.graphErr = e.graphQLErrors;
+        if (e.networkError && e.networkError.result)
+          this.nwErr = e.networkError.result.errors;
+        console.log("err... ", this.nwErr, this.graphErr);
       } finally {
         this.$store.commit("busy", false);
       }

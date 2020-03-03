@@ -83,6 +83,25 @@
           />-->
           <div class="msg">{{msg}}</div>
           <br />
+          <div
+            class="bg-red-200 p-3 rounded"
+            v-if="nwErr || graphErr"
+          >
+            <ul>
+              <li
+                v-for="(e,ix) in nwErr"
+                :key="ix"
+              >
+                {{e.message}}
+              </li>
+              <li
+                v-for="(e,ix) in graphErr"
+                :key="ix"
+              >
+                {{e.message}}
+              </li>
+            </ul>
+          </div>
           <br />
           <br />
           <br />
@@ -124,6 +143,9 @@ export default {
       loading: false,
       fadeIn: "",
       msg: null,
+      err: [],
+      nwErr: null,
+      graphErr: null,
       deliveryslots: [],
       food: { type: "V", time: "8:30 - 9:30 PM" },
       date: null,
@@ -225,6 +247,7 @@ export default {
         // this.food.deliveryDate = date;
         if (this.food.stock == 0) {
           await vm.publishDish();
+          // this.$router.push("/foods");
         } else if (this.food.stock > 0) {
           this.$swal({
             title: "Are you sure to activate this dish?",
@@ -237,13 +260,13 @@ export default {
           }).then(async result => {
             if (result.value) {
               await vm.publishDish();
+              // this.$router.push("/foods");
             }
           });
         } else {
           this.$store.commit("setErr", "Quantity must be >= 0");
           return;
         }
-        this.$router.push("/foods");
       } catch (e) {
         this.$store.commit("setErr", e.toString());
         return;
@@ -268,9 +291,12 @@ export default {
             variables: { id: this.$route.params.id, ...this.food }
           });
         }
-        // this.$router.push("/foods");
+        this.$router.push("/foods");
       } catch (e) {
-        this.$store.commit("setErr", e);
+        if (e.graphQLErrors) this.graphErr = e.graphQLErrors;
+        if (e.networkError) this.nwErr = e.networkError.result.errors;
+        console.log("err... ", this.nwErr, this.graphErr);
+        this.$store.commit("setErr", e.toString());
       } finally {
         this.$store.commit("busy", false);
       }

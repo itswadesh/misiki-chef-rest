@@ -230,7 +230,9 @@ export default {
   },
   async created() {
     try {
-      const res = (await this.$apollo.query({ query: me })).data;
+      const res = (
+        await this.$apollo.query({ query: me, fetchPolicy: "no-cache" })
+      ).data;
       if (res) {
         this.user = res.me;
       } else {

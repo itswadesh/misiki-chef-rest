@@ -1,11 +1,45 @@
-mutation updateProfile($firstName:String,$lastName:String,$restaurant:String,$kitchenPhotos:String[]){
+mutation updateProfile(
+  $address: AddressInput
+  $firstName: String
+  $lastName: String
+  $avatar: String
+  $dob: String
+  $gender: String
+  # $state: String
+  # $city: String
+  $phone: String
+  $public: Boolean
+  $restaurant: String
+  $kitchenPhotos: [String]
+) {
   updateProfile(
     firstName: $firstName
     lastName: $lastName
-    info: {restaurant:$restaurant, kitchenPhotos:$kitchenPhotos}
+    avatar: $avatar
+    phone: $phone
+    dob: $dob
+    gender: $gender
+    info: {
+      public: $public
+      restaurant: $restaurant
+      kitchenPhotos: $kitchenPhotos
+    }
+    address: $address
   ) {
-   firstName
+    firstName
     lastName
-    info {restaurant,kitchenPhotos}
+    avatar
+    address {
+      address
+      town
+      city
+      state
+      zip
+    }
+    info {
+      public
+      restaurant
+      kitchenPhotos
+    }
   }
 }

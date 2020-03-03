@@ -8,13 +8,13 @@ query Products {
     stock
     img
     time
-    vendor{
+    vendor {
       id
       firstName
       lastName
       phone
       email
-      info{
+      info {
         restaurant
         kitchenPhotos
       }

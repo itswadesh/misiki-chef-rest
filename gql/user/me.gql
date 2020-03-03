@@ -1,4 +1,4 @@
-query me{
+query me {
   me {
     id
     firstName
@@ -7,5 +7,18 @@ query me{
     role
     verified
     active
+    avatar
+    address {
+      address
+      town
+      city
+      state
+      zip
+    }
+    info {
+      public
+      restaurant
+      kitchenPhotos
+    }
   }
 }

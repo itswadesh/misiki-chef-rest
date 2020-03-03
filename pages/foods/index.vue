@@ -111,8 +111,14 @@ export default {
       this.loading = loading;
       this.error = error;
       this.user = user;
-    } catch (e) {
-      console.error("err... ", e);
+    } catch ({ graphQLErrors, networkError }) {
+      if (graphQLErrors)
+        graphQLErrors.map(({ message, locations, path }) =>
+          console.error(
+            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+          )
+        );
+      if (networkError) console.error(`[Network error]:`, networkError.result);
     }
   },
   layout: "none",

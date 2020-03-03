@@ -80,7 +80,8 @@ export default {
     const res = (
       await this.$apollo.query({
         query: getProducts,
-        variables: {}
+        variables: {},
+        fetchPolicy: "no-cache"
       })
     ).data;
     this.products = res.products;

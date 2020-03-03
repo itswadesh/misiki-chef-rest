@@ -90,7 +90,8 @@ export default {
           let g = (
             await this.$apollo.query({
               query: getLocation,
-              variables: { lat: location.latitude, lng: location.longitude }
+              variables: { lat: location.latitude, lng: location.longitude },
+              fetchPolicy: "no-cache"
             })
           ).data.getLocation;
           const geo = {

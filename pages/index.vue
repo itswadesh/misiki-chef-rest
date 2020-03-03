@@ -28,9 +28,7 @@ import Heading from "~/components/Heading.vue";
 import StickyFooter from "~/components/footer/StickyFooter";
 
 export default {
-  fetch({ store, redirect }) {
-    if (!(store.state.auth || {}).user) return redirect("/login?return=/foods");
-  },
+  middleware: ["isAuth"],
   async asyncData({ $axios }) {
     let orders = [],
       status = "Received",

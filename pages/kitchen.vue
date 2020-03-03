@@ -2,19 +2,23 @@
   <div>
     <Heading title="Kitchen Photos" />
     <div
-      v-if="info"
+      v-if="profile && profile.info && profile.info.restaurant"
       class="container"
     >
-      <h1 class="text-xl font-bold text-center text-gray-700">{{ info.restaurant }}</h1>
+      <h1 class="text-xl font-bold text-center text-gray-700">{{ profile.info.restaurant }}</h1>
       <ImageUpload
         name="kitchen"
         folder="kitchen"
-        @remove="remove"
-        @save="save"
+        @remove="removeImage"
+        @save="saveImage"
+        :multi="true"
       />
-      <div class="flex flex-wrap mx-1 mt-2">
+      <div
+        class="flex flex-wrap mx-1 mt-2"
+        v-if="profile.info"
+      >
         <div
-          v-for="(d, ix) in info.kitchenPhotos"
+          v-for="(d, ix) in profile.info.kitchenPhotos"
           :key="ix"
           class="w-1/2 p-2 self-stretch shadow relative px-1 bg-gray-100 mb-2"
         >
@@ -44,29 +48,35 @@
 import Heading from "~/components/Heading";
 import StickyFooter from "~/components/footer/StickyFooter";
 import ImageUpload from "~/components/ImageUpload";
+import me from "~/gql/user/me.gql";
+import kitchenPhotos from "~/gql/user/kitchenPhotos.gql";
 
 export default {
-  fetch({ store, redirect }) {
-    if (!store.getters["auth/hasRole"]("chef")) return redirect("/login");
-  },
+  middleware: ["isAuth"],
   components: { Heading, ImageUpload, StickyFooter },
   data() {
-    return { loading: false, kitchenPhotos: [], info: null };
+    return { loading: false, kitchenPhotos: [], profile: null };
   },
-  layout: "none",
-  computed: {
-    user() {
-      return (this.$store.state.auth || {}).user || null;
-    }
-  },
+  // computed: {
+  //   user() {
+  //     return (this.$store.state.auth || {}).user || null;
+  //   }
+  // },
   created() {
     this.getData();
   },
   methods: {
-    save(name, image) {
-      this.info.kitchenPhotos = this.info.kitchenPhotos || [];
-      this.info.kitchenPhotos = [...this.info.kitchenPhotos, ...image];
-      this.submit(this.info);
+    saveImage(name, images) {
+      this.profile.info.kitchenPhotos = this.profile.info.kitchenPhotos || [];
+      this.profile.info.kitchenPhotos = [
+        ...this.profile.info.kitchenPhotos,
+        ...images
+      ];
+      this.submit(this.profile);
+    },
+    removeImage(name) {
+      this.profile.info.kitchenPhotos = "";
+      this.submit(this.profile);
     },
     remove(name) {
       this.$swal({
@@ -79,37 +89,39 @@ export default {
         confirmButtonText: "Yes, delete it!"
       }).then(result => {
         if (result.value) {
-          this.info.kitchenPhotos = this.info.kitchenPhotos.filter(function(
-            value,
-            index,
-            kf
-          ) {
-            return value != name;
-          });
-          this.submit(this.info);
+          this.profile.info.kitchenPhotos = this.profile.info.kitchenPhotos.filter(
+            function(value, index, kf) {
+              return value != name;
+            }
+          );
+          this.submit(this.profile);
         }
       });
     },
-    async submit(info) {
-      this.$store.commit("busy", true);
+    async submit(profile) {
       try {
-        const data = await this.$axios.$put("api/users/profile", { info });
-        this.getData();
+        const data = (
+          await this.$apollo.mutate({
+            mutation: kitchenPhotos,
+            variables: { ...profile.info },
+            fetchPolicy: "no-cache"
+          })
+        ).data;
+        this.profile = data.updateProfile;
       } catch (e) {
+        console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz", e);
       } finally {
-        this.$store.commit("busy", false);
       }
     },
     async getData() {
-      let params = this.$route.query;
-      this.$store.commit("busy", true);
       try {
-        let { info } = await this.$axios.$get(`api/users/me`);
-        this.info = info;
+        let user = (
+          await this.$apollo.query({ query: me, fetchPolicy: "no-cache" })
+        ).data;
+        this.profile = user.me;
       } catch (e) {
         this.$store.commit("setErr", e);
       } finally {
-        this.$store.commit("busy", false);
       }
     }
   },

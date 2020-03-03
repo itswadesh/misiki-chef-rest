@@ -100,7 +100,8 @@ export default {
         this.image = (
           await this.$apollo.mutate({
             mutation: singleUpload,
-            variables: { file: target.files[0], folder: this.folder }
+            variables: { file: target.files[0], folder: this.folder },
+            fetchPolicy: "no-cache"
           })
         ).data.singleUpload.filename;
         this.$emit("save", this.name, this.image);
@@ -136,7 +137,8 @@ export default {
       this.image = "";
       await this.$apollo.mutate({
         mutation: deleteFile,
-        variables: { path: image }
+        variables: { path: image },
+        fetchPolicy: "no-cache"
       });
       this.$emit("remove", this.name);
     },
@@ -158,7 +160,8 @@ export default {
         this.currentStatus = 1;
         let x = await this.$apollo.mutate({
           mutation: singleUpload,
-          variables: { file: formData }
+          variables: { file: formData },
+          fetchPolicy: "no-cache"
         });
         const path = x[0]; // Where the variable is assigned
         this.currentStatus = 2;

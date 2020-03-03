@@ -1,29 +1,37 @@
 <template>
   <div class="mt-4 bg-gray-100 mx-auto relative">
-    <div v-if="image" v-lazy:background-image="`${image}`" class="bg-contain h-48 relative">
-      <div class="absolute right-0 top-0">
-        <button
-          type="button"
-          @click="removeImage(image)"
-          class="w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200"
-        >
-          <i class="fa fa-close" />
-        </button>
-      </div>
+    <div v-if="$apollo.loading">Loading...</div>
+    <div
+      v-if="img"
+      v-lazy:background-image="`${img}`"
+      class="bg-cover bg-no-repeat h-64 relative"
+    >
+      <button
+        v-if="!multi"
+        type="button"
+        @click="removeImage(img)"
+        class="absolute right-0 top-0 w-8 h-8 rounded-full bg-gray-300 cursor-pointer hover:bg-gray-200"
+      >
+        <i class="fa fa-close" />
+      </button>
     </div>
-    <form enctype="multipart/form-data" novalidate v-else>
+    <form
+      enctype="multipart/form-data"
+      novalidate
+      v-else
+    >
       <div class="dropbox">
         <input
           multiple
           type="file"
           name="photos"
           :disabled="isSaving"
-          @change="filesChange($event.target.name, $event.target.files,name); fileCount = $event.target.files.length"
+          @change="uploadPhoto"
           accept="image/*"
           class="input-file"
         />
         <p v-if="isInitial">
-          Drag food image here to upload
+          Drag image here to upload
           <br />or click to browse
         </p>
         <p v-if="isSaving">Uploading {{ fileCount }} files...</p>
@@ -34,10 +42,19 @@
         </p>
       </div>
     </form>
+    <!-- <div>
+      <h2 v-if="data">Good: {{data.goodField}}</h2>
+      <pre v-if="error">Bad: 
+        {{error}}
+        <span v-for="(e,ix) in error" :key="ix">{{e.message}}</span>
+      </pre>
+    </div> -->
   </div>
 </template>
 
 <script>
+import fileUpload from "~/gql/file/fileUpload.gql";
+import deleteFile from "~/gql/product/deleteFile.gql";
 const STATUS_INITIAL = 0,
   STATUS_SAVING = 1,
   STATUS_SUCCESS = 2,
@@ -45,16 +62,27 @@ const STATUS_INITIAL = 0,
 export default {
   // name required for removing
   props: {
-    image: { type: String, default: "" },
+    image: { required: false, default: "" },
     name: { type: String, required: true },
     folder: { type: String, required: true },
-    crunch: { type: Boolean, default: false }
+    crunch: { type: Boolean, default: false },
+    multi: { type: Boolean, default: false }
+  },
+  watch: {
+    image() {
+      this.img = this.image;
+    }
   },
   data() {
     return {
+      img: null,
       currentStatus: 0,
-      img: this.image
+      data: null,
+      error: null
     };
+  },
+  mounted() {
+    this.img = this.image;
   },
   computed: {
     isInitial() {
@@ -69,16 +97,29 @@ export default {
     isFailed() {
       return this.currentStatus === STATUS_FAILED;
     }
-    // img: {
-    //   get: function() {
-    //     return this.image;
-    //   },
-    //   set: function(value) {
-    //     // this.$emit("selected", value);
-    //   }
-    // }
   },
   methods: {
+    async uploadPhoto({ target }) {
+      try {
+        let images = (
+          await this.$apollo.mutate({
+            mutation: fileUpload,
+            variables: { files: target.files, folder: this.folder },
+            fetchPolicy: "no-cache"
+          })
+        ).data.fileUpload;
+        images = images.map(o => o.filename);
+        if (!this.multi) {
+          this.img = images[0];
+          this.$emit("save", this.name, this.img);
+        } else {
+          this.$emit("save", this.name, images);
+        }
+      } catch (e) {
+        console.log("err... ", e);
+        this.error = e.graphQLErrors;
+      }
+    },
     imgPath(i) {
       return `${i}?a=${Math.random()}`;
     },
@@ -86,7 +127,7 @@ export default {
       this.img = imagePath;
       this.$emit("save", this.name, imagePath);
     },
-    removeImage(img) {
+    removeImage(image) {
       let vm = this;
       this.$swal({
         title: "Delete image?",
@@ -98,43 +139,18 @@ export default {
         confirmButtonText: "Yes, delete it!"
       }).then(result => {
         if (result.value) {
-          vm.deleteConfirmed(img);
+          vm.deleteConfirmed(image);
         }
       });
     },
-    async deleteConfirmed(img) {
+    async deleteConfirmed(image) {
       this.img = "";
-      await this.$axios.$delete("api/media/single", {
-        data: { img: img }
+      await this.$apollo.mutate({
+        mutation: deleteFile,
+        variables: { path: image },
+        fetchPolicy: "no-cache"
       });
       this.$emit("remove", this.name);
-    },
-    filesChange(fieldName, fileList, name) {
-      // handle file changes
-      const formData = new FormData();
-      if (!fileList.length) return;
-      // append the files to FormData
-      Array.from(Array(fileList.length).keys()).map(x => {
-        formData.append(fieldName, fileList[x], fileList[x].name);
-      });
-      // this.save(formData, name);
-      // This formdata will be sent to server
-      this.saveImage(formData, name);
-    },
-
-    async saveImage(formData, name) {
-      try {
-        this.currentStatus = 1;
-        let x = await this.$axios.$post(
-          "api/media/nocrunch/" + this.folder,
-          formData
-        ); // When name is passed, it acts as logo upload. Where it uploads to img directory and replaces the original file rather than adding it to the uploads directory
-        this.currentStatus = 2;
-        this.save(x); // Save the image against api
-      } catch (e) {
-        this.currentStatus = 3;
-        this.err(e);
-      }
     },
     err(e) {
       this.$store.commit("setErr", e.response.data);

@@ -6,7 +6,7 @@
         class="lg:mx-15 form w-full mb-1"
         novalidate
         autocomplete="off"
-        @submit.stop.prevent="submit(profile)"
+        @submit.stop.prevent="submit()"
       >
         <div
           class="p-2 mb-4"
@@ -35,7 +35,7 @@
             class="w-full mb-4"
             name="restaurant"
             v-if="profile.info"
-            v-model="profile.restaurant"
+            v-model="profile.info.restaurant"
           />
           <div class="w-full flex justify-between mb-4">
             <Textbox
@@ -91,7 +91,7 @@
               v-model="a.state"
             />
           </div>
-          <SingleImageUpload
+          <ImageUpload
             :image="profile.avatar"
             name="avatar"
             folder="avatar"
@@ -146,7 +146,7 @@ const Heading = () => import("~/components/Heading");
 const Textbox = () => import("~/components/ui/Textbox");
 const Checkbox = () => import("~/components/ui/Checkbox");
 const GeoLocation = () => import("~/components/GeoLocation");
-const SingleImageUpload = () => import("~/components/SingleImageUpload");
+const ImageUpload = () => import("~/components/ImageUpload");
 import me from "~/gql/user/me.gql";
 
 import { location } from "~/mixins";
@@ -166,7 +166,7 @@ export default {
     Textbox,
     Checkbox,
     GeoLocation,
-    SingleImageUpload
+    ImageUpload
   },
   computed: {
     // user() {
@@ -178,7 +178,9 @@ export default {
     // this.$cookies.remove("geo");
     try {
       this.$store.commit("busy", true);
-      const user = (await this.$apollo.query({ query: me })).data.me;
+      const user = (
+        await this.$apollo.query({ query: me, fetchPolicy: "no-cache" })
+      ).data.me;
       this.profile = { ...user };
       this.a = this.$cookies.get("geo");
       this.profile.address = this.profile.address || {};
@@ -186,14 +188,17 @@ export default {
         this.profile.address.address || (this.a && this.a.address);
       this.a.town = this.profile.address.town || (this.a && this.a.town);
       this.a.city = this.profile.address.city || (this.a && this.a.city);
-      this.a.zip = this.profile.address.zip || (this.a && this.a.zip);
+      this.a.zip = (
+        this.profile.address.zip ||
+        (this.a && this.a.zip)
+      ).toString();
       this.a.firstName =
         this.profile.address.firstName || this.profile.firstName;
       this.a.lastName = this.profile.address.lastName || this.profile.lastName;
       this.a.phone = this.profile.phone;
-      if (!this.profile.info) this.profile.info = {};
-      this.profile.public = this.profile.info.public || false;
-      this.profile.restaurant = this.profile.info.restaurant;
+      // if (!this.profile.info) this.profile.info = {};
+      // this.profile.public = this.profile.info.public || false;
+      // this.profile.restaurant = this.profile.info.restaurant;
     } catch (e) {
     } finally {
       this.$store.commit("busy", false);
@@ -202,12 +207,11 @@ export default {
   methods: {
     saveImage(name, image) {
       this.profile.avatar = image;
-      this.submit();
-      // this.submit();
+      this.saveProfile();
     },
     removeImage(name) {
       this.profile.avatar = "";
-      this.submit();
+      this.saveProfile();
     },
     ...mapActions({
       updateProfile: "auth/updateProfile"
@@ -215,23 +219,29 @@ export default {
     go(url) {
       this.$router.push(url);
     },
-    async submit(profile) {
+    submit() {
+      try {
+        this.saveProfile();
+        this.$router.push("/my");
+      } catch (e) {}
+    },
+    async saveProfile() {
       this.nwErr = null;
       this.graphErr = null;
       try {
-        this.$store.commit("busy", true);
-        this.profile.restaurant = this.profile.info.restaurant;
-        this.profile.public = !!this.profile.info.public;
-        this.profile.address = this.a;
-        // const data = await this.$axios.$put("api/users/profile", this.profile);
-        await this.updateProfile(this.profile);
+        // this.profile.restaurant = this.profile.info.restaurant;
+        // this.profile.public = !!this.profile.info.public;
+        // this.profile.address = this.a;
+        delete this.profile.address.__typename;
+        delete this.profile.info.__typename;
+        return await this.updateProfile(this.profile);
       } catch (e) {
         if (e.graphQLErrors) this.graphErr = e.graphQLErrors;
         if (e.networkError && e.networkError.result)
           this.nwErr = e.networkError.result.errors;
         console.log("err... ", this.nwErr, this.graphErr);
+        throw e;
       } finally {
-        this.$store.commit("busy", false);
       }
     }
   },

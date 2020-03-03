@@ -161,7 +161,9 @@ export default {
   async created() {
     try {
       this.$store.commit("busy", true);
-      const deliveryslots = (await this.$apollo.query({ query: slots })).data;
+      const deliveryslots = (
+        await this.$apollo.query({ query: slots, fetchPolicy: "no-cache" })
+      ).data;
       this.deliveryslots = deliveryslots.slots;
       const food = (
         await this.$apollo.query({
@@ -283,12 +285,14 @@ export default {
         if (this.$route.params.id == "new") {
           await this.$apollo.mutate({
             mutation: createProduct,
-            variables: this.food
+            variables: this.food,
+            fetchPolicy: "no-cache"
           });
         } else {
           await this.$apollo.mutate({
             mutation: updateProduct,
-            variables: { id: this.$route.params.id, ...this.food }
+            variables: { id: this.$route.params.id, ...this.food },
+            fetchPolicy: "no-cache"
           });
         }
         this.$router.push("/foods");

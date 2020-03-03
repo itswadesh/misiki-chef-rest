@@ -8,9 +8,7 @@ mutation updateProfile(
   # $state: String
   # $city: String
   $phone: String
-  $public: Boolean
-  $restaurant: String
-  $kitchenPhotos: [String]
+  $info: InputInfo
 ) {
   updateProfile(
     firstName: $firstName
@@ -19,11 +17,7 @@ mutation updateProfile(
     phone: $phone
     dob: $dob
     gender: $gender
-    info: {
-      public: $public
-      restaurant: $restaurant
-      kitchenPhotos: $kitchenPhotos
-    }
+    info: $info
     address: $address
   ) {
     firstName

@@ -39,31 +39,31 @@ export const mutations = {
 
 export const actions = {
   async fetch({ commit }) {
-    try {
-      const res = await this.$axios.$get("api/users/me");
-      commit("setUser", res);
-      return res;
-    } catch (err) {
-      this.$axios.setToken(false);
-      commit("clearUser");
-      throw err;
-    }
+    // try {
+    //   const res = await this.$axios.$get("api/users/me");
+    //   commit("setUser", res);
+    //   return res;
+    // } catch (err) {
+    //   this.$axios.setToken(false);
+    //   commit("clearUser");
+    //   throw err;
+    // }
   },
   async socialLogin({ commit }, token) {
-    try {
-      if (token) {
-        this.$axios.setToken(token, "Bearer");
-        const user = await this.$axios.$get("api/users/me");
-        commit("setUser", user);
-        this.$cookies.set("Authorization", token, {
-          path: "/",
-          maxAge: tokenExpiry
-        });
-        return user;
-      }
-    } catch (err) {
-      commit("setErr", err, { root: true });
-    }
+    // try {
+    //   if (token) {
+    //     this.$axios.setToken(token, "Bearer");
+    //     const user = await this.$axios.$get("api/users/me");
+    //     commit("setUser", user);
+    //     this.$cookies.set("Authorization", token, {
+    //       path: "/",
+    //       maxAge: tokenExpiry
+    //     });
+    //     return user;
+    //   }
+    // } catch (err) {
+    //   commit("setErr", err, { root: true });
+    // }
   },
   async phone({ commit }, payload) {
     if (!payload.phone || payload.phone == "") {

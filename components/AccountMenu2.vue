@@ -248,7 +248,7 @@ export default {
       this.$router.push(url);
     },
     async logout() {
-      await this.$apollo.mutate({ mutation: signOut });
+      await this.$apollo.mutate({ mutation: signOut, fetchPolicy: "no-cache" });
       this.$router.push("/");
     }
   }

@@ -4,22 +4,11 @@
       <div class="bg-white rounded shadow">
         <div class="text-secondary text-white">
           <h1 class="text-xl mb-2 text-center p-3">
-            <span
-              class="font-extrabold"
-              v-if="!signup"
-            >SIGN IN</span>
-            <span
-              class="font-extrabold"
-              v-else
-            >SIGN UP</span> TO YOUR ACCOUNT
+            <span class="font-extrabold" v-if="!signup">SIGN IN</span>
+            <span class="font-extrabold" v-else>SIGN UP</span> TO YOUR ACCOUNT
           </h1>
         </div>
-        <form
-          novalidate
-          autocomplete="off"
-          @submit.stop.prevent="submit()"
-          class="center"
-        >
+        <form novalidate autocomplete="off" @submit.stop.prevent="submit()" class="center">
           <div class="p-6">
             <div>
               <Textbox
@@ -52,16 +41,17 @@
                   label="Password"
                   ref="password"
                   type="password"
-                  class="w-full  bg-gray-200"
+                  class="w-full bg-gray-200"
                 />
               </div>
               <!-- Show OTP box -->
-              <div
-                v-else
-                class=" text-center"
-              >
-                <p class="text-red-500 mb-5 text-xs font-hairline">Please enter OTP sent to mobile number</p>
-                <div class="otp-container relative inline-block rounded p-2 w-32 w-12 mb-10 bg-gray-200">
+              <div v-else class="text-center">
+                <p
+                  class="text-red-500 mb-5 text-xs font-hairline"
+                >Please enter OTP sent to mobile number</p>
+                <div
+                  class="otp-container relative inline-block rounded p-2 w-32 w-12 mb-10 bg-gray-200"
+                >
                   <div
                     id="wraper1"
                     class="otp-seperator w-1 h-1 rounded absolute"
@@ -103,17 +93,13 @@
                 :class="{'primary text-white':!loading,'border border-gray-400 bg-gray-300':loading}"
               >
                 <div v-if="loading">
-                  <img
-                    src="/loading.svg"
-                    :class="{'loading':loading}"
-                    alt
-                  />
+                  <img src="/loading.svg" :class="{'loading':loading}" alt />
                 </div>
                 <span v-else>{{submitText}}</span>
               </button>
               <!-- <p class="text-xs mt-2">
                     <nuxt-link to="/account/forgot-password">Forgot Password?</nuxt-link>
-                  </p> -->
+              </p>-->
             </div>
           </div>
         </form>
@@ -127,6 +113,7 @@ import Textbox from "~/components/ui/Textbox";
 import { location } from "~/mixins";
 import getOtp from "../gql/user/getOtp.gql";
 import verifyOtp from "../gql/user/verifyOtp.gql";
+import signIn from "../gql/user/signIn.gql";
 export default {
   mixins: [location],
   middleware: ["isGuest"],
@@ -244,7 +231,11 @@ export default {
       if (!this.showOTP) {
         // When clicked 1st time
         try {
-          const otp = await this.$axios.get("api/users/email/" + this.uid);
+          const otp = await this.$apollo.mutate({
+            mutation: signIn,
+            variables: { email: this.uid, password: this.password },
+            fetchPolicy: "no-cache"
+          });
           this.showOTP = true;
           this.msg = "Please enter your password";
           // this.$refs.otp.focus();

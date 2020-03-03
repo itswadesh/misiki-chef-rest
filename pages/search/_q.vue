@@ -4,11 +4,7 @@
     <div class="container">
       <!-- <Categories /> -->
       <div class="flex flex-wrap">
-        <div
-          class="w-full"
-          v-for="p in products"
-          :key="p._id"
-        >
+        <div class="w-full" v-for="p in products" :key="p._id">
           <ListCard :p="p" />
         </div>
       </div>
@@ -67,17 +63,17 @@ export default {
   },
   methods: {
     async getData(query) {
-      console.log("getData", query);
       try {
-        // this.loading = true;
-        const products = await this.$axios.$get("api/products", {
-          params: { ...query }
-        });
+        const products = (
+          await this.$apollo.query({
+            query: products,
+            variables: query
+          })
+        ).data;
         this.productCount = products.count;
-        this.products = products.data;
+        this.products = products.products;
       } catch (e) {
       } finally {
-        // this.loading = false;
       }
     }
   },

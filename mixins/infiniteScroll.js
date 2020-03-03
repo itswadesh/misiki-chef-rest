@@ -21,7 +21,6 @@ export default {
         params.page = this.meta.page;
         params.search = this.$route.params.q
         let auth = this.$cookies.get("Authorization");
-        // this.$axios.setToken(auth, "Bearer");
         let result = await this.$axios.$get(this.apiQ, { params });
         let data = result.data;
         this.data = scrolled ? this.data.concat(data) : data;

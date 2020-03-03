@@ -53,30 +53,6 @@ export const mutations = {
 };
 export const actions = {
   async nuxtClientInit({ state, commit, dispatch }, context) {
-    // Authorization
-    let token = this.$cookies.get("Authorization");
-    commit("auth/setToken", token);
-    if (token) {
-      this.$axios.setToken(token, "Bearer");
-      try {
-        await dispatch("auth/fetch");
-      } catch (error) {
-        this.$axios.setToken(null);
-      }
-    } else {
-      this.$axios.setToken(null);
-    }
-
-    commit("setGuest", this.$cookies.get("guest")); // Required only at server
-
-    // // Categories
-    // try {
-    //   let categories = await this.$axios.$get("api/categories/megamenu");
-    //   commit("categories", categories.data);
-    // } catch (err) {
-    //   commit("setErr", err);
-    // }
-
     // // Settings
     // try {
     //   let settings = await this.$axios.$get("api/settings");

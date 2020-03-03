@@ -1,0 +1,16 @@
+query myCustomers($status:String) {
+  myCustomers(status:$status) {
+    id
+    orderNo
+    otp
+    qty
+    amount
+    payment_order_id
+    delivery
+    status
+    items
+    address
+    createdAt
+    updatedAt
+  }
+}

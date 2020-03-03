@@ -8,11 +8,7 @@
           <h1>{{ todayTotal.total | currency }}</h1>
         </div>
       </div>
-      <nuxt-link
-        v-if="orders"
-        to="/orders"
-        class="flex justify-center mt-12"
-      >
+      <nuxt-link v-if="orders" to="/orders" class="flex justify-center mt-12">
         <h1 v-if="orders.length>0">{{orders.length}} Orders</h1>
         <h1 v-else>No pending orders</h1>
       </nuxt-link>
@@ -41,21 +37,6 @@ export default {
     } catch (e) {}
     return { orders: orders.data, todayTotal, todaySummary };
   },
-  // data() {
-  //   return {
-  //     orders: []
-  //   };
-  // },
-  // async created() {
-  //   let geoCookie = this.$cookies.get("geo");
-  //   if (!geoCookie) this.$router.push("/onboarding");
-  //   try {
-  //     const p = await this.$axios.$get("api/orders/my");
-  //     this.orders = p.data;
-  //   } catch (e) {
-  //     this.orders = [];
-  //   }
-  // },
   components: {
     GeoLocation,
     Heading,

@@ -1,5 +1,6 @@
-mutation createAddress(
-  $email: String
+
+mutation updateAddress($id: ID!
+ $email: String
    $firstName: String 
     $lastName: String  
       $address: String 
@@ -10,8 +11,9 @@ mutation createAddress(
                 $coords: Geo
     $zip: String  
      $phone: String
-     ){
-  createAddress(
+){
+  updateAddress(
+    id: $id
     email: $email
     firstName: $firstName
     lastName: $lastName

@@ -12,31 +12,39 @@
         :to="`address/add`"
         class="text-center shadow rounded hover:shadow-xl w-full bg-white p-5 mb-5 flex items-center justify-center border border-gray-100"
       >
-        <img
-          src="/rounded-plus.png"
-          alt="+"
-          class="w-10 mr-1"
-        >ADD NEW ADDRESS
+        <img src="/rounded-plus.png" alt="+" class="w-10 mr-1" />ADD NEW ADDRESS
       </nuxt-link>
       <div
-        class=" shadow rounded hover:shadow-xl w-full bg-white py-3 px-5 mb-5 flex flex-wrap border border-gray-100 relative"
+        class="shadow rounded hover:shadow-xl w-full bg-white py-3 px-5 mb-5 flex flex-wrap border border-gray-100 relative"
         v-for="a in addresses"
         :key="a._id"
       >
-      <nuxt-link :to="`address/add?id=${a._id}`" class="border border-gray-300 text-right right-0 absolute px-2 mr-2 rounded text-xs">Edit</nuxt-link>
+        <button
+          @click="del(a)"
+          class="border border-gray-300 text-right right-0 absolute px-2 mr-12 rounded text-xs"
+        >Delete</button>
+        <nuxt-link
+          :to="`/my/address/${a.id}`"
+          class="border border-gray-300 text-right right-0 absolute px-2 mr-2 rounded text-xs"
+        >Edit</nuxt-link>
         <!-- <span class="text-xs bg-gray-200 text-gray-700 p-1">HOME</span> -->
         <!-- <nuxt-link :to="`address/add?id=${a._id}`" class="text-right right-0 absolute px-5" >
           <p class="w-1 h-1 bg-gray-500 rounded-full m-1"></p>
           <p class="w-1 h-1 bg-gray-500 rounded-full m-1"></p>
           <p class="w-1 h-1 bg-gray-500 rounded-full m-1"></p>
-        </nuxt-link> -->
+        </nuxt-link>-->
         <div class="w-full py-2 text-sm leading-loose">
-          <p><b>{{a.firstName}} {{a.lastName}}</b></p>
+          <p>
+            <b>{{a.firstName}} {{a.lastName}}</b>
+          </p>
           <div class="w-full py-2 text-sm leading-loose">
             <p>{{a.phone}}</p>
             <p>{{a.address}}</p>
             <p>{{a.city}}</p>
-            <p>{{a.state}}- <span class="font-bold">{{a.zip}}</span></p>
+            <p>
+              {{a.state}}-
+              <span class="font-bold">{{a.zip}}</span>
+            </p>
           </div>
         </div>
       </div>
@@ -45,6 +53,9 @@
 </template>
 
 <script>
+import addresses from "~/gql/user/addresses.gql";
+import deleteAddress from "~/gql/user/deleteAddress.gql";
+import gql from "graphql-tag";
 export default {
   layout: "account",
   data() {
@@ -53,8 +64,39 @@ export default {
     };
   },
   async created() {
-    const res = await this.$axios.$get("api/addresses/my");
-    this.addresses = res.data;
+    this.getAddresses();
+  },
+  methods: {
+    async getAddresses() {
+      const res = (
+        await this.$apollo.query({
+          query: addresses,
+          fetchPolicy: "no-cache"
+        })
+      ).data;
+      this.addresses = res.addresses;
+    },
+    async del(address) {
+      this.$swal({
+        title: "Do you wish to delete this address?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, Delete!"
+      }).then(async result => {
+        if (result.value) {
+          await this.$apollo.mutate({
+            mutation: gql`
+              mutation deleteAddress($id: ID!) {
+                deleteAddress(id: $id)
+              }
+            `,
+            variables: { id: address.id },
+            fetchPolicy: "no-cache"
+          });
+          this.getAddresses();
+        }
+      });
+    }
   }
 };
 </script>

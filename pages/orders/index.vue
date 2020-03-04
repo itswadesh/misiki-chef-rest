@@ -6,6 +6,9 @@
       <i class="fa fa-print" />
     </button>
     <div>
+      <div v-if="errors" class="mx-2 text-center">
+        <span v-for="(e,ix) in errors" :key="ix">{{e.message}}</span>
+      </div>
       <div class="flex noprint justify-center text-gray-600" v-if="todayTotal">
         <h2>{{ todayTotal.count }}</h2>
         <h1>{{ todayTotal.total | currency }}</h1>
@@ -15,11 +18,7 @@
         <span class="font-bold">
           {{ s._id }} *
           <span class="text-green-500 text-xl">{{ s.count }}</span> =
-          <span class="text-red-500 text-xl">
-            {{
-            s.amount | currency
-            }}
-          </span>
+          <span class="text-red-500 text-xl">{{ s.amount | currency }}</span>
         </span>
       </div>
       <ul class="flex flex-wrap">
@@ -63,22 +62,32 @@ const StickyFooter = () => import("~/components/footer/StickyFooter");
 import myCustomers from "~/gql/order/myCustomers.gql";
 import todayTotal from "~/gql/order/todayTotal.gql";
 import updateOrder from "~/gql/order/updateOrder.gql";
+import { infiniteScroll } from "~/mixins";
 
 export default {
-  async created() {
-    try {
-      orders = (await $apollo.query({ query: myCustomers, variables: {} })).data
-        .myCustomers;
-      todayTotal = (await $apollo.query({ query: todayTotal, variables: {} }))
-        .data.todayTotal;
-    } catch (e) {}
-    return { orders, todayTotal };
-  },
+  middleware: "isAuth",
+  mixins: [infiniteScroll],
   data() {
     return {
       orders: null,
-      todayTotal: null
+      todayTotal: null,
+      todaySummary: null,
+      model: myCustomers,
+      attr: "myCustomers"
     };
+  },
+  async created() {
+    this.errors = [];
+    try {
+      this.todayTotal = (
+        await $apollo.query({ query: todayTotal, variables: {} })
+      ).data.todayTotal;
+    } catch ({ graphQLErrors, networkError }) {
+      if (graphQLErrors) this.errors = graphQLErrors;
+      if (networkError) this.errors = networkError.result.errors;
+    } finally {
+      this.$store.commit("busy", false);
+    }
   },
   components: { Header, StickyFooter },
   methods: {
@@ -88,6 +97,7 @@ export default {
       }
     },
     async save(o) {
+      this.errors = [];
       try {
         this.orders = (
           await this.$apollo.mutate({
@@ -95,7 +105,12 @@ export default {
             variables: { id: o.id, status: o.status }
           })
         ).data.updateOrder;
-      } catch (e) {}
+      } catch ({ graphQLErrors, networkError }) {
+        if (graphQLErrors) this.errors = graphQLErrors;
+        if (networkError) this.errors = networkError.result.errors;
+      } finally {
+        this.$store.commit("busy", false);
+      }
     },
     go(url) {
       this.$router.push(url);

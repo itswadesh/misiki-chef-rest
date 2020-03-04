@@ -1,17 +1,11 @@
 <template>
   <div class="product">
-    <div
-      class="image pull-up"
-      v-if="'/images'+product.img"
-    >
-      <img
-        v-lazy="$store.state.settings.CDN_URL+product.img+'?tr=w-300,h-200'"
-        alt=""
-      />
+    <div class="image pull-up" v-if="'/images'+product.img">
+      <img v-lazy="product.img+'?tr=w-300,h-200'" alt />
     </div>
     <div class="product-name">
       <strong>{{product.name}}</strong>
-      <div class="fx ">
+      <div class="fx">
         <div class="variants">
           <strong>Qty: {{product.qty}}</strong>
         </div>
@@ -24,10 +18,10 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
-  props: ["product", "showcart"] // Used to hide the buttons at cart order page
-};
+  props: ['product', 'showcart'] // Used to hide the buttons at cart order page
+}
 </script>
 
 <style scoped>

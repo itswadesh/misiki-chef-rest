@@ -1,3 +1,5 @@
+import search from "~/gql/product/search.gql";
+
 export default {
   data: () => ({
     meta: { end: false, data: [], busy: false },
@@ -7,14 +9,20 @@ export default {
   methods: {
     async getData() {
       let params = this.$route.query;
-      if (this.meta.busy || this.meta.end)
+      params.page = this.meta.page
+      params.search = this.$route.params.q
+      if (this.meta.end)
         return
-      this.$store.commit('busy', true);
       try {
-        let { data, count, pageSize, page } = await this.$axios.$get(this.apiQ || this.api, { params })
-        this.$store.commit('busy', false);
+        let { data, count, pageSize, page } = (
+          await this.$apollo.query({
+            query: search,
+            variables: params,
+            fetchPolicy: "no-cache"
+          })
+        ).data.my;
         if (data) {
-          this.meta.page = this.$route.query.page || 1
+          this.meta.page = this.$route.query.page
           this.count = count
           this.pageSize = pageSize
           this.currentPage = page
@@ -24,7 +32,6 @@ export default {
       }
       catch (e) {
         this.$store.commit('setErr', e);
-        this.$store.commit('busy', false);
       }
     },
     flush() {

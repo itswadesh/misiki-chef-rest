@@ -1,3 +1,5 @@
+import search from "~/gql/product/search.gql";
+
 export default {
   data: () => ({
     data: [],
@@ -12,30 +14,27 @@ export default {
   }),
   methods: {
     async getData(scrolled = false) {
-      if (this.meta.busy) return
       if (scrolled && this.meta.end) return;
-      this.loading = true;
       try {
-        this.meta.busy = true;
         let params = this.$route.query;
-        params.page = this.meta.page;
+        params.page = this.meta.page
         params.search = this.$route.params.q
-        let auth = this.$cookies.get("Authorization");
-        let result = await this.$axios.$get(this.apiQ, { params });
-        let data = result.data;
+        const { data, count, pageSize, page } = (
+          await this.$apollo.query({
+            query: search,
+            variables: params,
+            fetchPolicy: "no-cache"
+          })
+        ).data.my;
         this.data = scrolled ? this.data.concat(data) : data;
-        this.loading = false;
         this.loadmoreSpin = false;
-        this.meta.busy = false;
-        this.meta.count = result.count;
+        this.meta.count = count;
         this.meta.filtered =
           parseInt(data.length) +
-          (parseInt(result.pageSize) - 1) * parseInt(result.page);
-        this.meta.end = data.length < result.pageSize ? true : false;
+          (parseInt(pageSize) - 1) * parseInt(page);
+        this.meta.end = data.length < pageSize ? true : false;
       } catch (e) {
-        this.loading = false;
       } finally {
-        this.loading = false;
       }
     },
     async loadMore() {

@@ -3,8 +3,13 @@
     <!-- <Banner /> -->
     <div class="container">
       <!-- <Categories /> -->
-      <div class="flex flex-wrap">
-        <div class="w-full" v-for="p in products" :key="p._id">
+      <div
+        class="flex flex-wrap"
+        v-infinite-scroll="loadMore"
+        :infinite-scroll-distance="3"
+        :infinite-scroll-immediate-check="true"
+      >
+        <div class="w-full" v-for="p in data" :key="p._id">
           <ListCard :p="p" />
         </div>
       </div>
@@ -21,61 +26,40 @@ import Categories from "~/components/Categories";
 import { query, infiniteScroll } from "~/mixins";
 import { TITLE, DESCRIPTION, KEYWORDS, sharingLogo } from "~/config";
 import { constructURL } from "~/lib/";
+
 export default {
   layout: "search",
-  mixins: [query, infiniteScroll],
+  mixins: [infiniteScroll],
   data() {
     return {
-      products: []
+      loading: false,
+      error: null,
+      user: null
     };
   },
-  async asyncData({ params, query, $axios }) {
-    let products = [],
-      fl = {},
-      err = null,
-      productCount = 0;
-    try {
-      const q = params.q || null,
-        qry = { ...query };
-      if (q) qry.q = q;
-      const result = await $axios.$get("api/foods", {
-        params: { ...qry }
-      });
-      products = result.data;
-      productCount = result.count;
-      Object.keys(qry).map(function(k, i) {
-        if (qry[k] && !Array.isArray(qry[k]) && qry[k] != null && qry[k] != "")
-          qry[k] = qry[k].split(",");
-      });
-      fl = qry; // For selected filters
-      return { products, productCount, fl, err: null };
-    } catch (e) {
-      if (e && e.response && e.response.data) {
-        err = e.response.data;
-      } else if (e && e.response) {
-        err = e.response;
-      } else {
-        err = e;
-      }
-      console.log("err...", `${err}`);
-      return { products, productCount, facets: [], fl: {}, err };
-    }
+  async created() {
+    const q = this.$route.params.q || null,
+      qry = { ...this.$route.query };
+    if (q) qry.search = q;
+    // this.getData(qry);
   },
   methods: {
-    async getData(query) {
-      try {
-        const products = (
-          await this.$apollo.query({
-            query: products,
-            variables: query
-          })
-        ).data;
-        this.productCount = products.count;
-        this.products = products.products;
-      } catch (e) {
-      } finally {
-      }
-    }
+    // async getData(query) {
+    //   try {
+    //     const products = (
+    //       await this.$apollo.query({
+    //         query: search,
+    //         variables: query,
+    //         fetchPolicy: "no-cache"
+    //       })
+    //     ).data.my;
+    //     this.productCount = products.count;
+    //     this.products = products.data;
+    //   } catch (e) {
+    //     this.err = e;
+    //   } finally {
+    //   }
+    // }
   },
   components: {
     Heading,

@@ -1,6 +1,9 @@
 <template>
   <div>
     <Heading title="Chef Details" />
+    <div v-if="errors" class="mx-2 text-center">
+      <span v-for="(e,ix) in errors" :key="ix">{{e.message}}</span>
+    </div>
     <div class="w-full pb-4 lg:w-1/3 m-auto">
       <form
         class="lg:mx-15 form w-full mb-1"
@@ -94,7 +97,8 @@ export default {
       a: {},
       profile: {},
       nwErr: null,
-      graphErr: null
+      graphErr: null,
+      errors: []
     };
   },
   components: {
@@ -110,6 +114,7 @@ export default {
     // }
   },
   async mounted() {
+    this.errors = [];
     try {
       this.$store.commit("busy", true);
       const user = (
@@ -133,7 +138,9 @@ export default {
       // if (!this.profile.info) this.profile.info = {};
       // this.profile.public = this.profile.info.public || false;
       // this.profile.restaurant = this.profile.info.restaurant;
-    } catch (e) {
+    } catch ({ graphQLErrors, networkError }) {
+      if (graphQLErrors) this.errors = graphQLErrors;
+      if (networkError) this.errors = networkError.result.errors;
     } finally {
       this.$store.commit("busy", false);
     }
@@ -160,8 +167,7 @@ export default {
       } catch (e) {}
     },
     async saveProfile() {
-      this.nwErr = null;
-      this.graphErr = null;
+      this.errors = [];
       try {
         // this.profile.restaurant = this.profile.info.restaurant;
         // this.profile.public = !!this.profile.info.public;
@@ -169,12 +175,9 @@ export default {
         delete this.profile.address.__typename;
         delete this.profile.info.__typename;
         return await this.updateProfile(this.profile);
-      } catch (e) {
-        if (e.graphQLErrors) this.graphErr = e.graphQLErrors;
-        if (e.networkError && e.networkError.result)
-          this.nwErr = e.networkError.result.errors;
-        console.log("err... ", this.nwErr, this.graphErr);
-        throw e;
+      } catch ({ graphQLErrors, networkError }) {
+        if (graphQLErrors) this.errors = graphQLErrors;
+        if (networkError) this.errors = networkError.result.errors;
       } finally {
       }
     }

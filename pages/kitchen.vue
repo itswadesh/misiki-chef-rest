@@ -1,10 +1,10 @@
 <template>
   <div>
     <Heading title="Kitchen Photos" />
-    <div
-      v-if="profile && profile.info && profile.info.restaurant"
-      class="container"
-    >
+    <div v-if="errors" class="mx-2 text-center">
+      <span v-for="(e,ix) in errors" :key="ix">{{e.message}}</span>
+    </div>
+    <div v-if="profile && profile.info && profile.info.restaurant" class="container">
       <h1 class="text-xl font-bold text-center text-gray-700">{{ profile.info.restaurant }}</h1>
       <ImageUpload
         name="kitchen"
@@ -13,10 +13,7 @@
         @save="saveImage"
         :multi="true"
       />
-      <div
-        class="flex flex-wrap mx-1 mt-2"
-        v-if="profile.info"
-      >
+      <div class="flex flex-wrap mx-1 mt-2" v-if="profile.info">
         <div
           v-for="(d, ix) in profile.info.kitchenPhotos"
           :key="ix"
@@ -29,17 +26,13 @@
           >
             <i class="fa fa-close" />
           </button>
-          <img
-            v-lazy="d"
-            class="h-32 bg-cover w-full border-b"
-          />
+          <img v-lazy="d" class="h-32 bg-cover w-full border-b" />
         </div>
       </div>
     </div>
-    <div
-      v-else
-      class="mx-atuo justify-center flex text-center align-middle h-72 items-center"
-    >Please update restaurant info in&nbsp;<nuxt-link to="/my/profile">profile</nuxt-link>
+    <div v-else class="mx-atuo justify-center flex text-center align-middle h-72 items-center">
+      Please update restaurant info in&nbsp;
+      <nuxt-link to="/my/profile">profile</nuxt-link>
     </div>
     <StickyFooter />
   </div>
@@ -55,7 +48,7 @@ export default {
   middleware: ["isAuth"],
   components: { Heading, ImageUpload, StickyFooter },
   data() {
-    return { loading: false, kitchenPhotos: [], profile: null };
+    return { loading: false, kitchenPhotos: [], profile: null, errors: [] };
   },
   // computed: {
   //   user() {
@@ -109,18 +102,19 @@ export default {
         ).data;
         this.profile = data.updateProfile;
       } catch (e) {
-        console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz", e);
       } finally {
       }
     },
     async getData() {
+      this.errors = [];
       try {
         let user = (
           await this.$apollo.query({ query: me, fetchPolicy: "no-cache" })
         ).data;
         this.profile = user.me;
-      } catch (e) {
-        this.$store.commit("setErr", e);
+      } catch ({ graphQLErrors, networkError }) {
+        if (graphQLErrors) this.errors = graphQLErrors;
+        if (networkError) this.errors = networkError.result.errors;
       } finally {
       }
     }

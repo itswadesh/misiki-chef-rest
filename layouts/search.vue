@@ -1,7 +1,8 @@
 <template>
   <div class="bg-gray-100 antialiased min-h-screen">
-    <Search class="my-2 mx-1" />
-    <div class="mb-12">
+    <Loading />
+    <Search />
+    <div class="mt-16 mb-12">
       <nuxt />
     </div>
     <StickyFooter />
@@ -12,8 +13,9 @@
 import { BackToTopDark } from "~/components/ui";
 import Search from "~/components/Search";
 import StickyFooter from "~/components/footer/StickyFooter";
+import Loading from "~/components/ui/Loading";
 
 export default {
-  components: { Search, StickyFooter, BackToTopDark }
+  components: { Search, StickyFooter, BackToTopDark, Loading }
 };
 </script>

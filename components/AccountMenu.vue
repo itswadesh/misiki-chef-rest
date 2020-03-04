@@ -10,7 +10,7 @@
     </div>
     <ul>
       <li>
-        <nuxt-link to="/foods" active-class="text-pink-500" class="w-full flex flex-wrap text-lg">
+        <nuxt-link to="/search" active-class="text-pink-500" class="w-full flex flex-wrap text-lg">
           <div class="w-1/5">
             <i class="fa fa-archive p-5" aria-hidden="true"></i>
           </div>

@@ -11,8 +11,10 @@ query my(
       skip: $skip
       limit: $limit
       search: $search
-      sort: $sort) {
-        data{
+      sort: $sort
+    ) 
+  {
+    data{
     id
     slug
     name

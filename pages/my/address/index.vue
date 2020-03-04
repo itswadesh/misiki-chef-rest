@@ -1,5 +1,8 @@
 <template>
   <div class="w-full lg:w-2/4 mt-0 lg:mt-10 lg:pr-20 xs:w-full lg:px-10 px-2 headings">
+    <div v-if="errors" class="mx-2 text-center">
+      <span v-for="(e,ix) in errors" :key="ix">{{e.message}}</span>
+    </div>
     <div class="text-2xl font-bold py-6 text-center lg:text-left">
       <i
         class="fa fa-arrow-left mr-2 block lg:invisible"
@@ -27,12 +30,6 @@
           :to="`/my/address/${a.id}`"
           class="border border-gray-300 text-right right-0 absolute px-2 mr-2 rounded text-xs"
         >Edit</nuxt-link>
-        <!-- <span class="text-xs bg-gray-200 text-gray-700 p-1">HOME</span> -->
-        <!-- <nuxt-link :to="`address/add?id=${a._id}`" class="text-right right-0 absolute px-5" >
-          <p class="w-1 h-1 bg-gray-500 rounded-full m-1"></p>
-          <p class="w-1 h-1 bg-gray-500 rounded-full m-1"></p>
-          <p class="w-1 h-1 bg-gray-500 rounded-full m-1"></p>
-        </nuxt-link>-->
         <div class="w-full py-2 text-sm leading-loose">
           <p>
             <b>{{a.firstName}} {{a.lastName}}</b>
@@ -60,7 +57,8 @@ export default {
   layout: "account",
   data() {
     return {
-      addresses: []
+      addresses: [],
+      errors: []
     };
   },
   async created() {
@@ -68,13 +66,20 @@ export default {
   },
   methods: {
     async getAddresses() {
-      const res = (
-        await this.$apollo.query({
-          query: addresses,
-          fetchPolicy: "no-cache"
-        })
-      ).data;
-      this.addresses = res.addresses;
+      this.errors = [];
+      try {
+        const res = (
+          await this.$apollo.query({
+            query: addresses,
+            fetchPolicy: "no-cache"
+          })
+        ).data;
+        this.addresses = res.addresses;
+      } catch ({ graphQLErrors, networkError }) {
+        if (graphQLErrors) this.errors = graphQLErrors;
+        if (networkError) this.errors = networkError.result.errors;
+      } finally {
+      }
     },
     async del(address) {
       this.$swal({

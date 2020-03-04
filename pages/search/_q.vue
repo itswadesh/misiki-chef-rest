@@ -2,6 +2,9 @@
   <div>
     <!-- <Banner /> -->
     <div class="container">
+      <div v-if="errors" class="mx-2 text-center">
+        <span v-for="(e,ix) in errors" :key="ix">{{e.message}}</span>
+      </div>
       <!-- <Categories /> -->
       <div
         class="flex flex-wrap"
@@ -23,50 +26,29 @@ import Banner from "~/components/Banner";
 import Product from "~/components/Product";
 import ListCard from "~/components/ListCard";
 import Categories from "~/components/Categories";
+import Loading from "~/components/ui/Loading";
 import { query, infiniteScroll } from "~/mixins";
 import { TITLE, DESCRIPTION, KEYWORDS, sharingLogo } from "~/config";
 import { constructURL } from "~/lib/";
+import search from "~/gql/product/search.gql";
 
 export default {
+  middleware: "isAuth",
   layout: "search",
   mixins: [infiniteScroll],
   data() {
     return {
-      loading: false,
-      error: null,
-      user: null
+      model: search,
+      attr: "my"
     };
-  },
-  async created() {
-    const q = this.$route.params.q || null,
-      qry = { ...this.$route.query };
-    if (q) qry.search = q;
-    // this.getData(qry);
-  },
-  methods: {
-    // async getData(query) {
-    //   try {
-    //     const products = (
-    //       await this.$apollo.query({
-    //         query: search,
-    //         variables: query,
-    //         fetchPolicy: "no-cache"
-    //       })
-    //     ).data.my;
-    //     this.productCount = products.count;
-    //     this.products = products.data;
-    //   } catch (e) {
-    //     this.err = e;
-    //   } finally {
-    //   }
-    // }
   },
   components: {
     Heading,
     Banner,
     Product,
     Categories,
-    ListCard
+    ListCard,
+    Loading
   }
 };
 </script>

@@ -1,6 +1,7 @@
 <template>
-  <div style="" class="bg-gray-100 antialiased min-h-screen">
+  <div style class="bg-gray-100 antialiased min-h-screen">
     <!-- <Header /> -->
+    <Loading />
     <div class="mb-24">
       <nuxt />
     </div>
@@ -12,8 +13,9 @@
 import { BackToTopDark } from "~/components/ui";
 import Header from "~/components/Header";
 import Footer from "~/components/footer/Footer";
+import Loading from "~/components/ui/Loading";
 
 export default {
-  components: { Header, Footer, BackToTopDark }
+  components: { Header, Footer, BackToTopDark, Loading }
 };
 </script>

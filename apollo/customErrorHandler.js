@@ -1,4 +1,4 @@
-export default (apolloError, { route }) => {
-  // console.log(apolloError)
-  console.log("error: " + route.path);
-};
+export default (error, nuxtContext) => {
+  console.log('Global error handler')
+  console.error(error)
+}

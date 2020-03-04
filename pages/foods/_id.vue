@@ -145,7 +145,7 @@ export default {
               mutation: deleteProduct,
               variables: { id }
             });
-            this.$router.push("/foods");
+            this.$router.push("/search");
           } catch (e) {}
         }
       });
@@ -204,7 +204,7 @@ export default {
           }).then(async result => {
             if (result.value) {
               await vm.publishDish();
-              this.$router.push("/foods");
+              this.$router.push("/search");
             }
           });
         } else {

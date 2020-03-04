@@ -13,6 +13,7 @@ export default {
       params.search = this.$route.params.q
       if (this.meta.end)
         return
+      this.errors = []
       try {
         let { data, count, pageSize, page } = (
           await this.$apollo.query({
@@ -29,9 +30,19 @@ export default {
           this.noOfPages = Math.ceil(count / pageSize);
           this.data = data
         }
-      }
-      catch (e) {
-        this.$store.commit('setErr', e);
+      } catch ({ graphQLErrors, networkError }) {
+        if (graphQLErrors)
+          graphQLErrors.map((err) =>
+            this.errors.push(err)
+            // console.error(
+            //   `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+            // )
+          );
+        if (networkError) {
+          this.errors = networkError.result.errors
+          console.error(`[Network error]:`, networkError.result);
+        }
+      } finally {
       }
     },
     flush() {

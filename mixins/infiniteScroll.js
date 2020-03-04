@@ -1,9 +1,8 @@
-import search from "~/gql/product/search.gql";
 
 export default {
   data: () => ({
     data: [],
-    count: 0,
+    errors: [],
     meta: {
       page: 1,
       count: 0,
@@ -15,17 +14,18 @@ export default {
   methods: {
     async getData(scrolled = false) {
       if (scrolled && this.meta.end) return;
+      this.errors = []
       try {
         let params = this.$route.query;
         params.page = this.meta.page
         params.search = this.$route.params.q
         const { data, count, pageSize, page } = (
           await this.$apollo.query({
-            query: search,
+            query: this.model,
             variables: params,
             fetchPolicy: "no-cache"
           })
-        ).data.my;
+        ).data[this.attr];
         this.data = scrolled ? this.data.concat(data) : data;
         this.loadmoreSpin = false;
         this.meta.count = count;
@@ -33,7 +33,18 @@ export default {
           parseInt(data.length) +
           (parseInt(pageSize) - 1) * parseInt(page);
         this.meta.end = data.length < pageSize ? true : false;
-      } catch (e) {
+      } catch ({ graphQLErrors, networkError }) {
+        if (graphQLErrors)
+          graphQLErrors.map((err) =>
+            this.errors.push(err)
+            // console.error(
+            //   `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+            // )
+          );
+        if (networkError) {
+          this.errors = networkError.result.errors
+          console.error(`[Network error]:`, networkError.result);
+        }
       } finally {
       }
     },

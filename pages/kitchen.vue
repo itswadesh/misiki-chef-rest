@@ -2,15 +2,6 @@
   <div>
     <Heading title="Kitchen Photos" />
     <div
-      v-if="errors"
-      class="mx-2 text-center"
-    >
-      <span
-        v-for="(e,ix) in errors"
-        :key="ix"
-      >{{e.message}}</span>
-    </div>
-    <div
       v-if="profile && profile.info && profile.info.restaurant"
       class="container"
     >
@@ -120,11 +111,12 @@ export default {
         ).data
         this.profile = data.updateProfile
       } catch (e) {
+        this.$store.commit('setErr', e)
       } finally {
+        this.$store.commit('busy', false)
       }
     },
     async getData() {
-      this.errors = []
       try {
         this.$store.commit('clearErr')
         let user = (
@@ -132,8 +124,9 @@ export default {
         ).data
         this.profile = user.me
       } catch (e) {
-        this.$store.commit('setErr', e, { root: true })
+        this.$store.commit('setErr', e)
       } finally {
+        this.$store.commit('busy', false)
       }
     }
   },

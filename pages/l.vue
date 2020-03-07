@@ -55,13 +55,13 @@
 </template>
 
 <script>
-import authenticateUserGql from "../gql/user/authenticateUser.gql";
-import getProducts from "../gql/product/products.gql";
+import authenticateUserGql from '../gql/user/authenticateUser.gql'
+import getProducts from '../gql/product/products.gql'
 export default {
   head() {
     return {
-      title: "Startpage"
-    };
+      title: 'Startpage'
+    }
   },
   data() {
     return {
@@ -70,46 +70,53 @@ export default {
       submitting: false,
       error: null,
       credentials: {
-        email: "",
-        password: ""
+        email: '',
+        password: ''
       },
       successfulData: null
-    };
+    }
   },
   async mounted() {
-    const res = (
-      await this.$apollo.query({
-        query: getProducts,
-        variables: {},
-        fetchPolicy: "no-cache"
-      })
-    ).data;
-    this.products = res.products;
-    this.isAuthenticated = !!this.$apolloHelpers.getToken();
+    try {
+      const res = (
+        await this.$apollo.query({
+          query: getProducts,
+          variables: {},
+          fetchPolicy: 'no-cache'
+        })
+      ).data
+      this.products = res.products
+      this.isAuthenticated = !!this.$apolloHelpers.getToken()
+    } catch (e) {
+      this.$store.commit('setErr', e)
+    } finally {
+      this.$store.commit('busy', false)
+    }
   },
   methods: {
     async onSubmit() {
-      this.submitting = true;
-      const credentials = this.credentials;
+      this.submitting = true
+      const credentials = this.credentials
       try {
         const res = await this.$apollo
           .mutate({
             mutation: authenticateUserGql,
             variables: credentials
           })
-          .then(({ data }) => data && data.authenticateUser);
-        await this.$apolloHelpers.onLogin(res.token, undefined, { expires: 7 });
-        this.successfulData = res;
-        this.isAuthenticated = true;
+          .then(({ data }) => data && data.authenticateUser)
+        await this.$apolloHelpers.onLogin(res.token, undefined, { expires: 7 })
+        this.successfulData = res
+        this.isAuthenticated = true
       } catch (e) {
-        console.error(e);
-        this.error = e;
+        this.$store.commit('setErr', e)
+      } finally {
+        this.$store.commit('busy', false)
       }
     },
     async onLogout() {
-      await this.$apolloHelpers.onLogout();
-      this.isAuthenticated = false;
+      await this.$apolloHelpers.onLogout()
+      this.isAuthenticated = false
     }
   }
-};
+}
 </script>

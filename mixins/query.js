@@ -12,7 +12,6 @@ export default {
       params.page = this.meta.page
       params.search = this.$route.params.q
       if (this.meta.end) return
-      this.errors = []
       try {
         this.$store.commit('clearErr')
         let { data, count, pageSize, page } = (
@@ -31,8 +30,9 @@ export default {
           this.data = data
         }
       } catch (e) {
-        this.$store.commit('setErr', e, { root: true })
+        this.$store.commit('setErr', e)
       } finally {
+        this.$store.commit('busy', false)
       }
     },
     flush() {

@@ -1,7 +1,6 @@
 export default {
   data: () => ({
     data: [],
-    errors: [],
     meta: {
       page: 1,
       count: 0,
@@ -13,7 +12,6 @@ export default {
   methods: {
     async getData(scrolled = false) {
       if (scrolled && this.meta.end) return
-      this.errors = []
       try {
         this.$store.commit('clearErr')
         let params = this.$route.query
@@ -33,8 +31,9 @@ export default {
           parseInt(data.length) + (parseInt(pageSize) - 1) * parseInt(page)
         this.meta.end = data.length < pageSize ? true : false
       } catch (e) {
-        this.$store.commit('setErr', e, { root: true })
+        this.$store.commit('setErr', e)
       } finally {
+        this.$store.commit('busy', false)
       }
     },
     async loadMore() {

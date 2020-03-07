@@ -5,16 +5,17 @@
       v-if="user"
       class="text-center lg:w-1/5 lg:mt-10 bg-white shadow leading-loose w-full p-10 border-b border-gray-200"
     >
-      <span
-        class="h-20 w-20 p-2 text-4xl text-gray-600 rounded-full bg-gray-200 inline-block"
-      >{{user.firstName | first}}</span>
+      <span class="h-20 w-20 p-2 text-4xl text-gray-600 rounded-full bg-gray-200 inline-block">{{user.firstName | first}}</span>
       <br />
       <span class="text-lg">{{user.firstName}}</span>
       <span class="text-sm text-gray-500">{{user.phone}}</span>
     </div>
     <div class="antialiased bg-gray-200 min-h-screen p-8">
       <div class="flex justify-center">
-        <nav id="nav" class="w-full relative">
+        <nav
+          id="nav"
+          class="w-full relative"
+        >
           <span
             class="absolute h-10 w-full bg-white rounded-lg shadow ease-out transition-transform transition-medium"
             :style="{ transform: `translateY(calc(100% * ${selected}))` }"
@@ -207,9 +208,7 @@
                     d="M3 6a3 3 0 013-3h10a1 1 0 110 2H6a1 1 0 00-1 1v10a1 1 0 11-2 0V6z"
                   />
                 </svg>
-                <span
-                  class="ml-2 text-sm font-medium transition-all text-gray-700 ease-out transition-medium"
-                >Logout</span>
+                <span class="ml-2 text-sm font-medium transition-all text-gray-700 ease-out transition-medium">Logout</span>
               </button>
             </li>
           </ul>
@@ -220,40 +219,44 @@
 </template>
 
 <script>
-import signOut from "~/gql/user/signOut.gql";
-import me from "~/gql/user/me.gql";
+import signOut from '~/gql/user/signOut.gql'
+import me from '~/gql/user/me.gql'
 export default {
   data() {
     return {
       selected: 0,
       user: null
-    };
+    }
   },
   async created() {
     try {
+      this.$store.commit('clearErr')
       const res = (
-        await this.$apollo.query({ query: me, fetchPolicy: "no-cache" })
-      ).data;
+        await this.$apollo.query({ query: me, fetchPolicy: 'no-cache' })
+      ).data
       if (res) {
-        this.user = res.me;
+        this.user = res.me
       } else {
-        this.user = {};
+        this.user = {}
       }
     } catch (e) {
-      this.user = {};
+      this.user = {}
+      this.$store.commit('setErr', e)
+    } finally {
+      this.$store.commit('busy', false)
     }
   },
   methods: {
     select(i, url) {
-      this.selected = i;
-      this.$router.push(url);
+      this.selected = i
+      this.$router.push(url)
     },
     async logout() {
-      await this.$apollo.mutate({ mutation: signOut, fetchPolicy: "no-cache" });
-      this.$router.push("/");
+      await this.$apollo.mutate({ mutation: signOut, fetchPolicy: 'no-cache' })
+      this.$router.push('/')
     }
   }
-};
+}
 </script>
 
 <style scoped>

@@ -113,7 +113,9 @@ export default {
       this.error = error
       this.user = user
     } catch (e) {
-      this.$store.commit('setErr', e, { root: true })
+      this.$store.commit('setErr', e)
+    } finally {
+      this.$store.commit('busy', false)
     }
   },
   layout: 'none',

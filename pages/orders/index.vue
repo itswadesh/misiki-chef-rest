@@ -10,15 +10,6 @@
     </button>
     <div>
       <div
-        v-if="errors"
-        class="mx-2 text-center"
-      >
-        <span
-          v-for="(e,ix) in errors"
-          :key="ix"
-        >{{e.message}}</span>
-      </div>
-      <div
         class="flex noprint justify-center text-gray-600"
         v-if="todayTotal"
       >
@@ -76,6 +67,7 @@ const Header = () => import('~/components/Header')
 const StickyFooter = () => import('~/components/footer/StickyFooter')
 import myCustomers from '~/gql/order/myCustomers.gql'
 import todayTotal from '~/gql/order/todayTotal.gql'
+import todaysSummary from '~/gql/order/todaysSummary.gql'
 import updateOrder from '~/gql/order/updateOrder.gql'
 import { infiniteScroll } from '~/mixins'
 
@@ -92,12 +84,11 @@ export default {
     }
   },
   async created() {
-    this.errors = []
     try {
       this.$store.commit('clearErr')
-      this.todayTotal = (
-        await $apollo.query({ query: todayTotal, variables: {} })
-      ).data.todayTotal
+      this.todaySummary = (
+        await this.$apollo.query({ query: todaysSummary, variables: {} })
+      ).data.todaysSummary
     } finally {
       this.$store.commit('busy', false)
     }
@@ -110,7 +101,6 @@ export default {
       }
     },
     async save(o) {
-      this.errors = []
       try {
         this.$store.commit('clearErr')
         this.orders = (

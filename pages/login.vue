@@ -4,11 +4,22 @@
       <div class="bg-white rounded shadow">
         <div class="text-secondary text-white">
           <h1 class="text-xl mb-2 text-center p-3">
-            <span class="font-extrabold" v-if="!signup">SIGN IN</span>
-            <span class="font-extrabold" v-else>SIGN UP</span> TO YOUR ACCOUNT
+            <span
+              class="font-extrabold"
+              v-if="!signup"
+            >SIGN IN</span>
+            <span
+              class="font-extrabold"
+              v-else
+            >SIGN UP</span> TO YOUR ACCOUNT
           </h1>
         </div>
-        <form novalidate autocomplete="off" @submit.stop.prevent="submit()" class="center">
+        <form
+          novalidate
+          autocomplete="off"
+          @submit.stop.prevent="submit()"
+          class="center"
+        >
           <div class="p-6">
             <div>
               <Textbox
@@ -45,13 +56,12 @@
                 />
               </div>
               <!-- Show OTP box -->
-              <div v-else class="text-center">
-                <p
-                  class="text-red-500 mb-5 text-xs font-hairline"
-                >Please enter OTP sent to mobile number</p>
-                <div
-                  class="otp-container relative inline-block rounded p-2 w-32 w-12 mb-10 bg-gray-200"
-                >
+              <div
+                v-else
+                class="text-center"
+              >
+                <p class="text-red-500 mb-5 text-xs font-hairline">Please enter OTP sent to mobile number</p>
+                <div class="otp-container relative inline-block rounded p-2 w-32 w-12 mb-10 bg-gray-200">
                   <div
                     id="wraper1"
                     class="otp-seperator w-1 h-1 rounded absolute"
@@ -93,7 +103,11 @@
                 :class="{'primary text-white':!loading,'border border-gray-400 bg-gray-300':loading}"
               >
                 <div v-if="loading">
-                  <img src="/loading.svg" :class="{'loading':loading}" alt />
+                  <img
+                    src="/loading.svg"
+                    :class="{'loading':loading}"
+                    alt
+                  />
                 </div>
                 <span v-else>{{submitText}}</span>
               </button>
@@ -109,33 +123,33 @@
 </template>
 
 <script>
-import Textbox from "~/components/ui/Textbox";
-import { location } from "~/mixins";
-import getOtp from "../gql/user/getOtp.gql";
-import verifyOtp from "../gql/user/verifyOtp.gql";
-import signIn from "../gql/user/signIn.gql";
+import Textbox from '~/components/ui/Textbox'
+import { location } from '~/mixins'
+import getOtp from '../gql/user/getOtp.gql'
+import verifyOtp from '../gql/user/verifyOtp.gql'
+import signIn from '../gql/user/signIn.gql'
 export default {
   mixins: [location],
-  middleware: ["isGuest"],
+  middleware: ['isGuest'],
   data() {
     return {
       loading: false,
-      fadeIn: "",
-      disable: "disable",
+      fadeIn: '',
+      disable: 'disable',
       p: {},
       msg: null,
       signup: false,
-      uid: "8895092508",
-      password: "",
-      firstName: "",
-      lastName: "",
-      otp: "",
+      uid: '8895092508',
+      password: '',
+      firstName: '',
+      lastName: '',
+      otp: '',
       showOTP: false
-    };
+    }
   },
   async mounted() {
-    const isAuthenticated = !!this.$apolloHelpers.getToken();
-    if (isAuthenticated) this.$router.push("/my");
+    const isAuthenticated = !!this.$apolloHelpers.getToken()
+    if (isAuthenticated) this.$router.push('/my')
   },
   async created() {
     // let geoCookie = await this.$cookies.get("geo");
@@ -145,50 +159,50 @@ export default {
   components: { Textbox },
   computed: {
     isEmail() {
-      if (this.uid.includes("@")) return true;
-      else return false;
+      if (this.uid.includes('@')) return true
+      else return false
     },
     isPhone() {
-      const phoneno = /^[+()\d-]+$/;
-      if (this.uid.length >= 10 && this.uid.match(phoneno)) return true;
-      else return false;
+      const phoneno = /^[+()\d-]+$/
+      if (this.uid.length >= 10 && this.uid.match(phoneno)) return true
+      else return false
     },
     submitText() {
       if (this.signup) {
-        return "Signup New Account";
+        return 'Signup New Account'
       } else if (!this.isPhone && !this.isEmail && !this.showOTP) {
-        return "Verify";
+        return 'Verify'
       } else if (this.isPhone && !this.showOTP) {
-        return "Verify Phone"; //Login Now
+        return 'Verify Phone' //Login Now
       } else if (this.isEmail && !this.showOTP) {
-        return "Verify Email"; //Login Now
+        return 'Verify Email' //Login Now
       } else if (this.isPhone && this.showOTP) {
-        return "Verify OTP";
+        return 'Verify OTP'
       } else {
-        return "Login Now";
+        return 'Login Now'
       }
     }
   },
   methods: {
     async submit() {
-      if (!this.uid || this.uid == "") {
-        this.$store.commit("setErr", "Please enter your email/phone no");
-        return;
+      if (!this.uid || this.uid == '') {
+        this.$store.commit('setErr', 'Please enter your email/phone no')
+        return
       }
       if (!this.isPhone && !this.isEmail) {
-        this.$store.commit("setErr", "Entered email is not valid");
-        return;
+        this.$store.commit('setErr', 'Entered email is not valid')
+        return
       }
       if (this.isPhone) {
-        await this.phoneLogin();
+        await this.phoneLogin()
       } else {
-        await this.emailLogin();
+        await this.emailLogin()
       }
     },
     async phoneLogin() {
-      this.loading = true;
-      const phone = this.uid;
-      const otp = this.otp;
+      this.loading = true
+      const phone = this.uid
+      const otp = this.otp
       if (!this.showOTP) {
         // When clicked 1st time
         try {
@@ -197,33 +211,34 @@ export default {
               mutation: getOtp,
               variables: { phone }
             })
-          ).data;
-          this.successfulData = res;
-          this.showOTP = true;
-          this.msg = "Please enter OTP sent to your Mobile";
+          ).data
+          this.successfulData = res
+          this.showOTP = true
+          this.msg = 'Please enter OTP sent to your Mobile'
           // this.$refs.otp.focus();
-          return;
+          return
         } catch (e) {
-          console.log("err...", e);
+          this.$store.commit('setErr', e)
         } finally {
-          this.loading = false;
+          this.$store.commit('busy', false)
+          loading = false
         }
       } else {
         try {
-          this.loading = true;
+          this.loading = true
           await this.$apollo.mutate({
             mutation: verifyOtp,
             variables: { phone, otp }
-          });
-          let geoCookie = this.$cookies.get("geo");
+          })
+          let geoCookie = this.$cookies.get('geo')
           if (!geoCookie && process.client) {
-            this.$router.push("/change-location");
+            this.$router.push('/change-location')
           }
-          this.$router.push("/my");
+          this.$router.push('/my')
         } catch (e) {
-          this.$store.commit("setErr", e.response.data);
+          this.$store.commit('setErr', e.response.data)
         } finally {
-          this.loading = false;
+          this.loading = false
         }
       }
     },
@@ -234,104 +249,104 @@ export default {
           const otp = await this.$apollo.mutate({
             mutation: signIn,
             variables: { email: this.uid, password: this.password },
-            fetchPolicy: "no-cache"
-          });
-          this.showOTP = true;
-          this.msg = "Please enter your password";
+            fetchPolicy: 'no-cache'
+          })
+          this.showOTP = true
+          this.msg = 'Please enter your password'
           // this.$refs.otp.focus();
-          return;
+          return
         } catch (e) {
-          if (e.response && e.response.status == "400") {
-            this.signup = true;
-            this.showOTP = true;
-            console.log("err...", e.response.status);
+          if (e.response && e.response.status == '400') {
+            this.signup = true
+            this.showOTP = true
+            console.log('err...', e.response.status)
           } else {
-            console.log("err...", e.toString());
+            console.log('err...', e.toString())
           }
         } finally {
-          this.showOTP = true;
-          this.loading = false;
+          this.showOTP = true
+          this.loading = false
         }
       } else {
         try {
-          this.loading = true;
+          this.loading = true
           if (this.signup) {
-            const res = await this.$store.dispatch("auth/signup", {
+            const res = await this.$store.dispatch('auth/signup', {
               email: this.uid,
               firstName: this.firstName,
               lastName: this.lastName,
               password: this.password,
               route: this.$route.query.return
-            });
+            })
           } else {
-            const res = await this.$store.dispatch("auth/login", {
+            const res = await this.$store.dispatch('auth/login', {
               uid: this.uid,
               password: this.password,
               route: this.$route.query.return
-            });
+            })
           }
-          this.showOTP = true;
+          this.showOTP = true
           // this.$refs.password.focus();
         } catch (e) {
-          this.showOTP = false;
-          this.msg = this.err = e.response && e.response.data;
-          this.$store.commit("setErr", this.err, { root: true });
+          this.showOTP = false
+          this.msg = this.err = e.response && e.response.data
+          this.$store.commit('setErr', this.err, { root: true })
           // this.$refs.uid.focus();
         } finally {
-          this.showOTP = true;
-          this.loading = false;
+          this.showOTP = true
+          this.loading = false
         }
       }
     },
     onOTPEnter(index, event) {
-      const eventCode = event.which || event.keyCode;
+      const eventCode = event.which || event.keyCode
       if (index == 4) {
-        this.submit(); // Submit code
+        this.submit() // Submit code
       }
     },
     onPhoneChange(e) {
       if (e.keyCode != 13) {
-        this.showOTP = false;
-        this.p = {};
-        return;
+        this.showOTP = false
+        this.p = {}
+        return
       }
     }
   },
   head() {
     return {
-      title: "Login to Misiki",
+      title: 'Login to Misiki',
       meta: [
         {
-          hid: "description",
-          name: "description",
-          content: "Login to Misiki"
+          hid: 'description',
+          name: 'description',
+          content: 'Login to Misiki'
         },
         {
-          hid: "og:description",
-          name: "Description",
-          property: "og:description",
-          content: "Login to Misiki"
+          hid: 'og:description',
+          name: 'Description',
+          property: 'og:description',
+          content: 'Login to Misiki'
         },
 
         {
-          hid: "og:title",
-          name: "og:title",
-          property: "og:title",
-          content: "Checkout with the products in your cart"
+          hid: 'og:title',
+          name: 'og:title',
+          property: 'og:title',
+          content: 'Checkout with the products in your cart'
         },
         // Twitter
         {
-          name: "twitter:title",
-          content: "Checkout with the products in your cart"
+          name: 'twitter:title',
+          content: 'Checkout with the products in your cart'
         },
         {
-          name: "twitter:description",
-          content: "Login to Misiki"
+          name: 'twitter:description',
+          content: 'Login to Misiki'
         }
       ]
-    };
+    }
   }
-};
+}
 </script>
 <style scoped>
 .border-t {

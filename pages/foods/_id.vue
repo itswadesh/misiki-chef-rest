@@ -172,6 +172,7 @@ export default {
       if (!food.time) food.time = '8:30 - 9:30 PM'
       this.food = food.product
     } catch (e) {
+      this.$store.commit('setErr', e)
     } finally {
       this.$store.commit('busy', false)
     }
@@ -194,7 +195,11 @@ export default {
               variables: { id }
             })
             this.$router.push('/search')
-          } catch (e) {}
+          } catch (e) {
+            this.$store.commit('setErr', e)
+          } finally {
+            this.$store.commit('busy', false)
+          }
         }
       })
     },

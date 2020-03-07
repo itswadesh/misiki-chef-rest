@@ -134,13 +134,20 @@ export default {
       })
     },
     async deleteConfirmed(image) {
-      this.image = ''
-      await this.$apollo.mutate({
-        mutation: deleteFile,
-        variables: { path: image },
-        fetchPolicy: 'no-cache'
-      })
-      this.$emit('remove', this.name)
+      try {
+        this.$store.commit('clearErr')
+        this.image = ''
+        await this.$apollo.mutate({
+          mutation: deleteFile,
+          variables: { path: image },
+          fetchPolicy: 'no-cache'
+        })
+        this.$emit('remove', this.name)
+      } catch (e) {
+        this.$store.commit('setErr', e)
+      } finally {
+        this.$store.commit('busy', false)
+      }
     },
     filesChange(fieldName, fileList, name) {
       // handle file changes
@@ -157,6 +164,8 @@ export default {
 
     async saveImage(formData, name) {
       try {
+        this.$store.commit('busy', true)
+        this.$store.commit('clearErr')
         this.currentStatus = 1
         let x = await this.$apollo.mutate({
           mutation: singleUpload,
@@ -168,12 +177,10 @@ export default {
         this.save(path) // Save the image against api
       } catch (e) {
         this.currentStatus = 3
-
-        this.err(e)
+        this.$store.commit('setErr', e)
+      } finally {
+        this.$store.commit('busy', false)
       }
-    },
-    err(e) {
-      this.$store.commit('setErr', e.response.data)
     }
   }
 }

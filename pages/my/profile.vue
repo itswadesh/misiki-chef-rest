@@ -1,15 +1,6 @@
 <template>
   <div>
     <Heading title="Chef Details" />
-    <div
-      v-if="errors"
-      class="mx-2 text-center"
-    >
-      <span
-        v-for="(e,ix) in errors"
-        :key="ix"
-      >{{e.message}}</span>
-    </div>
     <div class="w-full pb-4 lg:w-1/3 m-auto">
       <form
         class="lg:mx-15 form w-full mb-1"
@@ -163,8 +154,7 @@ export default {
       a: {},
       profile: {},
       nwErr: null,
-      graphErr: null,
-      errors: []
+      graphErr: null
     }
   },
   components: {
@@ -180,7 +170,6 @@ export default {
     // }
   },
   async mounted() {
-    this.errors = []
     try {
       this.$store.commit('clearErr')
       this.$store.commit('busy', true)
@@ -205,6 +194,8 @@ export default {
       // if (!this.profile.info) this.profile.info = {};
       // this.profile.public = this.profile.info.public || false;
       // this.profile.restaurant = this.profile.info.restaurant;
+    } catch (e) {
+      this.$store.commit('setErr', e)
     } finally {
       this.$store.commit('busy', false)
     }
@@ -231,7 +222,6 @@ export default {
       } catch (e) {}
     },
     async saveProfile() {
-      this.errors = []
       try {
         this.$store.commit('clearErr')
         // this.profile.restaurant = this.profile.info.restaurant;

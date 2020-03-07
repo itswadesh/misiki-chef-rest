@@ -59,7 +59,10 @@ export const actions = {
         })
       ).data.settings
       await commit('settings', settings)
-    } catch (e) {}
+    } catch (e) {
+    } finally {
+      commit('busy', false)
+    }
   },
   async nuxtClientInit({ state, commit, dispatch }, context) {
     await dispatch('fetch')

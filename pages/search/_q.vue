@@ -2,15 +2,6 @@
   <div>
     <!-- <Banner /> -->
     <div class="container relative">
-      <div
-        v-if="errors"
-        class="mx-2 text-center"
-      >
-        <span
-          v-for="(e,ix) in errors"
-          :key="ix"
-        >{{e.message}}</span>
-      </div>
       <!-- <Categories /> -->
       <nuxt-link
         class="absolute top-0 right-0 fab z-10"

@@ -1,14 +1,6 @@
 <template>
   <div class="w-full lg:w-2/4 mt-0 lg:mt-10 lg:pr-20 xs:w-full lg:px-10 px-2 headings">
-    <div
-      v-if="errors"
-      class="mx-2 text-center"
-    >
-      <span
-        v-for="(e,ix) in errors"
-        :key="ix"
-      >{{e.message}}</span>
-    </div>
+
     <div class="text-2xl font-bold py-6 text-center lg:text-left">
       <i
         class="fa fa-arrow-left mr-2 block lg:invisible"
@@ -67,8 +59,7 @@ export default {
   layout: 'account',
   data() {
     return {
-      addresses: [],
-      errors: []
+      addresses: []
     }
   },
   async created() {
@@ -76,7 +67,6 @@ export default {
   },
   methods: {
     async getAddresses() {
-      this.errors = []
       try {
         this.$store.commit('clearErr')
         const res = (
@@ -87,30 +77,37 @@ export default {
         ).data
         this.addresses = res.addresses
       } catch (e) {
-        this.$store.commit('setErr', e, { root: true })
+        this.$store.commit('setErr', e)
       } finally {
+        this.$store.commit('busy', false)
       }
     },
     async del(address) {
-      this.$swal({
-        title: 'Do you wish to delete this address?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, Delete!'
-      }).then(async result => {
-        if (result.value) {
-          await this.$apollo.mutate({
-            mutation: gql`
-              mutation deleteAddress($id: ID!) {
-                deleteAddress(id: $id)
-              }
-            `,
-            variables: { id: address.id },
-            fetchPolicy: 'no-cache'
-          })
-          this.getAddresses()
-        }
-      })
+      try {
+        this.$swal({
+          title: 'Do you wish to delete this address?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Delete!'
+        }).then(async result => {
+          if (result.value) {
+            await this.$apollo.mutate({
+              mutation: gql`
+                mutation deleteAddress($id: ID!) {
+                  deleteAddress(id: $id)
+                }
+              `,
+              variables: { id: address.id },
+              fetchPolicy: 'no-cache'
+            })
+            this.getAddresses()
+          }
+        })
+      } catch (e) {
+        this.$store.commit('setErr', e)
+      } finally {
+        this.$store.commit('busy', false)
+      }
     }
   }
 }

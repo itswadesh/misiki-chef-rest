@@ -118,6 +118,8 @@ export default {
         }
       } catch (e) {
         this.$store.commit('setErr', e, { root: true })
+      } finally {
+        this.$store.commit('busy', false)
       }
     },
     imgPath(i) {
@@ -144,16 +146,20 @@ export default {
       })
     },
     async deleteConfirmed(image) {
-      this.img = ''
-      await this.$apollo.mutate({
-        mutation: deleteFile,
-        variables: { path: image },
-        fetchPolicy: 'no-cache'
-      })
-      this.$emit('remove', this.name)
-    },
-    err(e) {
-      this.$store.commit('setErr', e.response.data)
+      try {
+        this.$store.commit('clearErr')
+        this.img = ''
+        await this.$apollo.mutate({
+          mutation: deleteFile,
+          variables: { path: image },
+          fetchPolicy: 'no-cache'
+        })
+        this.$emit('remove', this.name)
+      } catch (e) {
+        this.$store.commit('setErr', e)
+      } finally {
+        this.$store.commit('busy', false)
+      }
     }
   }
 }

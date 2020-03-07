@@ -2,19 +2,35 @@
   <div>
     <Header class="noprint" />
     <div class="heading noprint">Today's Orders</div>
-    <button @click="printOut()" class="noprint fab top-0">
+    <button
+      @click="printOut()"
+      class="noprint fab top-0"
+    >
       <i class="fa fa-print" />
     </button>
     <div>
-      <div v-if="errors" class="mx-2 text-center">
-        <span v-for="(e,ix) in errors" :key="ix">{{e.message}}</span>
+      <div
+        v-if="errors"
+        class="mx-2 text-center"
+      >
+        <span
+          v-for="(e,ix) in errors"
+          :key="ix"
+        >{{e.message}}</span>
       </div>
-      <div class="flex noprint justify-center text-gray-600" v-if="todayTotal">
+      <div
+        class="flex noprint justify-center text-gray-600"
+        v-if="todayTotal"
+      >
         <h2>{{ todayTotal.count }}</h2>
         <h1>{{ todayTotal.total | currency }}</h1>
         <div>{{ orders && orders[0] && orders[0].createdAt | date }}</div>
       </div>
-      <div v-for="s in todaySummary" :key="s._id" class="noprint text-center">
+      <div
+        v-for="s in todaySummary"
+        :key="s._id"
+        class="noprint text-center"
+      >
         <span class="font-bold">
           {{ s._id }} *
           <span class="text-green-500 text-xl">{{ s.count }}</span> =
@@ -35,19 +51,18 @@
           </p>
           <ul v-if="o.item">
             <ol class="flex">
-              <div
-                class="mr-2 shadow-xl font-bold w-8 h-8 rounded-full bg-gray-300 text-center align-middle"
-              >1</div>
+              <div class="mr-2 shadow-xl font-bold w-8 h-8 rounded-full bg-gray-300 text-center align-middle">1</div>
               <div class>{{ o.item.name }}</div>
             </ol>
           </ul>
           <p>
             {{ o.rate | currency }} * {{ o.qty }} =
-            <span
-              class="text-3xl font-bold"
-            >{{ o.amount | currency }}</span>
+            <span class="text-3xl font-bold">{{ o.amount | currency }}</span>
           </p>
-          <h3 v-if="o.vendor" class="text-right tracking-wide">{{ o.vendor.restaurant }}</h3>
+          <h3
+            v-if="o.vendor"
+            class="text-right tracking-wide"
+          >{{ o.vendor.restaurant }}</h3>
           <div class="text-cyan-500 text-xs text-right">{{ o.createdAt | date }}</div>
         </li>
       </ul>
@@ -57,15 +72,15 @@
   </div>
 </template>
 <script>
-const Header = () => import("~/components/Header");
-const StickyFooter = () => import("~/components/footer/StickyFooter");
-import myCustomers from "~/gql/order/myCustomers.gql";
-import todayTotal from "~/gql/order/todayTotal.gql";
-import updateOrder from "~/gql/order/updateOrder.gql";
-import { infiniteScroll } from "~/mixins";
+const Header = () => import('~/components/Header')
+const StickyFooter = () => import('~/components/footer/StickyFooter')
+import myCustomers from '~/gql/order/myCustomers.gql'
+import todayTotal from '~/gql/order/todayTotal.gql'
+import updateOrder from '~/gql/order/updateOrder.gql'
+import { infiniteScroll } from '~/mixins'
 
 export default {
-  middleware: "isAuth",
+  middleware: 'isAuth',
   mixins: [infiniteScroll],
   data() {
     return {
@@ -73,50 +88,48 @@ export default {
       todayTotal: null,
       todaySummary: null,
       model: myCustomers,
-      attr: "myCustomers"
-    };
+      attr: 'myCustomers'
+    }
   },
   async created() {
-    this.errors = [];
+    this.errors = []
     try {
+      this.$store.commit('clearErr')
       this.todayTotal = (
         await $apollo.query({ query: todayTotal, variables: {} })
-      ).data.todayTotal;
-    } catch ({ graphQLErrors, networkError }) {
-      if (graphQLErrors) this.errors = graphQLErrors;
-      if (networkError) this.errors = networkError.result.errors;
+      ).data.todayTotal
     } finally {
-      this.$store.commit("busy", false);
+      this.$store.commit('busy', false)
     }
   },
   components: { Header, StickyFooter },
   methods: {
     printOut() {
       if (process.client) {
-        window.print();
+        window.print()
       }
     },
     async save(o) {
-      this.errors = [];
+      this.errors = []
       try {
+        this.$store.commit('clearErr')
         this.orders = (
           await this.$apollo.mutate({
             mutation: updateOrder,
             variables: { id: o.id, status: o.status }
           })
-        ).data.updateOrder;
-      } catch ({ graphQLErrors, networkError }) {
-        if (graphQLErrors) this.errors = graphQLErrors;
-        if (networkError) this.errors = networkError.result.errors;
+        ).data.updateOrder
+      } catch (e) {
+        this.$store.commit('setErr', e, { root: true })
       } finally {
-        this.$store.commit("busy", false);
+        this.$store.commit('busy', false)
       }
     },
     go(url) {
-      this.$router.push(url);
+      this.$router.push(url)
     }
   }
-};
+}
 </script>
 
 <style scoped>

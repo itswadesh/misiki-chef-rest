@@ -1,7 +1,12 @@
 <template>
   <div>
     <Heading title="Add food details" />
-    <form novalidate autocomplete="off" @submit.stop.prevent="submit()" class="container relative">
+    <form
+      novalidate
+      autocomplete="off"
+      @submit.stop.prevent="submit()"
+      class="container relative"
+    >
       <button
         type="button"
         @click="deleteProduct(food.id)"
@@ -17,18 +22,43 @@
             @change="submit()"
             label="Open Kitchen"
           />-->
-          <Textbox class="w-full mb-4" label="Dish Name" name="name" v-model="food.name" />
+          <Textbox
+            class="w-full mb-4"
+            label="Dish Name"
+            name="name"
+            v-model="food.name"
+          />
           <Textbox
             class="w-full mb-4"
             label="Description"
             name="description"
             v-model="food.description"
           />
-          <Textbox class="w-full mb-4" label="Rate" name="rate" v-model="food.rate" />
-          <Textbox class="w-full mb-4" label="Qty" name="qty" v-model="food.stock" />
+          <Textbox
+            class="w-full mb-4"
+            label="Rate"
+            name="rate"
+            v-model="food.rate"
+          />
+          <Textbox
+            class="w-full mb-4"
+            label="Qty"
+            name="qty"
+            v-model="food.stock"
+          />
           <div class="mb-4">
-            <Radio v-model="food.type" value="V" color="green" class="mr-2">Veg</Radio>
-            <Radio v-model="food.type" value="N" color="red" class="mr-2">Non Veg</Radio>
+            <Radio
+              v-model="food.type"
+              value="V"
+              color="green"
+              class="mr-2"
+            >Veg</Radio>
+            <Radio
+              v-model="food.type"
+              value="N"
+              color="red"
+              class="mr-2"
+            >Non Veg</Radio>
           </div>
           <div class="flex">
             <Radio
@@ -40,7 +70,7 @@
               class="mr-2"
             >{{s.name}} [{{s.val}}]</Radio>
           </div>
-          <single-image-upload
+          <image-upload
             :image="food.img"
             name="food"
             folder="food"
@@ -53,10 +83,19 @@
           />-->
           <div class="msg">{{msg}}</div>
           <br />
-          <div class="bg-red-200 p-3 rounded" v-if="nwErr || graphErr">
+          <div
+            class="bg-red-200 p-3 rounded"
+            v-if="nwErr || graphErr"
+          >
             <ul>
-              <li v-for="(e,ix) in nwErr" :key="ix">{{e.message}}</li>
-              <li v-for="(e,ix) in graphErr" :key="ix">{{e.message}}</li>
+              <li
+                v-for="(e,ix) in nwErr"
+                :key="ix"
+              >{{e.message}}</li>
+              <li
+                v-for="(e,ix) in graphErr"
+                :key="ix"
+              >{{e.message}}</li>
             </ul>
           </div>
           <br />
@@ -66,37 +105,45 @@
         </div>
       </div>
       <div class="fixed bottom-0 text-center px-auto py-3 text-xl primary w-full">
-        <button class="w-full" type="submit" v-if="$route.params.id == 'new'">Add Dish</button>
-        <button class="w-full" type="submit" v-else>Save Changes</button>
+        <button
+          class="w-full"
+          type="submit"
+          v-if="$route.params.id == 'new'"
+        >Add Dish</button>
+        <button
+          class="w-full"
+          type="submit"
+          v-else
+        >Save Changes</button>
       </div>
     </form>
   </div>
 </template>
 <script>
-import { timesList } from "~/config";
-const Radio = () => import("~/components/ui/Radio");
-const Textbox = () => import("~/components/ui/Textbox");
-const Heading = () => import("~/components/Heading");
-import SingleImageUpload from "@/components/SingleImageUpload";
-import product from "~/gql/product/product.gql";
-import createProduct from "~/gql/product/createProduct.gql";
-import updateProduct from "~/gql/product/updateProduct.gql";
-import deleteProduct from "~/gql/product/deleteProduct.gql";
-import slots from "~/gql/product/slots.gql";
+import { timesList } from '~/config'
+const Radio = () => import('~/components/ui/Radio')
+const Textbox = () => import('~/components/ui/Textbox')
+const Heading = () => import('~/components/Heading')
+import ImageUpload from '@/components/ImageUpload'
+import product from '~/gql/product/product.gql'
+import createProduct from '~/gql/product/createProduct.gql'
+import updateProduct from '~/gql/product/updateProduct.gql'
+import deleteProduct from '~/gql/product/deleteProduct.gql'
+import slots from '~/gql/product/slots.gql'
 
 export default {
-  middleware: "isAuth",
-  components: { SingleImageUpload, Radio, Textbox, Heading },
+  middleware: 'isAuth',
+  components: { ImageUpload, Radio, Textbox, Heading },
   data() {
     return {
       loading: false,
-      fadeIn: "",
+      fadeIn: '',
       msg: null,
       err: [],
       nwErr: null,
       graphErr: null,
       deliveryslots: [],
-      food: { type: "V", time: "8:30 - 9:30 PM" },
+      food: { type: 'V', time: '8:30 - 9:30 PM' },
       date: null,
       menu: false,
       modal: false,
@@ -105,59 +152,61 @@ export default {
       timesList: timesList,
       dishes: [],
       qty: 5
-    };
+    }
   },
   async created() {
+    if (this.$route.params.id == 'new') return
     try {
-      this.$store.commit("busy", true);
+      this.$store.commit('busy', true)
       const deliveryslots = (
-        await this.$apollo.query({ query: slots, fetchPolicy: "no-cache" })
-      ).data;
-      this.deliveryslots = deliveryslots.slots;
+        await this.$apollo.query({ query: slots, fetchPolicy: 'no-cache' })
+      ).data
+      this.deliveryslots = deliveryslots.slots
       const food = (
         await this.$apollo.query({
           query: product,
           variables: { id: this.$route.params.id },
-          fetchPolicy: "no-cache"
+          fetchPolicy: 'no-cache'
         })
-      ).data;
-      if (!food.time) food.time = "8:30 - 9:30 PM";
-      this.food = food.product;
+      ).data
+      if (!food.time) food.time = '8:30 - 9:30 PM'
+      this.food = food.product
     } catch (e) {
     } finally {
-      this.$store.commit("busy", false);
+      this.$store.commit('busy', false)
     }
   },
   methods: {
     async deleteProduct(id) {
       this.$swal({
-        title: "Are you sure to delete this dish?",
-        text: "This will permanently delete including image",
-        icon: "warning",
+        title: 'Are you sure to delete this dish?',
+        text: 'This will permanently delete including image',
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Delete!"
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Delete!'
       }).then(async result => {
         if (result.value) {
           try {
             await this.$apollo.mutate({
               mutation: deleteProduct,
               variables: { id }
-            });
-            this.$router.push("/search");
+            })
+            this.$router.push('/search')
           } catch (e) {}
         }
-      });
+      })
     },
     saveImage(name, image) {
-      this.food.img = image;
-      this.publishDish();
+      this.food.img = image
+      this.publishDish()
+
       // this.submit();
     },
     removeImage(name) {
-      this.food.img = "";
-      this.publishDish();
+      this.food.img = ''
+      this.publishDish()
     },
     // add(qty) {
     //   if (qty < 5 && this.qty <= 0) return;
@@ -168,20 +217,20 @@ export default {
     //   this.qty += qty;
     // },
     async submit() {
-      const vm = this;
+      const vm = this
       if (!vm.food.name) {
-        this.$store.commit("setErr", "Please name your dish");
-        return;
+        this.$store.commit('setErr', 'Please name your dish')
+        return
       } else if (!vm.food.type) {
-        this.$store.commit("setErr", "Please select Veg or Non Veg");
-        return;
+        this.$store.commit('setErr', 'Please select Veg or Non Veg')
+        return
       } else if (!vm.food.rate || vm.food.rate < 30) {
-        this.$store.commit("setErr", "Rate must be atleast 30");
-        return;
+        this.$store.commit('setErr', 'Rate must be atleast 30')
+        return
       }
       try {
-        this.loading = true;
-        this.$store.commit("busy", true);
+        this.loading = true
+        this.$store.commit('busy', true)
         // let date = moment(this.date + " " + this.time, "YYYY-MM-DD h a");
         // if (date.diff(moment()) < 0) {
         //   console.log("Delivery time is invalid");
@@ -190,70 +239,69 @@ export default {
         // }
         // this.food.deliveryDate = date;
         if (this.food.stock == 0) {
-          await vm.publishDish();
-          // this.$router.push("/foods");
+          await vm.publishDish()
+          // this.$router.push("/search");
         } else if (this.food.stock > 0) {
           this.$swal({
-            title: "Are you sure to activate this dish?",
-            text: "This will be available for booking by users",
-            icon: "warning",
+            title: 'Are you sure to activate this dish?',
+            text: 'This will be available for booking by users',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, Publish!"
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Publish!'
           }).then(async result => {
             if (result.value) {
-              await vm.publishDish();
-              this.$router.push("/search");
+              await vm.publishDish()
+              this.$router.push('/search')
             }
-          });
+          })
         } else {
-          this.$store.commit("setErr", "Quantity must be >= 0");
-          return;
+          this.$store.commit('setErr', 'Quantity must be >= 0')
+          return
         }
       } catch (e) {
-        this.$store.commit("setErr", e.toString());
-        return;
+        this.$store.commit('setErr', e.toString())
+        return
       } finally {
-        this.$store.commit("busy", false);
-        this.loading = false;
+        this.$store.commit('busy', false)
+        this.loading = false
       }
     },
     async publishDish() {
       try {
-        this.$store.commit("busy", true);
-        this.food.rate = +this.food.rate;
-        this.food.stock = +this.food.stock;
-        if (this.$route.params.id == "new") {
+        this.$store.commit('busy', true)
+        this.$store.commit('clearErr')
+        this.food.rate = +this.food.rate
+        this.food.stock = +this.food.stock
+        if (this.$route.params.id == 'new') {
           await this.$apollo.mutate({
             mutation: createProduct,
             variables: this.food,
-            fetchPolicy: "no-cache"
-          });
+            fetchPolicy: 'no-cache'
+          })
         } else {
           await this.$apollo.mutate({
             mutation: updateProduct,
             variables: { id: this.$route.params.id, ...this.food },
-            fetchPolicy: "no-cache"
-          });
+            fetchPolicy: 'no-cache'
+          })
         }
+        this.$router.push('/search')
       } catch (e) {
-        if (e.graphQLErrors) this.graphErr = e.graphQLErrors;
-        if (e.networkError) this.nwErr = e.networkError.result.errors;
-        console.log("err... ", this.nwErr, this.graphErr);
-        this.$store.commit("setErr", e.toString());
+        this.$store.commit('setErr', e)
       } finally {
-        this.$store.commit("busy", false);
+        this.$store.commit('busy', false)
       }
     }
   },
-  layout: "none",
+  layout: 'none',
   head() {
     return {
-      title: "Post Your Food"
-    };
+      title: 'Post Your Food'
+    }
   }
-};
+}
 </script>
 <style scoped>
 .msg {

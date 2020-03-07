@@ -1,7 +1,13 @@
 <template>
   <div class="w-full lg:w-2/4 mt-0 lg:mt-10 lg:pr-20 xs:w-full lg:px-10 px-2 headings">
-    <div v-if="errors" class="mx-2 text-center">
-      <span v-for="(e,ix) in errors" :key="ix">{{e.message}}</span>
+    <div
+      v-if="errors"
+      class="mx-2 text-center"
+    >
+      <span
+        v-for="(e,ix) in errors"
+        :key="ix"
+      >{{e.message}}</span>
     </div>
     <div class="text-2xl font-bold py-6 text-center lg:text-left">
       <i
@@ -15,7 +21,11 @@
         :to="`address/add`"
         class="text-center shadow rounded hover:shadow-xl w-full bg-white p-5 mb-5 flex items-center justify-center border border-gray-100"
       >
-        <img src="/rounded-plus.png" alt="+" class="w-10 mr-1" />ADD NEW ADDRESS
+        <img
+          src="/rounded-plus.png"
+          alt="+"
+          class="w-10 mr-1"
+        />ADD NEW ADDRESS
       </nuxt-link>
       <div
         class="shadow rounded hover:shadow-xl w-full bg-white py-3 px-5 mb-5 flex flex-wrap border border-gray-100 relative"
@@ -50,43 +60,43 @@
 </template>
 
 <script>
-import addresses from "~/gql/user/addresses.gql";
-import deleteAddress from "~/gql/user/deleteAddress.gql";
-import gql from "graphql-tag";
+import addresses from '~/gql/user/addresses.gql'
+import deleteAddress from '~/gql/user/deleteAddress.gql'
+import gql from 'graphql-tag'
 export default {
-  layout: "account",
+  layout: 'account',
   data() {
     return {
       addresses: [],
       errors: []
-    };
+    }
   },
   async created() {
-    this.getAddresses();
+    this.getAddresses()
   },
   methods: {
     async getAddresses() {
-      this.errors = [];
+      this.errors = []
       try {
+        this.$store.commit('clearErr')
         const res = (
           await this.$apollo.query({
             query: addresses,
-            fetchPolicy: "no-cache"
+            fetchPolicy: 'no-cache'
           })
-        ).data;
-        this.addresses = res.addresses;
-      } catch ({ graphQLErrors, networkError }) {
-        if (graphQLErrors) this.errors = graphQLErrors;
-        if (networkError) this.errors = networkError.result.errors;
+        ).data
+        this.addresses = res.addresses
+      } catch (e) {
+        this.$store.commit('setErr', e, { root: true })
       } finally {
       }
     },
     async del(address) {
       this.$swal({
-        title: "Do you wish to delete this address?",
-        icon: "warning",
+        title: 'Do you wish to delete this address?',
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: "Yes, Delete!"
+        confirmButtonText: 'Yes, Delete!'
       }).then(async result => {
         if (result.value) {
           await this.$apollo.mutate({
@@ -96,12 +106,12 @@ export default {
               }
             `,
             variables: { id: address.id },
-            fetchPolicy: "no-cache"
-          });
-          this.getAddresses();
+            fetchPolicy: 'no-cache'
+          })
+          this.getAddresses()
         }
-      });
+      })
     }
   }
-};
+}
 </script>

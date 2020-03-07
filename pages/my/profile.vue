@@ -1,8 +1,14 @@
 <template>
   <div>
     <Heading title="Chef Details" />
-    <div v-if="errors" class="mx-2 text-center">
-      <span v-for="(e,ix) in errors" :key="ix">{{e.message}}</span>
+    <div
+      v-if="errors"
+      class="mx-2 text-center"
+    >
+      <span
+        v-for="(e,ix) in errors"
+        :key="ix"
+      >{{e.message}}</span>
     </div>
     <div class="w-full pb-4 lg:w-1/3 m-auto">
       <form
@@ -11,10 +17,26 @@
         autocomplete="off"
         @submit.stop.prevent="submit()"
       >
-        <div class="p-2 mb-4" v-if="a">
-          <div type="tel" label="Phone" class="w-full text-center" name="name">Phone: {{a.phone}}</div>
-          <div class="text-center cursor-pointer" v-if="profile.info">
-            <input type="checkbox" id="checkbox" name="checkbox" v-model="profile.info.public" />
+        <div
+          class="p-2 mb-4"
+          v-if="a"
+        >
+          <div
+            type="tel"
+            label="Phone"
+            class="w-full text-center"
+            name="name"
+          >Phone: {{a.phone}}</div>
+          <div
+            class="text-center cursor-pointer"
+            v-if="profile.info"
+          >
+            <input
+              type="checkbox"
+              id="checkbox"
+              name="checkbox"
+              v-model="profile.info.public"
+            />
             <label for="checkbox">Show name to public? {{ profile.info.public }}</label>
           </div>
           <Textbox
@@ -38,15 +60,45 @@
               v-model="profile.lastName"
             />
           </div>
-          <Textbox label="Address" class="w-full mb-4" name="name" v-model="a.address" />
+          <Textbox
+            label="Address"
+            class="w-full mb-4"
+            name="name"
+            v-model="a.address"
+          />
           <div class="w-full flex justify-between mb-4">
-            <Textbox label="Pin Code" class="w-1/2 mr-1" name="zip" v-model="a.zip" />
-            <Textbox label="Phone" class="w-1/2 ml-1" name="phone" v-model="a.phone" />
+            <Textbox
+              label="Pin Code"
+              class="w-1/2 mr-1"
+              name="zip"
+              v-model="a.zip"
+            />
+            <Textbox
+              label="Phone"
+              class="w-1/2 ml-1"
+              name="phone"
+              v-model="a.phone"
+            />
           </div>
-          <Textbox label="Town" class="w-full mb-4" name="name" v-model="a.town" />
+          <Textbox
+            label="Town"
+            class="w-full mb-4"
+            name="name"
+            v-model="a.town"
+          />
           <div class="w-full flex justify-between mb-4">
-            <Textbox label="City" class="w-1/2 mr-1" name="name" v-model="a.city" />
-            <Textbox label="State" class="w-1/2 ml-1" name="name" v-model="a.state" />
+            <Textbox
+              label="City"
+              class="w-1/2 mr-1"
+              name="name"
+              v-model="a.city"
+            />
+            <Textbox
+              label="State"
+              class="w-1/2 ml-1"
+              name="name"
+              v-model="a.state"
+            />
           </div>
           <ImageUpload
             :image="profile.avatar"
@@ -69,28 +121,42 @@
         </div>
       </form>
     </div>
-    <ul v-if="nwErr" class="mx-2">
-      <li class="bg-red-200 p-3 mb-2 rounded" v-for="(e,ix) in nwErr" :key="ix">{{e.message}}</li>
+    <ul
+      v-if="nwErr"
+      class="mx-2"
+    >
+      <li
+        class="bg-red-200 p-3 mb-2 rounded"
+        v-for="(e,ix) in nwErr"
+        :key="ix"
+      >{{e.message}}</li>
     </ul>
-    <ul v-if="graphErr" class="mx-2">
-      <li class="bg-red-200 p-3 mb-2 rounded" v-for="(e,ix) in graphErr" :key="ix">{{e.message}}</li>
+    <ul
+      v-if="graphErr"
+      class="mx-2"
+    >
+      <li
+        class="bg-red-200 p-3 mb-2 rounded"
+        v-for="(e,ix) in graphErr"
+        :key="ix"
+      >{{e.message}}</li>
     </ul>
     <GeoLocation />
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-const Heading = () => import("~/components/Heading");
-const Textbox = () => import("~/components/ui/Textbox");
-const Checkbox = () => import("~/components/ui/Checkbox");
-const GeoLocation = () => import("~/components/GeoLocation");
-const ImageUpload = () => import("~/components/ImageUpload");
-import me from "~/gql/user/me.gql";
+import { mapActions } from 'vuex'
+const Heading = () => import('~/components/Heading')
+const Textbox = () => import('~/components/ui/Textbox')
+const Checkbox = () => import('~/components/ui/Checkbox')
+const GeoLocation = () => import('~/components/GeoLocation')
+const ImageUpload = () => import('~/components/ImageUpload')
+import me from '~/gql/user/me.gql'
 
-import { location } from "~/mixins";
+import { location } from '~/mixins'
 export default {
-  middleware: ["isAuth"],
+  middleware: ['isAuth'],
   mixins: [location],
   data() {
     return {
@@ -99,7 +165,7 @@ export default {
       nwErr: null,
       graphErr: null,
       errors: []
-    };
+    }
   },
   components: {
     Heading,
@@ -114,76 +180,74 @@ export default {
     // }
   },
   async mounted() {
-    this.errors = [];
+    this.errors = []
     try {
-      this.$store.commit("busy", true);
+      this.$store.commit('clearErr')
+      this.$store.commit('busy', true)
       const user = (
-        await this.$apollo.query({ query: me, fetchPolicy: "no-cache" })
-      ).data.me;
-      this.profile = { ...user };
-      this.a = this.$cookies.get("geo");
-      this.profile.address = this.profile.address || {};
+        await this.$apollo.query({ query: me, fetchPolicy: 'no-cache' })
+      ).data.me
+      this.profile = { ...user }
+      this.a = this.$cookies.get('geo')
+      this.profile.address = this.profile.address || {}
       this.a.address =
-        this.profile.address.address || (this.a && this.a.address);
-      this.a.town = this.profile.address.town || (this.a && this.a.town);
-      this.a.city = this.profile.address.city || (this.a && this.a.city);
+        this.profile.address.address || (this.a && this.a.address)
+      this.a.town = this.profile.address.town || (this.a && this.a.town)
+      this.a.city = this.profile.address.city || (this.a && this.a.city)
       this.a.zip = (
         this.profile.address.zip ||
         (this.a && this.a.zip)
-      ).toString();
+      ).toString()
       this.a.firstName =
-        this.profile.address.firstName || this.profile.firstName;
-      this.a.lastName = this.profile.address.lastName || this.profile.lastName;
-      this.a.phone = this.profile.phone;
+        this.profile.address.firstName || this.profile.firstName
+      this.a.lastName = this.profile.address.lastName || this.profile.lastName
+      this.a.phone = this.profile.phone
       // if (!this.profile.info) this.profile.info = {};
       // this.profile.public = this.profile.info.public || false;
       // this.profile.restaurant = this.profile.info.restaurant;
-    } catch ({ graphQLErrors, networkError }) {
-      if (graphQLErrors) this.errors = graphQLErrors;
-      if (networkError) this.errors = networkError.result.errors;
     } finally {
-      this.$store.commit("busy", false);
+      this.$store.commit('busy', false)
     }
   },
   methods: {
     saveImage(name, image) {
-      this.profile.avatar = image;
-      this.saveProfile();
+      this.profile.avatar = image
+      this.saveProfile()
     },
     removeImage(name) {
-      this.profile.avatar = "";
-      this.saveProfile();
+      this.profile.avatar = ''
+      this.saveProfile()
     },
     ...mapActions({
-      updateProfile: "auth/updateProfile"
+      updateProfile: 'auth/updateProfile'
     }),
     go(url) {
-      this.$router.push(url);
+      this.$router.push(url)
     },
     submit() {
       try {
-        this.saveProfile();
-        this.$router.push("/my");
+        this.saveProfile()
+        this.$router.push('/my')
       } catch (e) {}
     },
     async saveProfile() {
-      this.errors = [];
+      this.errors = []
       try {
+        this.$store.commit('clearErr')
         // this.profile.restaurant = this.profile.info.restaurant;
         // this.profile.public = !!this.profile.info.public;
         // this.profile.address = this.a;
-        delete this.profile.address.__typename;
-        delete this.profile.info.__typename;
-        return await this.updateProfile(this.profile);
-      } catch ({ graphQLErrors, networkError }) {
-        if (graphQLErrors) this.errors = graphQLErrors;
-        if (networkError) this.errors = networkError.result.errors;
+        delete this.profile.address.__typename
+        delete this.profile.info.__typename
+        return await this.updateProfile(this.profile)
+      } catch (e) {
+        this.$store.commit('setErr', e, { root: true })
       } finally {
       }
     }
   },
-  layout: "none"
-};
+  layout: 'none'
+}
 </script>
 
 <style scoped>

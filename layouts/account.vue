@@ -6,6 +6,15 @@
       style="min-height:71.8vh"
     >
       <Loading />
+      <div
+        v-if="$store.state.errors"
+        class="err"
+      >
+        <span
+          v-for="(e,ix) in $store.state.errors"
+          :key="ix"
+        >{{e.message}}</span>
+      </div>
       <AccountMenu class="hidden md:block" />
       <div class="flex-1">
         <nuxt />
@@ -16,11 +25,11 @@
 </template>
 
 <script>
-import Header from "~/components/Header";
-import StickyFooter from "~/components/footer/StickyFooter";
-import AccountMenu from "~/components/AccountMenu";
-import Loading from "~/components/ui/Loading";
+import Header from '~/components/Header'
+import StickyFooter from '~/components/footer/StickyFooter'
+import AccountMenu from '~/components/AccountMenu'
+import Loading from '~/components/ui/Loading'
 export default {
   components: { Header, StickyFooter, AccountMenu, Loading }
-};
+}
 </script>

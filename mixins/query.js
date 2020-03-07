@@ -1,4 +1,4 @@
-import search from "~/gql/product/search.gql";
+import search from '~/gql/product/search.gql'
 
 export default {
   data: () => ({
@@ -8,67 +8,57 @@ export default {
   }),
   methods: {
     async getData() {
-      let params = this.$route.query;
+      let params = this.$route.query
       params.page = this.meta.page
       params.search = this.$route.params.q
-      if (this.meta.end)
-        return
+      if (this.meta.end) return
       this.errors = []
       try {
+        this.$store.commit('clearErr')
         let { data, count, pageSize, page } = (
           await this.$apollo.query({
             query: search,
             variables: params,
-            fetchPolicy: "no-cache"
+            fetchPolicy: 'no-cache'
           })
-        ).data.my;
+        ).data.my
         if (data) {
           this.meta.page = this.$route.query.page
           this.count = count
           this.pageSize = pageSize
           this.currentPage = page
-          this.noOfPages = Math.ceil(count / pageSize);
+          this.noOfPages = Math.ceil(count / pageSize)
           this.data = data
         }
-      } catch ({ graphQLErrors, networkError }) {
-        if (graphQLErrors)
-          graphQLErrors.map((err) =>
-            this.errors.push(err)
-            // console.error(
-            //   `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-            // )
-          );
-        if (networkError) {
-          this.errors = networkError.result.errors
-          console.error(`[Network error]:`, networkError.result);
-        }
+      } catch (e) {
+        this.$store.commit('setErr', e, { root: true })
       } finally {
       }
     },
     flush() {
       this.meta.end = false
-      this.data = [] // Reset query parameters        
+      this.data = [] // Reset query parameters
     },
     go(url) {
-      this.$router.push(url);
-    },
+      this.$router.push(url)
+    }
   },
   watch: {
-    "$route.query": {
+    '$route.query': {
       immediate: true,
       handler(value, oldValue) {
-        if (JSON.stringify(value) == JSON.stringify(oldValue)) return;
+        if (JSON.stringify(value) == JSON.stringify(oldValue)) return
         if (value.sort) {
-          if (value.sort.charAt(0) == "-") {
-            this.sortBy = value.sort.substring(1);
-            this.descending = true;
+          if (value.sort.charAt(0) == '-') {
+            this.sortBy = value.sort.substring(1)
+            this.descending = true
           } else {
-            this.sortBy = value.sort;
-            this.descending = false;
+            this.sortBy = value.sort
+            this.descending = false
           }
         }
-        this.flush();
-        this.getData();
+        this.flush()
+        this.getData()
       }
     }
   }

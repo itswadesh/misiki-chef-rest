@@ -51,16 +51,16 @@
 </template>
 
 <script>
-import singleUpload from "~/gql/product/singleUpload.gql";
-import deleteFile from "~/gql/product/deleteFile.gql";
+import singleUpload from '~/gql/product/singleUpload.gql'
+import deleteFile from '~/gql/product/deleteFile.gql'
 const STATUS_INITIAL = 0,
   STATUS_SAVING = 1,
   STATUS_SUCCESS = 2,
-  STATUS_FAILED = 3;
+  STATUS_FAILED = 3
 export default {
   // name required for removing
   props: {
-    image: { required: true, default: "" },
+    image: { required: true, default: '' },
     name: { type: String, required: true },
     folder: { type: String, required: true },
     crunch: { type: Boolean, default: false }
@@ -70,20 +70,20 @@ export default {
       currentStatus: 0,
       data: null,
       error: null
-    };
+    }
   },
   computed: {
     isInitial() {
-      return this.currentStatus === STATUS_INITIAL;
+      return this.currentStatus === STATUS_INITIAL
     },
     isSaving() {
-      return this.currentStatus === STATUS_SAVING;
+      return this.currentStatus === STATUS_SAVING
     },
     isSuccess() {
-      return this.currentStatus === STATUS_SUCCESS;
+      return this.currentStatus === STATUS_SUCCESS
     },
     isFailed() {
-      return this.currentStatus === STATUS_FAILED;
+      return this.currentStatus === STATUS_FAILED
     }
     // img: {
     //   get: function() {
@@ -97,86 +97,86 @@ export default {
   methods: {
     async uploadPhoto({ target }) {
       try {
+        this.$store.commit('clearErr')
         this.image = (
           await this.$apollo.mutate({
             mutation: singleUpload,
             variables: { file: target.files[0], folder: this.folder },
-            fetchPolicy: "no-cache"
+            fetchPolicy: 'no-cache'
           })
-        ).data.singleUpload.filename;
-        this.$emit("save", this.name, this.image);
+        ).data.singleUpload.filename
+        this.$emit('save', this.name, this.image)
       } catch (e) {
-        console.log("err... ", e);
-        this.error = e.graphQLErrors;
+        this.$store.commit('setErr', e, { root: true })
       }
     },
     imgPath(i) {
-      return `${i}?a=${Math.random()}`;
+      return `${i}?a=${Math.random()}`
     },
     save(imagePath) {
-      this.image = imagePath;
-      this.$emit("save", this.name, imagePath);
+      this.image = imagePath
+      this.$emit('save', this.name, imagePath)
     },
     removeImage(image) {
-      let vm = this;
+      let vm = this
       this.$swal({
-        title: "Delete image?",
+        title: 'Delete image?',
         text: "You won't be able to revert this!",
-        icon: "warning",
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
       }).then(result => {
         if (result.value) {
-          vm.deleteConfirmed(image);
+          vm.deleteConfirmed(image)
         }
-      });
+      })
     },
     async deleteConfirmed(image) {
-      this.image = "";
+      this.image = ''
       await this.$apollo.mutate({
         mutation: deleteFile,
         variables: { path: image },
-        fetchPolicy: "no-cache"
-      });
-      this.$emit("remove", this.name);
+        fetchPolicy: 'no-cache'
+      })
+      this.$emit('remove', this.name)
     },
     filesChange(fieldName, fileList, name) {
       // handle file changes
-      const formData = new FormData();
-      if (!fileList.length) return;
+      const formData = new FormData()
+      if (!fileList.length) return
       // append the files to FormData
       Array.from(Array(fileList.length).keys()).map(x => {
-        formData.append(fieldName, fileList[x], fileList[x].name);
-      });
+        formData.append(fieldName, fileList[x], fileList[x].name)
+      })
       // this.save(formData, name);
       // This formdata will be sent to server
-      this.saveImage(formData, name);
+      this.saveImage(formData, name)
     },
 
     async saveImage(formData, name) {
       try {
-        this.currentStatus = 1;
+        this.currentStatus = 1
         let x = await this.$apollo.mutate({
           mutation: singleUpload,
           variables: { file: formData },
-          fetchPolicy: "no-cache"
-        });
-        const path = x[0]; // Where the variable is assigned
-        this.currentStatus = 2;
-        this.save(path); // Save the image against api
+          fetchPolicy: 'no-cache'
+        })
+        const path = x[0] // Where the variable is assigned
+        this.currentStatus = 2
+        this.save(path) // Save the image against api
       } catch (e) {
-        this.currentStatus = 3;
+        this.currentStatus = 3
 
-        this.err(e);
+        this.err(e)
       }
     },
     err(e) {
-      this.$store.commit("setErr", e.response.data);
+      this.$store.commit('setErr', e.response.data)
     }
   }
-};
+}
 </script>
 
 <style scoped>

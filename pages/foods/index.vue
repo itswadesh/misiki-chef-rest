@@ -80,15 +80,15 @@
   </div>
 </template>
 <script>
-import Heading from "~/components/Heading";
-import StickyFooter from "~/components/footer/StickyFooter";
-import Search from "~/components/Search";
-import { query, search, pagination } from "~/mixins";
-import getProducts from "~/gql/product/products.gql";
-import me from "~/gql/user/me.gql";
+import Heading from '~/components/Heading'
+import StickyFooter from '~/components/footer/StickyFooter'
+import Search from '~/components/Search'
+import { query, search, pagination } from '~/mixins'
+import getProducts from '~/gql/product/products.gql'
+import me from '~/gql/user/me.gql'
 
 export default {
-  middleware: "isAuth",
+  middleware: 'isAuth',
   mixins: [query, search, pagination],
   components: { Heading, Search, StickyFooter },
 
@@ -98,36 +98,31 @@ export default {
       error: null,
       products: null,
       user: null
-    };
+    }
   },
   async mounted() {
     try {
+      this.$store.commit('clearErr')
       const { loading, error, data } = await this.$apollo.query({
         query: getProducts,
-        fetchPolicy: "no-cache"
-      });
-      const user = (await this.$apollo.query({ query: me })).data.me;
-      this.products = data.products;
-      this.loading = loading;
-      this.error = error;
-      this.user = user;
-    } catch ({ graphQLErrors, networkError }) {
-      if (graphQLErrors)
-        graphQLErrors.map(({ message, locations, path }) =>
-          console.error(
-            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-          )
-        );
-      if (networkError) console.error(`[Network error]:`, networkError.result);
+        fetchPolicy: 'no-cache'
+      })
+      const user = (await this.$apollo.query({ query: me })).data.me
+      this.products = data.products
+      this.loading = loading
+      this.error = error
+      this.user = user
+    } catch (e) {
+      this.$store.commit('setErr', e, { root: true })
     }
   },
-  layout: "none",
+  layout: 'none',
   head() {
     return {
-      title: "Post Your Food"
-    };
+      title: 'Post Your Food'
+    }
   }
-};
+}
 </script>
 <style scoped>
 .big-button {

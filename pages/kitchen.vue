@@ -1,10 +1,19 @@
 <template>
   <div>
     <Heading title="Kitchen Photos" />
-    <div v-if="errors" class="mx-2 text-center">
-      <span v-for="(e,ix) in errors" :key="ix">{{e.message}}</span>
+    <div
+      v-if="errors"
+      class="mx-2 text-center"
+    >
+      <span
+        v-for="(e,ix) in errors"
+        :key="ix"
+      >{{e.message}}</span>
     </div>
-    <div v-if="profile && profile.info && profile.info.restaurant" class="container">
+    <div
+      v-if="profile && profile.info && profile.info.restaurant"
+      class="container"
+    >
       <h1 class="text-xl font-bold text-center text-gray-700">{{ profile.info.restaurant }}</h1>
       <ImageUpload
         name="kitchen"
@@ -13,7 +22,10 @@
         @save="saveImage"
         :multi="true"
       />
-      <div class="flex flex-wrap mx-1 mt-2" v-if="profile.info">
+      <div
+        class="flex flex-wrap mx-1 mt-2"
+        v-if="profile.info"
+      >
         <div
           v-for="(d, ix) in profile.info.kitchenPhotos"
           :key="ix"
@@ -26,11 +38,17 @@
           >
             <i class="fa fa-close" />
           </button>
-          <img v-lazy="d" class="h-32 bg-cover w-full border-b" />
+          <img
+            v-lazy="d"
+            class="h-32 bg-cover w-full border-b"
+          />
         </div>
       </div>
     </div>
-    <div v-else class="mx-atuo justify-center flex text-center align-middle h-72 items-center">
+    <div
+      v-else
+      class="mx-atuo justify-center flex text-center align-middle h-72 items-center"
+    >
       Please update restaurant info in&nbsp;
       <nuxt-link to="/my/profile">profile</nuxt-link>
     </div>
@@ -38,17 +56,17 @@
   </div>
 </template>
 <script>
-import Heading from "~/components/Heading";
-import StickyFooter from "~/components/footer/StickyFooter";
-import ImageUpload from "~/components/ImageUpload";
-import me from "~/gql/user/me.gql";
-import kitchenPhotos from "~/gql/user/kitchenPhotos.gql";
+import Heading from '~/components/Heading'
+import StickyFooter from '~/components/footer/StickyFooter'
+import ImageUpload from '~/components/ImageUpload'
+import me from '~/gql/user/me.gql'
+import kitchenPhotos from '~/gql/user/kitchenPhotos.gql'
 
 export default {
-  middleware: ["isAuth"],
+  middleware: ['isAuth'],
   components: { Heading, ImageUpload, StickyFooter },
   data() {
-    return { loading: false, kitchenPhotos: [], profile: null, errors: [] };
+    return { loading: false, kitchenPhotos: [], profile: null, errors: [] }
   },
   // computed: {
   //   user() {
@@ -56,40 +74,40 @@ export default {
   //   }
   // },
   created() {
-    this.getData();
+    this.getData()
   },
   methods: {
     saveImage(name, images) {
-      this.profile.info.kitchenPhotos = this.profile.info.kitchenPhotos || [];
+      this.profile.info.kitchenPhotos = this.profile.info.kitchenPhotos || []
       this.profile.info.kitchenPhotos = [
         ...this.profile.info.kitchenPhotos,
         ...images
-      ];
-      this.submit(this.profile);
+      ]
+      this.submit(this.profile)
     },
     removeImage(name) {
-      this.profile.info.kitchenPhotos = "";
-      this.submit(this.profile);
+      this.profile.info.kitchenPhotos = ''
+      this.submit(this.profile)
     },
     remove(name) {
       this.$swal({
-        title: "Delete address?",
+        title: 'Delete address?',
         text: "You won't be able to revert this!",
-        icon: "warning",
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
       }).then(result => {
         if (result.value) {
           this.profile.info.kitchenPhotos = this.profile.info.kitchenPhotos.filter(
             function(value, index, kf) {
-              return value != name;
+              return value != name
             }
-          );
-          this.submit(this.profile);
+          )
+          this.submit(this.profile)
         }
-      });
+      })
     },
     async submit(profile) {
       try {
@@ -97,34 +115,34 @@ export default {
           await this.$apollo.mutate({
             mutation: kitchenPhotos,
             variables: { ...profile.info },
-            fetchPolicy: "no-cache"
+            fetchPolicy: 'no-cache'
           })
-        ).data;
-        this.profile = data.updateProfile;
+        ).data
+        this.profile = data.updateProfile
       } catch (e) {
       } finally {
       }
     },
     async getData() {
-      this.errors = [];
+      this.errors = []
       try {
+        this.$store.commit('clearErr')
         let user = (
-          await this.$apollo.query({ query: me, fetchPolicy: "no-cache" })
-        ).data;
-        this.profile = user.me;
-      } catch ({ graphQLErrors, networkError }) {
-        if (graphQLErrors) this.errors = graphQLErrors;
-        if (networkError) this.errors = networkError.result.errors;
+          await this.$apollo.query({ query: me, fetchPolicy: 'no-cache' })
+        ).data
+        this.profile = user.me
+      } catch (e) {
+        this.$store.commit('setErr', e, { root: true })
       } finally {
       }
     }
   },
   head() {
     return {
-      title: "Post Your Food"
-    };
+      title: 'Post Your Food'
+    }
   }
-};
+}
 </script>
 <style scoped>
 body {

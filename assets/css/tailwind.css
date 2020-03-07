@@ -1,6 +1,6 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 body {
   font-family: Karla, sans-serif;
   color: #2d2d2d;
@@ -41,11 +41,11 @@ select:-webkit-autofill:focus {
     display: none !important;
   }
 }
-img[lazy="loaded"] {
+img[lazy='loaded'] {
   animation-name: zoom;
   animation-duration: 0.8s;
 }
-img[lazy="loading"] {
+img[lazy='loading'] {
   filter: blur(10px);
 }
 @keyframes zoom {
@@ -59,8 +59,11 @@ img[lazy="loading"] {
     transform: scale(1);
   }
 }
+.err {
+  @apply px-2 text-center bg-red-200;
+}
 .fab {
-  @apply primary fixed bottom-0 right-0 mr-1 mb-1 w-10 h-10 rounded-full text-center;
+  @apply primary bottom-0 right-0 mr-1 mb-1 w-10 h-10 rounded-full text-center;
 }
 a.fab i {
   @apply m-auto align-middle;

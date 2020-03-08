@@ -1,0 +1,32 @@
+query reviews(
+  $page: Int
+  $skip: Int
+  $limit: Int
+  $search: String
+  $sort: String
+  $q: String
+) {
+  reviews(
+    page: $page
+    q: $q
+    skip: $skip
+    limit: $limit
+    search: $search
+    sort: $sort
+  ) {
+    data {
+      pid{
+        name
+      }
+      uid{
+        firstName
+        lastName
+      }
+      message
+      rating
+    }
+    count
+    pageSize
+    page
+  }
+}

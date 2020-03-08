@@ -1,44 +1,6 @@
 query myToday {
   myToday {
-    id
-    orderNo
-    otp
-    amount {
-      qty
-      subtotal
-      total
-      shipping
-      discount
-    }
-    payment_order_id
-    delivery {
-      otp
-      finish {
-        lat
-        lng
-      }
-    }
-    status
-    items {
-      name
-      slug
-      img
-      rate
-      qty
-    }
-    address {
-      firstName
-      lastName
-      address
-      town
-      city
-      zip
-      coords {
-        lat
-        lng
-      }
-    }
-    createdAt
-    updatedAt
+    count
+    amount
   }
 }

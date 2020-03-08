@@ -4,22 +4,11 @@
       <div class="bg-white rounded shadow">
         <div class="text-secondary text-white">
           <h1 class="text-xl mb-2 text-center p-3">
-            <span
-              class="font-extrabold"
-              v-if="!signup"
-            >SIGN IN</span>
-            <span
-              class="font-extrabold"
-              v-else
-            >SIGN UP</span> TO YOUR ACCOUNT
+            <span class="font-extrabold" v-if="!signup">SIGN IN</span>
+            <span class="font-extrabold" v-else>SIGN UP</span> TO YOUR ACCOUNT
           </h1>
         </div>
-        <form
-          novalidate
-          autocomplete="off"
-          @submit.stop.prevent="submit()"
-          class="center"
-        >
+        <form novalidate autocomplete="off" @submit.stop.prevent="submit()" class="center">
           <div class="p-6">
             <div>
               <Textbox
@@ -56,12 +45,13 @@
                 />
               </div>
               <!-- Show OTP box -->
-              <div
-                v-else
-                class="text-center"
-              >
-                <p class="text-red-500 mb-5 text-xs font-hairline">Please enter OTP sent to mobile number</p>
-                <div class="otp-container relative inline-block rounded p-2 w-32 w-12 mb-10 bg-gray-200">
+              <div v-else class="text-center">
+                <p
+                  class="text-red-500 mb-5 text-xs font-hairline"
+                >Please enter OTP sent to mobile number</p>
+                <div
+                  class="otp-container relative inline-block rounded p-2 w-32 w-12 mb-10 bg-gray-200"
+                >
                   <div
                     id="wraper1"
                     class="otp-seperator w-1 h-1 rounded absolute"
@@ -103,11 +93,7 @@
                 :class="{'primary text-white':!loading,'border border-gray-400 bg-gray-300':loading}"
               >
                 <div v-if="loading">
-                  <img
-                    src="/loading.svg"
-                    :class="{'loading':loading}"
-                    alt
-                  />
+                  <img src="/loading.svg" :class="{'loading':loading}" alt />
                 </div>
                 <span v-else>{{submitText}}</span>
               </button>
@@ -221,7 +207,7 @@ export default {
           this.$store.commit('setErr', e)
         } finally {
           this.$store.commit('busy', false)
-          loading = false
+          this.loading = false
         }
       } else {
         try {

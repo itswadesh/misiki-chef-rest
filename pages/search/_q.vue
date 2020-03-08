@@ -3,21 +3,16 @@
     <!-- <Banner /> -->
     <div class="container relative">
       <!-- <Categories /> -->
-      <nuxt-link
-        class="absolute top-0 right-0 fab z-10"
-        to="/foods/new"
-      ><i class="fa fa-plus" /></nuxt-link>
+      <nuxt-link class="absolute top-0 right-0 fab z-10" to="/foods/new">
+        <i class="fa fa-plus" />
+      </nuxt-link>
       <div
         class="flex flex-wrap"
         v-infinite-scroll="loadMore"
         :infinite-scroll-distance="3"
         :infinite-scroll-immediate-check="true"
       >
-        <div
-          class="w-full"
-          v-for="p in data"
-          :key="p._id"
-        >
+        <div class="w-full" v-for="p in data" :key="p._id">
           <ListCard :p="p" />
         </div>
       </div>
@@ -35,7 +30,7 @@ import Loading from '~/components/ui/Loading'
 import { query, infiniteScroll } from '~/mixins'
 import { TITLE, DESCRIPTION, KEYWORDS, sharingLogo } from '~/config'
 import { constructURL } from '~/lib/'
-import search from '~/gql/product/search.gql'
+import myProducts from '~/gql/product/myProducts.gql'
 
 export default {
   middleware: 'isAuth',
@@ -43,8 +38,8 @@ export default {
   mixins: [infiniteScroll],
   data() {
     return {
-      model: search,
-      attr: 'my'
+      model: myProducts,
+      attr: 'myProducts'
     }
   },
   components: {

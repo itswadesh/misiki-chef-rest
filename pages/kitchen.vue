@@ -1,10 +1,7 @@
 <template>
   <div>
     <Heading title="Kitchen Photos" />
-    <div
-      v-if="profile && profile.info && profile.info.restaurant"
-      class="container"
-    >
+    <div v-if="profile && profile.info && profile.info.restaurant" class="container">
       <h1 class="text-xl font-bold text-center text-gray-700">{{ profile.info.restaurant }}</h1>
       <ImageUpload
         name="kitchen"
@@ -13,10 +10,7 @@
         @save="saveImage"
         :multi="true"
       />
-      <div
-        class="flex flex-wrap mx-1 mt-2"
-        v-if="profile.info"
-      >
+      <div class="flex flex-wrap mx-1 mt-2" v-if="profile.info">
         <div
           v-for="(d, ix) in profile.info.kitchenPhotos"
           :key="ix"
@@ -29,17 +23,11 @@
           >
             <i class="fa fa-close" />
           </button>
-          <img
-            v-lazy="d"
-            class="h-32 bg-cover w-full border-b"
-          />
+          <img v-lazy="d" class="h-32 bg-cover w-full border-b" />
         </div>
       </div>
     </div>
-    <div
-      v-else
-      class="mx-atuo justify-center flex text-center align-middle h-72 items-center"
-    >
+    <div v-else class="mx-atuo justify-center flex text-center align-middle h-72 items-center">
       Please update restaurant info in&nbsp;
       <nuxt-link to="/my/profile">profile</nuxt-link>
     </div>
@@ -82,7 +70,7 @@ export default {
     },
     remove(name) {
       this.$swal({
-        title: 'Delete address?',
+        title: 'Delete kitchen photo?',
         text: "You won't be able to revert this!",
         icon: 'warning',
         showCancelButton: true,

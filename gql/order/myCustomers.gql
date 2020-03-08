@@ -41,6 +41,11 @@ query myCustomers(
         rate
         qty
       }
+      uid{
+        phone
+        firstName
+        lastName
+      }
       address {
         firstName
         lastName

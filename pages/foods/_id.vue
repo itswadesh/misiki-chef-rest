@@ -40,13 +40,13 @@
               class="mr-2"
             >{{s.name}} [{{s.val}}]</Radio>
           </div>
-          <div class="flex mx-2 variants">
+          <!-- <div class="flex mx-2 variants">
             <div v-for="v in food.variants" :key="v.id">
               <Textbox v-model="v.name" label="Variation" />
               <button type="button" @click="saveVariant(food.id,v)">S</button>
             </div>
             <button type="button" @click="newVariant">+</button>
-          </div>
+          </div>-->
           <image-upload
             :image="food.img"
             name="food"
@@ -54,18 +54,7 @@
             @remove="removeImage"
             @save="saveImage"
           />
-          <!-- <img
-            v-if="food.img"
-            v-lazy="IMAGEKIT+'/images'+food.img"
-          />-->
           <div class="msg">{{msg}}</div>
-          <br />
-          <div class="bg-red-200 p-3 rounded" v-if="nwErr || graphErr">
-            <ul>
-              <li v-for="(e,ix) in nwErr" :key="ix">{{e.message}}</li>
-              <li v-for="(e,ix) in graphErr" :key="ix">{{e.message}}</li>
-            </ul>
-          </div>
           <br />
           <br />
           <br />
@@ -103,7 +92,7 @@ export default {
       err: [],
       nwErr: null,
       graphErr: null,
-      deliveryslots: [],
+      deliveryslots: null,
       food: { type: 'V', time: '8:30 - 9:30 PM' },
       date: null,
       menu: false,
@@ -119,10 +108,10 @@ export default {
     if (this.$route.params.id == 'new') return
     try {
       this.$store.commit('busy', true)
-      const deliveryslots = (
+      this.deliveryslots = (
         await this.$apollo.query({ query: slots, fetchPolicy: 'no-cache' })
-      ).data
-      this.deliveryslots = deliveryslots.slots
+      ).data.slots
+      // this.deliveryslots = deliveryslots.slots
       const food = (
         await this.$apollo.query({
           query: product,
@@ -139,31 +128,30 @@ export default {
     }
   },
   methods: {
-    newVariant() {
-      if (!this.food.variants) {
-        this.food.variants = [{ name: '' }]
-      } else {
-        this.food.variants.push({ name: '' })
-      }
-      console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzz', this.food.variants)
-    },
-    async saveVariant(pid, v) {
-      try {
-        this.$store.commit('clearErr')
-        let data = (
-          await this.$apollo.mutate({
-            mutation: saveVariant,
-            variables: { pid, ...v }
-          })
-        ).data.saveVariant
-        this.$store.commit('info', 'Variation saved')
-        // this.$router.go(-1)
-      } catch (e) {
-        this.$store.commit('setErr', e)
-      } finally {
-        this.$store.commit('busy', false)
-      }
-    },
+    // newVariant() {
+    //   if (!this.food.variants) {
+    //     this.food.variants = [{ name: '' }]
+    //   } else {
+    //     this.food.variants.push({ name: '' })
+    //   }
+    // },
+    // async saveVariant(pid, v) {
+    //   try {
+    //     this.$store.commit('clearErr')
+    //     let data = (
+    //       await this.$apollo.mutate({
+    //         mutation: saveVariant,
+    //         variables: { pid, ...v }
+    //       })
+    //     ).data.saveVariant
+    //     this.$store.commit('info', 'Variation saved')
+    //     // this.$router.go(-1)
+    //   } catch (e) {
+    //     this.$store.commit('setErr', e)
+    //   } finally {
+    //     this.$store.commit('busy', false)
+    //   }
+    // },
     async deleteProduct(id) {
       this.$swal({
         title: 'Are you sure to delete this dish?',

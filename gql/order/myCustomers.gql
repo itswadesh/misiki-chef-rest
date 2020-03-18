@@ -41,10 +41,14 @@ query myCustomers(
         price
         qty
       }
-      uid{
+      user{
         phone
         firstName
         lastName
+        address{
+          address
+        }
+        id
       }
       address {
         firstName

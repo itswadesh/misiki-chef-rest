@@ -2,21 +2,17 @@
   <div>
     <Header class="noprint" />
     <div class="heading noprint">Today's Orders</div>
-    <button @click="printOut()" class="noprint fab top-0">
+    <button @click="printOut()" class="noprint fixed fab top-0">
       <i class="fa fa-print" />
     </button>
     <div>
-      <div class="flex noprint justify-center text-gray-600" v-if="todayTotal">
+      <div
+        class="bg-yellow-200 p-2 flex justify-between noprint items-center text-gray-600"
+        v-if="todayTotal"
+      >
         <h2>{{ todayTotal.count }}</h2>
-        <h1>{{ todayTotal.total | currency }}</h1>
+        <div class="text-red-500 font-bold">{{ todayTotal.amount | currency }}</div>
         <div>{{ orders && orders[0] && orders[0].createdAt | date }}</div>
-      </div>
-      <div v-for="s in todaySummary" :key="s._id" class="noprint text-center">
-        <span class="font-bold">
-          {{ s._id }} *
-          <span class="text-green-500 text-xl">{{ s.count }}</span> =
-          <span class="text-red-500 text-xl">{{ s.amount | currency }}</span>
-        </span>
       </div>
       <ul class="flex flex-wrap">
         <li
@@ -24,12 +20,10 @@
           v-for="(o, ix) in orders"
           :key="ix"
         >
-          <h1 class="text-3xl font-black text-red-500">QrNo: {{ o.address.qrno }}</h1>
-          <p class="font-bold">
-            {{ o.address.firstName }} {{ o.address.lastName }} ({{
-            o.uid.phone
-            }})
-          </p>
+          <h1 class="text-xl font-black text-red-500">QrNo: {{ o.address.address }}</h1>
+          <p
+            class="font-bold"
+          >{{ o.address.firstName }} {{ o.address.lastName }} ({{ o.user.phone }})</p>
           <ul v-if="o.items">
             <ol class="flex flex-col" v-for="(i,ix) in o.items" :key="i._id">
               <div class="flex">
@@ -37,12 +31,12 @@
                   class="mr-2 shadow-xl font-bold w-8 h-8 rounded-full bg-gray-300 text-center align-middle flex justify-center items-center"
                 >{{ix+1}}</div>
                 <div class>
-                  {{ i.name }}
+                  <div class="text-2xl">{{i.name }}</div>
                   <div>
                     {{ i.price | currency }} * {{ i.qty }} =
                     <span
                       class="text-3xl font-bold"
-                    >{{ i.amount | currency }}</span>
+                    >{{ i.price*i.qty | currency }}</span>
                   </div>
                 </div>
               </div>

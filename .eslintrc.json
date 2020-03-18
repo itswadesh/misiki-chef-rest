@@ -15,7 +15,9 @@
     "prettier/@typescript-eslint",
     "prettier/react"
   ],
-  "plugins": ["react-hooks"],
+  "plugins": [
+    "react-hooks"
+  ],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"

@@ -3,5 +3,6 @@ query Slots {
     id
     slug
     name
+    val
   }
 }

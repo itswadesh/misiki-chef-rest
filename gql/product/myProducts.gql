@@ -19,7 +19,7 @@ query myProducts(
     slug
     name
     type
-    rate
+    price
     stock
     img
     time

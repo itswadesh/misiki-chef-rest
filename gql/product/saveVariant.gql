@@ -1,20 +1,17 @@
-mutation createProduct(
+mutation saveVariant(
+  $pid: ID!
+  $vid: String,
   $name: String!
-  $description: String
-  $type: String
   $price: Int
   $stock: Int
   $img: String
-  $time: String
 ) {
-  createProduct(
+  saveVariant(
+    id: $id
     name: $name
-    description: $description
-    type: $type
     price: $price
     stock: $stock
     img: $img
-    time: $time
   ) {
     id
     name
@@ -33,6 +30,13 @@ mutation createProduct(
       info {
         restaurant
       }
+    },
+    variants{
+      id
+    name
+    price
+    stock
+    img
     }
   }
 }

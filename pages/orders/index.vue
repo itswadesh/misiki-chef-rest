@@ -39,7 +39,7 @@
                 <div class>
                   {{ i.name }}
                   <div>
-                    {{ i.rate | currency }} * {{ i.qty }} =
+                    {{ i.price | currency }} * {{ i.qty }} =
                     <span
                       class="text-3xl font-bold"
                     >{{ i.amount | currency }}</span>

@@ -24,7 +24,7 @@
             name="description"
             v-model="food.description"
           />
-          <Textbox class="w-full mb-4" label="Rate" name="rate" v-model="food.rate" />
+          <Textbox class="w-full mb-4" label="price" name="price" v-model="food.price" />
           <Textbox class="w-full mb-4" label="Qty" name="qty" v-model="food.stock" />
           <div class="mb-4">
             <Radio v-model="food.type" value="V" color="green" class="mr-2">Veg</Radio>
@@ -39,6 +39,13 @@
               :value="s.val"
               class="mr-2"
             >{{s.name}} [{{s.val}}]</Radio>
+          </div>
+          <div class="flex mx-2 variants">
+            <div v-for="v in food.variants" :key="v.id">
+              <Textbox v-model="v.name" label="Variation" />
+              <button type="button" @click="saveVariant(food.id,v)">S</button>
+            </div>
+            <button type="button" @click="newVariant">+</button>
           </div>
           <image-upload
             :image="food.img"
@@ -82,6 +89,7 @@ import product from '~/gql/product/product.gql'
 import createProduct from '~/gql/product/createProduct.gql'
 import updateProduct from '~/gql/product/updateProduct.gql'
 import deleteProduct from '~/gql/product/deleteProduct.gql'
+import saveVariant from '~/gql/product/saveVariant.gql'
 import slots from '~/gql/product/slots.gql'
 
 export default {
@@ -131,6 +139,31 @@ export default {
     }
   },
   methods: {
+    newVariant() {
+      if (!this.food.variants) {
+        this.food.variants = [{ name: '' }]
+      } else {
+        this.food.variants.push({ name: '' })
+      }
+      console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzz', this.food.variants)
+    },
+    async saveVariant(pid, v) {
+      try {
+        this.$store.commit('clearErr')
+        let data = (
+          await this.$apollo.mutate({
+            mutation: saveVariant,
+            variables: { pid, ...v }
+          })
+        ).data.saveVariant
+        this.$store.commit('info', 'Variation saved')
+        // this.$router.go(-1)
+      } catch (e) {
+        this.$store.commit('setErr', e)
+      } finally {
+        this.$store.commit('busy', false)
+      }
+    },
     async deleteProduct(id) {
       this.$swal({
         title: 'Are you sure to delete this dish?',
@@ -182,8 +215,8 @@ export default {
       } else if (!vm.food.type) {
         this.$store.commit('setErr', 'Please select Veg or Non Veg')
         return
-      } else if (!vm.food.rate || vm.food.rate < 30) {
-        this.$store.commit('setErr', 'Rate must be atleast 30')
+      } else if (!vm.food.price || vm.food.price < 30) {
+        this.$store.commit('setErr', 'price must be atleast 30')
         return
       }
       try {
@@ -230,7 +263,7 @@ export default {
       try {
         this.$store.commit('busy', true)
         this.$store.commit('clearErr')
-        this.food.rate = +this.food.rate
+        this.food.price = +this.food.price
         this.food.stock = +this.food.stock
         if (this.$route.params.id == 'new') {
           await this.$apollo.mutate({

@@ -23,7 +23,7 @@ query todayTotal {
       name
       slug
       img
-      rate
+      price
       qty
     }
     address {

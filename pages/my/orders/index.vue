@@ -29,8 +29,8 @@
             <div>
               <div class="text-sm font-semibold">{{ i.name }}</div>
               <div class="text-gray-500 text-xs">
-                {{ i.qty }} * {{ i.rate | currency }} =
-                {{ (i.qty * i.rate) | currency }}
+                {{ i.qty }} * {{ i.price | currency }} =
+                {{ (i.qty * i.price) | currency }}
               </div>
             </div>
           </div>

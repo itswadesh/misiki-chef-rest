@@ -20,10 +20,10 @@
           v-for="(o, ix) in orders"
           :key="ix"
         >
-          <h1 class="text-xl font-black text-red-500">QrNo: {{ o.address.address }}</h1>
+          <h1 class="text-xl font-black text-red-500">QrNo: {{ o._id.address.address }}</h1>
           <p
             class="font-bold"
-          >{{ o.address.firstName }} {{ o.address.lastName }} ({{ o.user.phone }})</p>
+          >{{ o._id.address.firstName }} {{ o._id.address.lastName }} ({{ o._id.user.phone }})</p>
           <ul v-if="o.items">
             <ol class="flex flex-col" v-for="(i,ix) in o.items" :key="i._id">
               <div class="flex">
@@ -43,7 +43,7 @@
             </ol>
           </ul>
           <!-- <h3 v-if="o.vendor" class="text-right tracking-wide">{{ o.vendor.restaurant }}</h3> -->
-          <div class="text-cyan-500 text-xs text-right">{{ o.createdAt | date }}</div>
+          <div class="text-cyan-500 text-xs text-right">{{ o._id.createdAt | date }}</div>
         </li>
       </ul>
     </div>
@@ -84,6 +84,7 @@ export default {
       this.orders = (
         await this.$apollo.query({ query: myCustomers, variables: {} })
       ).data.myCustomers.data
+    } catch (e) {
     } finally {
       this.$store.commit('busy', false)
     }

@@ -1,16 +1,22 @@
-mutation updateOrder($id:ID!,$status:String) {
-  updateOrder(id:$id) {
-    id
-    orderNo
+mutation updateOrder($id:ID!,$pid:ID!,$status:String) {
+  updateOrder(id:$id, pid:$pid, status:$status) {
     otp
-    qty
-    amount
-    payment_order_id
-    delivery
-    status
-    items
-    address
-    createdAt
-    updatedAt
+    orderNo
+    address{
+      address
+      firstName
+      lastName
+    }
+    user{
+      firstName
+      lastName
+    }
+    amount{
+      qty
+      tax
+      discount
+      subtotal
+      total
+    }
   }
 }

@@ -11,6 +11,9 @@ query myCustomers(
     amount
     createdAt
   }
+  settings{
+    orderStatuses
+  }
   myCustomers(
     page: $page
     q: $q
@@ -24,6 +27,7 @@ query myCustomers(
     page
     data {
       _id {
+        id
         orderNo
         reviewed
         createdAt
@@ -58,11 +62,13 @@ query myCustomers(
         payment_order_id
       }
       items {
+        pid
         name
         slug
         img
         price
         qty
+        status
       }
     }
   }

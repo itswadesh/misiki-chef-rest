@@ -24,7 +24,7 @@
           >{{ o._id.address.firstName }} {{ o._id.address.lastName }} ({{ o._id.user.phone }})</p>
           <ul v-if="o.items">
             <ol class="flex flex-col" v-for="(i,ix) in o.items" :key="i._id">
-              <div class="flex">
+              <div class="flex justify-between items-center">
                 <div
                   class="mr-2 shadow-xl font-bold w-8 h-8 rounded-full bg-gray-300 text-center align-middle flex justify-center items-center"
                 >{{ix+1}}</div>
@@ -38,6 +38,9 @@
                   </div>
                 </div>
               </div>
+              <select v-model="i.status" class="px-4" @change="save(o._id.id, i.pid, i.status)">
+                <option v-for="(s,ix) in orders.settings.orderStatuses" :key="ix">{{s}}</option>
+              </select>
             </ol>
           </ul>
           <!-- <h3 v-if="o.vendor" class="text-right tracking-wide">{{ o.vendor.restaurant }}</h3> -->
@@ -88,15 +91,21 @@ export default {
         window.print()
       }
     },
-    async save(o) {
+    async save(id, pid, status) {
       try {
         this.$store.commit('clearErr')
+        await this.$apollo.mutate({
+          mutation: updateOrder,
+          variables: { id, pid, status },
+          fetchPolicy: 'no-cache'
+        })
         this.orders = (
-          await this.$apollo.mutate({
-            mutation: updateOrder,
-            variables: { id: o.id, status: o.status }
+          await this.$apollo.query({
+            query: myCustomers,
+            variables: {},
+            fetchPolicy: 'no-cache'
           })
-        ).data.updateOrder
+        ).data
       } catch (e) {
         this.$store.commit('setErr', e, { root: true })
       } finally {

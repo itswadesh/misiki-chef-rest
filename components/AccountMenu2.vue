@@ -1,11 +1,14 @@
 <template>
   <div>
     <!-- https://codepen.io/adamwathan/pen/KKKqKLB -->
-    <div class="text-center lg:w-1/5 lg:mt-10 bg-white shadow leading-loose w-full p-10 border-b border-gray-200">
+    <div
+      v-if="user"
+      class="text-center lg:w-1/5 lg:mt-10 bg-white shadow leading-loose w-full p-10 border-b border-gray-200"
+    >
       <span class="h-20 w-20 p-2 text-4xl text-gray-600 rounded-full bg-gray-200 inline-block">{{user.firstName | first}}</span>
       <br />
       <span class="text-lg">{{user.firstName}}</span>
-      <span class="text-sm text-gray-500">{{user.email}}</span>
+      <span class="text-sm text-gray-500">{{user.phone}}</span>
     </div>
     <div class="antialiased bg-gray-200 min-h-screen p-8">
       <div class="flex justify-center">
@@ -21,7 +24,7 @@
             <li>
               <button
                 type="button"
-                @click="select(0,'/foods')"
+                @click="select(0,'/search')"
                 :aria-selected="selected ===0"
                 class="py-2 px-3 w-full flex items-center focus:outline-none focus-visible:underline"
               >
@@ -216,28 +219,44 @@
 </template>
 
 <script>
+import signOut from '~/gql/user/signOut.gql'
+import me from '~/gql/user/me.gql'
 export default {
   data() {
     return {
-      selected: 0
-    };
+      selected: 0,
+      user: null
+    }
   },
-  computed: {
-    user() {
-      return (this.$store.state.auth || {}).user || {};
+  async created() {
+    try {
+      this.$store.commit('clearErr')
+      const res = (
+        await this.$apollo.query({ query: me, fetchPolicy: 'no-cache' })
+      ).data
+      if (res) {
+        this.user = res.me
+      } else {
+        this.user = {}
+      }
+    } catch (e) {
+      this.user = {}
+      this.$store.commit('setErr', e)
+    } finally {
+      this.$store.commit('busy', false)
     }
   },
   methods: {
     select(i, url) {
-      this.selected = i;
-      this.$router.push(url);
+      this.selected = i
+      this.$router.push(url)
     },
     async logout() {
-      await this.$store.dispatch("auth/logout");
-      this.$router.push("/");
+      await this.$apollo.mutate({ mutation: signOut, fetchPolicy: 'no-cache' })
+      this.$router.push('/')
     }
   }
-};
+}
 </script>
 
 <style scoped>

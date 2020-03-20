@@ -1,0 +1,8 @@
+query Slots {
+  slots {
+    id
+    slug
+    name
+    val
+  }
+}

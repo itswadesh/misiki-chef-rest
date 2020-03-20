@@ -1,0 +1,75 @@
+query myCustomers(
+  $page: Int
+  $skip: Int
+  $limit: Int
+  $search: String
+  $sort: String
+  $q: String
+) {
+  myToday {
+    count
+    amount
+    createdAt
+  }
+  settings{
+    orderStatuses
+  }
+  myCustomers(
+    page: $page
+    q: $q
+    skip: $skip
+    limit: $limit
+    search: $search
+    sort: $sort
+  ) {
+    count
+    pageSize
+    page
+    data {
+      _id {
+        id
+        orderNo
+        reviewed
+        createdAt
+        updatedAt
+        user{
+          firstName
+          lastName
+          phone
+          email
+          gender
+          info{
+            public
+            restaurant
+            kitchenPhotos
+          }
+          avatar
+        }
+        address {
+          address
+          email
+          phone
+          firstName
+          lastName
+        }
+        amount {
+          qty
+          subtotal
+          total
+          shipping
+          discount
+        }
+        payment_order_id
+      }
+      items {
+        pid
+        name
+        slug
+        img
+        price
+        qty
+        status
+      }
+    }
+  }
+}

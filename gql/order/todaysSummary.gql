@@ -1,0 +1,6 @@
+query todaysSummary {
+  todaysSummary {
+    count
+    amount
+  }
+}

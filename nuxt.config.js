@@ -1,6 +1,6 @@
-import { join } from 'path'
+import { join } from "path";
 require("dotenv").config();
-const { API_URL, head, HOST } = require("./config");
+const { API_URL, head, HOST, HTTP_ENDPOINT, WS_ENDPOINT } = require("./config");
 const PROXY = process.env.API_URL || API_URL;
 
 export default {
@@ -20,6 +20,7 @@ export default {
   ],
   buildModules: ["@nuxtjs/tailwindcss"],
   modules: [
+    "@nuxtjs/apollo",
     "@nuxtjs/dotenv",
     // "~/modules/routes",
     "@nuxtjs/robots",
@@ -30,6 +31,20 @@ export default {
     "@nuxtjs/toast",
     "cookie-universal-nuxt"
   ],
+  apollo: {
+    // errorHandler: "~/apollo/customErrorHandler.js",
+    clientConfigs: {
+      default: {
+        httpEndpoint: "/graphql",
+        wsEndpoint: process.env.WS_ENDPOINT
+      }
+    },
+    defaultOptions: {
+      query: {
+        fetchPolicy: "no-cache"
+      },
+    },
+  },
   toast: {
     theme: "bubble",
     position: "top-center",
@@ -40,23 +55,21 @@ export default {
     credentials: true
   },
   proxy: {
+    "/graphql": process.env.HTTP_ENDPOINT,
     "/api/": PROXY,
     "/auth": PROXY,
-    "/images": PROXY
+    "/images": process.env.HTTP_ENDPOINT
   },
   generate: {
-    dir: 'dist',
+    dir: "dist",
     fallback: true
   },
   build: {
     postcss: {
       plugins: {
-        tailwindcss: join(__dirname, 'tailwind.config.js'),
-        'postcss-pxtorem': {
-          propList: [
-            '*',
-            '!border*',
-          ]
+        tailwindcss: join(__dirname, "tailwind.config.js"),
+        "postcss-pxtorem": {
+          propList: ["*", "!border*"]
         }
       }
     }

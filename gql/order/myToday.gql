@@ -1,0 +1,6 @@
+query myToday {
+  myToday {
+    count
+    amount
+  }
+}

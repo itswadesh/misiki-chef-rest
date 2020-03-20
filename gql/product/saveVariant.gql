@@ -1,0 +1,42 @@
+mutation saveVariant(
+  $pid: ID!
+  $vid: String,
+  $name: String!
+  $price: Int
+  $stock: Int
+  $img: String
+) {
+  saveVariant(
+    id: $id
+    name: $name
+    price: $price
+    stock: $stock
+    img: $img
+  ) {
+    id
+    name
+    description
+    slug
+    type
+    price
+    stock
+    img
+    time
+    vendor {
+      id
+      firstName
+      lastName
+      phone
+      info {
+        restaurant
+      }
+    },
+    variants{
+      id
+    name
+    price
+    stock
+    img
+    }
+  }
+}

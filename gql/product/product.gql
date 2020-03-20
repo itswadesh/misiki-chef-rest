@@ -1,0 +1,27 @@
+query Product($id: ID!) {
+  product(id: $id) {
+    id
+    slug
+    name
+    description
+    type
+    price
+    stock
+    img
+    time
+    vendor {
+      id
+      firstName
+      lastName
+      phone
+      email
+      info {
+        restaurant
+        kitchenPhotos
+      }
+    }
+    variants{
+      name
+    }
+  }
+}

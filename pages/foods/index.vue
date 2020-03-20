@@ -21,13 +21,13 @@
       <Search />
       <div class="flex flex-wrap mx-1 mt-2">
         <div
-          v-for="d in data"
-          :key="d._id"
-          @click="go('/foods/'+d._id)"
+          v-for="p in products"
+          :key="p.id"
+          @click="go('/foods/'+p.id)"
           class="w-1/2 shadow bg-gray-100 mb-2"
         >
           <img
-            v-lazy="d.img"
+            v-lazy="p.img"
             class="h-32 bg-cover w-full border-b"
           />
           <!-- <div class="delete-icon">
@@ -37,14 +37,14 @@
             <div class="flex justify-between items-center">
               <div
                 class="text-red-500"
-                v-if="d.stock>0"
-              >Only {{d.stock}} left</div>
+                v-if="p.stock>0"
+              >Only {{p.stock}} left</div>
               <div
                 class="text-green-500"
                 v-else
               >Sold out</div>
               <img
-                v-if="d.type=='N'"
+                v-if="p.type=='N'"
                 src="/non-veg.png"
                 class="w-5 h-5"
               />
@@ -54,7 +54,7 @@
                 class="w-5 h-5"
               />
             </div>
-            <div class="p-name">{{d.name}}</div>
+            <div class="p-name">{{p.name}}</div>
           </div>
         </div>
       </div>
@@ -80,32 +80,51 @@
   </div>
 </template>
 <script>
-import Heading from "~/components/Heading";
-import StickyFooter from "~/components/footer/StickyFooter";
-import Search from "~/components/Search";
-import { query, search, pagination } from "~/mixins";
+import Heading from '~/components/Heading'
+import StickyFooter from '~/components/footer/StickyFooter'
+import Search from '~/components/Search'
+import { query, search, pagination } from '~/mixins'
+import getProducts from '~/gql/product/products.gql'
+import me from '~/gql/user/me.gql'
 
 export default {
-  fetch({ store, redirect }) {
-    if (!store.getters["auth/hasRole"]("chef")) return redirect("/login");
-  },
+  middleware: 'isAuth',
   mixins: [query, search, pagination],
   components: { Heading, Search, StickyFooter },
+
   data() {
-    return { loading: false, foods: [], apiQ: "api/foods/my" };
-  },
-  layout: "none",
-  computed: {
-    user() {
-      return (this.$store.state.auth || {}).user || null;
+    return {
+      loading: false,
+      error: null,
+      products: null,
+      user: null
     }
   },
+  async mounted() {
+    try {
+      this.$store.commit('clearErr')
+      const { loading, error, data } = await this.$apollo.query({
+        query: getProducts,
+        fetchPolicy: 'no-cache'
+      })
+      const user = (await this.$apollo.query({ query: me })).data.me
+      this.products = data.products
+      this.loading = loading
+      this.error = error
+      this.user = user
+    } catch (e) {
+      this.$store.commit('setErr', e)
+    } finally {
+      this.$store.commit('busy', false)
+    }
+  },
+  layout: 'none',
   head() {
     return {
-      title: "Post Your Food"
-    };
+      title: 'Post Your Food'
+    }
   }
-};
+}
 </script>
 <style scoped>
 .big-button {

@@ -1,0 +1,22 @@
+mutation updateOrder($id:ID!,$pid:ID!,$status:String) {
+  updateOrder(id:$id, pid:$pid, status:$status) {
+    otp
+    orderNo
+    address{
+      address
+      firstName
+      lastName
+    }
+    user{
+      firstName
+      lastName
+    }
+    amount{
+      qty
+      tax
+      discount
+      subtotal
+      total
+    }
+  }
+}

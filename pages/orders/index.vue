@@ -5,21 +5,19 @@
     <button @click="printOut()" class="noprint fixed fab top-0">
       <i class="fa fa-print" />
     </button>
-    <div>
-      <div
-        class="bg-yellow-200 p-2 flex justify-between noprint items-center text-gray-600"
-        v-if="todayTotal"
-      >
-        <h2>{{ todayTotal.count }}</h2>
-        <div class="text-red-500 font-bold">{{ todayTotal.amount | currency }}</div>
-        <div>{{ orders && orders[0] && orders[0].createdAt | date }}</div>
+    <div v-if="orders">
+      <div class="bg-yellow-200 p-2 flex justify-between noprint items-center text-gray-600">
+        <h2>{{ orders.myToday.count }}</h2>
+        <div class="text-red-500 font-bold">{{ orders.myToday.amount | currency }}</div>
+        <div>{{ orders.myToday.createdAt | date }}</div>
       </div>
       <ul class="flex flex-wrap">
         <li
           class="shadow-2xl rounded p-4 w-full lg:w-1/4 xl:w-1/5"
-          v-for="(o, ix) in orders"
+          v-for="(o, ix) in orders.myCustomers.data"
           :key="ix"
         >
+          {{o._id.orderNo}}
           <h1 class="text-xl font-black text-red-500">QrNo: {{ o._id.address.address }}</h1>
           <p
             class="font-bold"
@@ -55,8 +53,6 @@
 const Header = () => import('~/components/Header')
 const StickyFooter = () => import('~/components/footer/StickyFooter')
 import myCustomers from '~/gql/order/myCustomers.gql'
-import myToday from '~/gql/order/myToday.gql'
-import todaysSummary from '~/gql/order/todaysSummary.gql'
 import updateOrder from '~/gql/order/updateOrder.gql'
 import { infiniteScroll } from '~/mixins'
 
@@ -66,8 +62,6 @@ export default {
   data() {
     return {
       orders: null,
-      todayTotal: null,
-      todaySummary: null,
       model: myCustomers,
       attr: 'myCustomers'
     }
@@ -75,15 +69,13 @@ export default {
   async created() {
     try {
       this.$store.commit('clearErr')
-      this.todayTotal = (
-        await this.$apollo.query({ query: myToday, variables: {} })
-      ).data.myToday
-      this.todaySummary = (
-        await this.$apollo.query({ query: todaysSummary, variables: {} })
-      ).data.todaysSummary
       this.orders = (
-        await this.$apollo.query({ query: myCustomers, variables: {} })
-      ).data.myCustomers.data
+        await this.$apollo.query({
+          query: myCustomers,
+          variables: {},
+          fetchPolicy: 'no-cache'
+        })
+      ).data
     } catch (e) {
     } finally {
       this.$store.commit('busy', false)

@@ -6,6 +6,11 @@ query myCustomers(
   $sort: String
   $q: String
 ) {
+  myToday {
+    count
+    amount
+    createdAt
+  }
   myCustomers(
     page: $page
     q: $q
@@ -14,6 +19,9 @@ query myCustomers(
     search: $search
     sort: $sort
   ) {
+    count
+    pageSize
+    page
     data {
       _id {
         orderNo

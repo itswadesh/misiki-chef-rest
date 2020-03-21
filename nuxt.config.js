@@ -1,7 +1,7 @@
 import { join } from "path";
 require("dotenv").config();
-const { API_URL, head, HOST, HTTP_ENDPOINT, WS_ENDPOINT } = require("./config");
-const PROXY = process.env.API_URL || API_URL;
+const { head } = require("./config")
+const { HTTP_ENDPOINT, WS_ENDPOINT } = process.env
 
 export default {
   mode: "spa",
@@ -10,7 +10,6 @@ export default {
   css: [],
   plugins: [
     "~/plugins/filters.js",
-    "~/plugins/axios",
     { src: "~/plugins/init.js", mode: "client" },
     { src: "~/plugins/lazy.js", mode: "client" },
     { src: "~/plugins/carousel.js", mode: "client" },
@@ -24,7 +23,7 @@ export default {
     "@nuxtjs/dotenv",
     // "~/modules/routes",
     "@nuxtjs/robots",
-    "@nuxtjs/axios",
+    "@nuxtjs/proxy",
     "@nuxtjs/font-awesome",
     "@nuxtjs/pwa",
     // "@nuxtjs/onesignal",
@@ -36,7 +35,7 @@ export default {
     clientConfigs: {
       default: {
         httpEndpoint: "/graphql",
-        wsEndpoint: process.env.WS_ENDPOINT
+        wsEndpoint: WS_ENDPOINT
       }
     },
     defaultOptions: {
@@ -50,15 +49,9 @@ export default {
     position: "top-center",
     singleton: true
   },
-  axios: {
-    proxy: true,
-    credentials: true
-  },
   proxy: {
-    "/graphql": process.env.HTTP_ENDPOINT,
-    "/api/": PROXY,
-    "/auth": PROXY,
-    "/images": process.env.HTTP_ENDPOINT
+    '/graphql': HTTP_ENDPOINT,
+    '/images': HTTP_ENDPOINT
   },
   generate: {
     dir: "dist",

@@ -1,7 +1,10 @@
 import { join } from "path";
-require("dotenv").config();
-const { head } = require("./config")
-const { HTTP_ENDPOINT, WS_ENDPOINT } = process.env
+require('dotenv').config()
+const { head, LOCAL_HTTP_ENDPOINT, LOCAL_WS_ENDPOINT, REMOTE_HTTP_ENDPOINT, REMOTE_WS_ENDPOINT } = require("./config");
+const { NODE_ENV = 'development' } = process.env
+const IN_PROD = NODE_ENV === 'production'
+const HTTP_ENDPOINT = IN_PROD ? REMOTE_HTTP_ENDPOINT : LOCAL_HTTP_ENDPOINT
+const WS_ENDPOINT = IN_PROD ? REMOTE_WS_ENDPOINT : LOCAL_WS_ENDPOINT
 
 export default {
   mode: "spa",
@@ -34,8 +37,7 @@ export default {
     // errorHandler: "~/apollo/customErrorHandler.js",
     clientConfigs: {
       default: {
-        httpEndpoint: "/graphql",
-        wsEndpoint: WS_ENDPOINT
+        httpEndpoint: "/graphql"
       }
     },
     defaultOptions: {

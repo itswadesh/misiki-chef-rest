@@ -1,4 +1,4 @@
-import { tokenExpiry, userRoles } from "~/config";
+import { userRoles } from "~/config";
 import updateProfile from "~/gql/user/updateProfile.gql";
 
 export const state = () => ({

@@ -4,9 +4,9 @@ export default async function ({ app, error, store }) {
   try {
     store.commit('clearErr')
     store.commit('busy', true)
-    const res = await client.query({ query: me, fetchPolicy: 'no-cache' })
+    const res = (await client.query({ query: me, fetchPolicy: 'no-cache' })).data.me
     if (res) {
-      app.router.push('/my')
+      redirect('/my')
     }
   } catch (e) {
   } finally {

@@ -23,7 +23,7 @@
           >
             <i class="fa fa-close" />
           </button>
-          <img v-lazy="d" class="h-32 bg-cover w-full border-b" />
+          <img v-lazy="d" class="h-32 object-contain w-full border-b" />
         </div>
       </div>
     </div>

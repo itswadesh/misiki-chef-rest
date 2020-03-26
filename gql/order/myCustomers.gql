@@ -38,11 +38,6 @@ query myCustomers(
           phone
           email
           gender
-          info{
-            public
-            restaurant
-            kitchenPhotos
-          }
           avatar
         }
         address {
@@ -68,6 +63,9 @@ query myCustomers(
         img
         price
         qty
+        vendor{
+          restaurant
+        }
         status
       }
     }

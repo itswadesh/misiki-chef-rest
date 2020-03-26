@@ -7,6 +7,9 @@ mutation updateOrder($id:ID!,$pid:ID!,$status:String) {
       firstName
       lastName
     }
+    items{
+      status
+    }
     user{
       firstName
       lastName

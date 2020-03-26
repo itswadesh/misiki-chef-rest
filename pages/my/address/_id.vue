@@ -50,7 +50,7 @@
 const Textbox = () => import('~/components/ui/Textbox')
 const Header = () => import('~/components/Header')
 import updateAddress from '~/gql/user/updateAddress.gql'
-import createAddress from '~/gql/user/createAddress.gql'
+import addAddress from '~/gql/user/addAddress.gql'
 import address from '~/gql/user/address.gql'
 
 export default {
@@ -85,7 +85,8 @@ export default {
       this.$router.push(url)
     },
     async submit(address) {
-      delete address.coords.__typename
+      if (address.coords) delete address.coords.__typename
+      address.zip = +address.zip
       try {
         if (address.id)
           await this.$apollo.mutate({
@@ -95,7 +96,7 @@ export default {
           })
         else
           await this.$apollo.mutate({
-            mutation: createAddress,
+            mutation: addAddress,
             variables: address,
             fetchPolicy: 'no-cache'
           })

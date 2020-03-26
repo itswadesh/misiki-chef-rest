@@ -5,17 +5,24 @@
       v-if="user"
       class="text-center lg:w-1/5 lg:mt-10 bg-white shadow leading-loose w-full p-10 border-b border-gray-200"
     >
-      <span class="h-20 w-20 p-2 text-4xl text-gray-600 rounded-full bg-gray-200 inline-block">{{user.firstName | first}}</span>
-      <br />
+      <div class="mb-2">
+        <img
+          v-if="user.avatar"
+          class="inline-block w-16 h-16 rounded-full object-cover"
+          v-lazy="user.avatar"
+          alt
+        />
+        <span
+          v-else
+          class="h-20 w-20 p-2 text-4xl text-gray-600 rounded-full bg-gray-200 inline-block"
+        >{{user.firstName | first}}</span>
+      </div>
       <span class="text-lg">{{user.firstName}}</span>
       <span class="text-sm text-gray-500">{{user.phone}}</span>
     </div>
     <div class="antialiased bg-gray-200 min-h-screen p-8">
       <div class="flex justify-center">
-        <nav
-          id="nav"
-          class="w-full relative"
-        >
+        <nav id="nav" class="w-full relative">
           <span
             class="absolute h-10 w-full bg-white rounded-lg shadow ease-out transition-transform transition-medium"
             :style="{ transform: `translateY(calc(100% * ${selected}))` }"
@@ -208,7 +215,9 @@
                     d="M3 6a3 3 0 013-3h10a1 1 0 110 2H6a1 1 0 00-1 1v10a1 1 0 11-2 0V6z"
                   />
                 </svg>
-                <span class="ml-2 text-sm font-medium transition-all text-gray-700 ease-out transition-medium">Logout</span>
+                <span
+                  class="ml-2 text-sm font-medium transition-all text-gray-700 ease-out transition-medium"
+                >Logout</span>
               </button>
             </li>
           </ul>

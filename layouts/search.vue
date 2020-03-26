@@ -1,17 +1,11 @@
 <template>
   <div class="bg-gray-100 antialiased min-h-screen">
     <Loading />
-    <div
-      v-if="$store.state.errors"
-      class="err"
-    >
-      <span
-        v-for="(e,ix) in $store.state.errors"
-        :key="ix"
-      >{{e.message}}</span>
-    </div>
     <Search />
     <div class="mt-16 mb-12">
+      <div v-if="$store.state.errors" class="err">
+        <span v-for="(e,ix) in $store.state.errors" :key="ix">{{e.message}}</span>
+      </div>
       <nuxt />
     </div>
     <StickyFooter />

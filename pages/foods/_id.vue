@@ -30,11 +30,11 @@
             <Radio v-model="food.type" value="V" color="green" class="mr-2">Veg</Radio>
             <Radio v-model="food.type" value="N" color="red" class="mr-2">Non Veg</Radio>
           </div>
-          <div class="flex">
+          <div class="flex" v-if="deliveryslots">
             <Radio
               color="secondary"
               v-model="food.time"
-              v-for="(s,ix) in deliveryslots"
+              v-for="(s,ix) in deliveryslots.data"
               :key="ix"
               :value="s.val"
               class="mr-2"
@@ -105,13 +105,14 @@ export default {
     }
   },
   async created() {
-    if (this.$route.params.id == 'new') return
     try {
-      this.$store.commit('busy', true)
       this.deliveryslots = (
         await this.$apollo.query({ query: slots, fetchPolicy: 'no-cache' })
       ).data.slots
-      // this.deliveryslots = deliveryslots.slots
+    } catch (e) {}
+    if (this.$route.params.id == 'new') return
+    try {
+      this.$store.commit('clearErr')
       const food = (
         await this.$apollo.query({
           query: product,

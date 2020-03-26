@@ -15,10 +15,12 @@ query reviews(
     sort: $sort
   ) {
     data {
-      pid{
+      product{
         name
+        slug
+        img
       }
-      uid{
+      user{
         firstName
         lastName
       }

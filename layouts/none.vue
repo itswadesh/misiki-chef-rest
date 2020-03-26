@@ -1,17 +1,8 @@
 <template>
-  <div
-    style="min-height:71.8vh"
-    class="antialiased "
-  >
+  <div style="min-height:71.8vh" class="antialiased">
     <Loading />
-    <div
-      v-if="$store.state.errors"
-      class="err"
-    >
-      <span
-        v-for="(e,ix) in $store.state.errors"
-        :key="ix"
-      >{{e.message}}</span>
+    <div v-if="$store.state.errors" class="err">
+      <span v-for="(e,ix) in $store.state.errors" :key="ix">{{e.message}}</span>
     </div>
     <nuxt />
   </div>

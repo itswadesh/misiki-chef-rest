@@ -1,8 +1,10 @@
 query Slots {
   slots {
-    id
-    slug
-    name
-    val
+    data{
+      id
+      slug
+      name
+      val
+    }
   }
 }

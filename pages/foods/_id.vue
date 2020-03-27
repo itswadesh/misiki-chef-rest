@@ -17,6 +17,15 @@
             @change="submit()"
             label="Open Kitchen"
           />-->
+          <select
+            v-if="categories"
+            class="w-full mb-4"
+            label="Dish Category"
+            name="name"
+            v-model="food.category"
+          >
+            <option v-for="c in categories.data" :key="c.id" :value="c.id">{{c.name}}</option>
+          </select>
           <Textbox class="w-full mb-4" label="Dish Name" name="name" v-model="food.name" />
           <Textbox
             class="w-full mb-4"
@@ -80,6 +89,7 @@ import updateProduct from '~/gql/product/updateProduct.gql'
 import deleteProduct from '~/gql/product/deleteProduct.gql'
 import saveVariant from '~/gql/product/saveVariant.gql'
 import slots from '~/gql/product/slots.gql'
+import categories from '~/gql/category/categories.gql'
 
 export default {
   middleware: 'isAuth',
@@ -101,6 +111,7 @@ export default {
       menuTime: false,
       timesList: timesList,
       dishes: [],
+      categories: null,
       qty: 5
     }
   },
@@ -109,6 +120,9 @@ export default {
       this.deliveryslots = (
         await this.$apollo.query({ query: slots, fetchPolicy: 'no-cache' })
       ).data.slots
+      this.categories = (
+        await this.$apollo.query({ query: categories, fetchPolicy: 'no-cache' })
+      ).data.categories
     } catch (e) {}
     if (this.$route.params.id == 'new') return
     try {
@@ -122,6 +136,7 @@ export default {
       ).data
       if (!food.time) food.time = '8:30 - 9:30 PM'
       this.food = food.product
+      if (this.food.category) this.food.category = this.food.category.id
     } catch (e) {
       this.$store.commit('setErr', e)
     } finally {
@@ -233,7 +248,7 @@ export default {
           }).then(async result => {
             if (result.value) {
               await vm.publishDish()
-              this.$router.push('/search')
+              // this.$router.push('/search')
             }
           })
         } else {

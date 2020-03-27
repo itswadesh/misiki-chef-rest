@@ -9,6 +9,12 @@ query Product($id: ID!) {
     stock
     img
     time
+    category{
+      id
+      name
+      slug
+      img
+    }
     vendor {
       id
       firstName

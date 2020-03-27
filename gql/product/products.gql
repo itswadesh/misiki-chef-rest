@@ -8,6 +8,12 @@ query Products {
     stock
     img
     time
+    category{
+      id
+      name
+      slug
+      img
+    }
     vendor {
       id
       firstName

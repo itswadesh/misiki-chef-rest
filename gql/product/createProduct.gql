@@ -6,6 +6,7 @@ mutation createProduct(
   $stock: Int
   $img: String
   $time: String
+  $category: String
 ) {
   createProduct(
     name: $name
@@ -15,6 +16,7 @@ mutation createProduct(
     stock: $stock
     img: $img
     time: $time
+    category: $category
   ) {
     id
     name
@@ -25,6 +27,12 @@ mutation createProduct(
     stock
     img
     time
+    category{
+      id
+      name
+      slug
+      img
+    }
     vendor {
       id
       firstName

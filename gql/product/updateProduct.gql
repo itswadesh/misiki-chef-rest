@@ -7,6 +7,7 @@ mutation updateProduct(
   $stock: Int
   $img: String
   $time: String
+  $category: String
 ) {
   updateProduct(
     id: $id
@@ -17,6 +18,7 @@ mutation updateProduct(
     stock: $stock
     img: $img
     time: $time
+    category: $category
   ) {
     id
     name
@@ -27,6 +29,12 @@ mutation updateProduct(
     stock
     img
     time
+    category{
+      id
+      name
+      slug
+      img
+    }
     vendor {
       id
       firstName
